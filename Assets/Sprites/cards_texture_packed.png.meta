@@ -1,0 +1,1500 @@
+fileFormatVersion: 2
+guid: 47549f4cb9cafb24383f04933be09bf9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6120434404602459002
+    second: cards_texture_packed_0
+  - first:
+      213: -3785512530016009588
+    second: cards_texture_packed_1
+  - first:
+      213: 2635119014170364837
+    second: cards_texture_packed_2
+  - first:
+      213: -7710482226980381925
+    second: cards_texture_packed_3
+  - first:
+      213: -2846007188373831992
+    second: cards_texture_packed_4
+  - first:
+      213: -2708425561442780086
+    second: cards_texture_packed_5
+  - first:
+      213: 3717038043346597300
+    second: cards_texture_packed_6
+  - first:
+      213: 2099900139509552655
+    second: cards_texture_packed_7
+  - first:
+      213: -8730013354762377698
+    second: cards_texture_packed_8
+  - first:
+      213: -2242751475196130440
+    second: cards_texture_packed_9
+  - first:
+      213: -2263581357501621958
+    second: cards_texture_packed_10
+  - first:
+      213: 4396185986715240435
+    second: cards_texture_packed_11
+  - first:
+      213: -603191821277667680
+    second: cards_texture_packed_12
+  - first:
+      213: -1170282185316881791
+    second: cards_texture_packed_13
+  - first:
+      213: -6557156777430845193
+    second: cards_texture_packed_14
+  - first:
+      213: 7979240744335621862
+    second: cards_texture_packed_15
+  - first:
+      213: 1168366136163193287
+    second: cards_texture_packed_16
+  - first:
+      213: 3132356097275493152
+    second: cards_texture_packed_17
+  - first:
+      213: 3456436809919044708
+    second: cards_texture_packed_18
+  - first:
+      213: -6779568365129030362
+    second: cards_texture_packed_19
+  - first:
+      213: -6195435018442394795
+    second: cards_texture_packed_20
+  - first:
+      213: -2874276207547343712
+    second: cards_texture_packed_21
+  - first:
+      213: -1449005209308625693
+    second: cards_texture_packed_22
+  - first:
+      213: -3793618470483648386
+    second: cards_texture_packed_23
+  - first:
+      213: 5642965925425345811
+    second: cards_texture_packed_24
+  - first:
+      213: 7899328974760866549
+    second: cards_texture_packed_25
+  - first:
+      213: -5097071782726880100
+    second: cards_texture_packed_26
+  - first:
+      213: -8576612713514682143
+    second: cards_texture_packed_27
+  - first:
+      213: -2114729016253938133
+    second: cards_texture_packed_28
+  - first:
+      213: 1307069555980197312
+    second: cards_texture_packed_29
+  - first:
+      213: 7572531896201904478
+    second: cards_texture_packed_30
+  - first:
+      213: -4825399913500281572
+    second: cards_texture_packed_31
+  - first:
+      213: 3997833141759074028
+    second: cards_texture_packed_32
+  - first:
+      213: -5340925659069561740
+    second: cards_texture_packed_33
+  - first:
+      213: -6335884352965501801
+    second: cards_texture_packed_34
+  - first:
+      213: -6788837877932195013
+    second: cards_texture_packed_35
+  - first:
+      213: 3505653091745993873
+    second: cards_texture_packed_36
+  - first:
+      213: -566684811968792853
+    second: cards_texture_packed_37
+  - first:
+      213: 1958562037231412857
+    second: cards_texture_packed_38
+  - first:
+      213: 6516625004102568779
+    second: cards_texture_packed_39
+  - first:
+      213: 6306317162661579997
+    second: cards_texture_packed_40
+  - first:
+      213: -2844569138375392086
+    second: cards_texture_packed_41
+  - first:
+      213: -1752703093470000090
+    second: cards_texture_packed_42
+  - first:
+      213: -4673161848538637502
+    second: cards_texture_packed_43
+  - first:
+      213: -523646205791018915
+    second: cards_texture_packed_44
+  - first:
+      213: 5089225358149823207
+    second: cards_texture_packed_45
+  - first:
+      213: 4066316090859415282
+    second: cards_texture_packed_46
+  - first:
+      213: -500261353233857851
+    second: cards_texture_packed_47
+  - first:
+      213: -182699465922891169
+    second: cards_texture_packed_48
+  - first:
+      213: 2063476823017508810
+    second: cards_texture_packed_49
+  - first:
+      213: 8519120903092406829
+    second: cards_texture_packed_50
+  - first:
+      213: 6602668082575459890
+    second: cards_texture_packed_51
+  - first:
+      213: 5256383812187634422
+    second: cards_texture_packed_52
+  - first:
+      213: -5584599614876899563
+    second: cards_texture_packed_53
+  - first:
+      213: 7885246586761047159
+    second: cards_texture_packed_54
+  - first:
+      213: 8034119414249622492
+    second: cards_texture_packed_55
+  - first:
+      213: 1936818770307933689
+    second: cards_texture_packed_56
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: cards_texture_packed_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1136
+        width: 112
+        height: 156
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68c47922659df0ba0800000000000000
+      internalID: -6120434404602459002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_1
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 1133
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c820b931968277bc0800000000000000
+      internalID: -3785512530016009588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_2
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 1133
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ab808c28c2d19420800000000000000
+      internalID: 2635119014170364837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_3
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 1133
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1b1fd5344ddef490800000000000000
+      internalID: -7710482226980381925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_4
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 1133
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8cef4cc7a83f088d0800000000000000
+      internalID: -2846007188373831992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_5
+      rect:
+        serializedVersion: 2
+        x: 573
+        y: 1133
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4c7d9d3d4db96ad0800000000000000
+      internalID: -2708425561442780086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_6
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 1133
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b5794e1862959330800000000000000
+      internalID: 3717038043346597300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_7
+      rect:
+        serializedVersion: 2
+        x: 803
+        y: 1133
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0692471d08542d10800000000000000
+      internalID: 2099900139509552655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_8
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 973
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e16e8f08b13c8d680800000000000000
+      internalID: -8730013354762377698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_9
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 973
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 87b83797a6520e0e0800000000000000
+      internalID: -2242751475196130440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_10
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 973
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a395be19fb42690e0800000000000000
+      internalID: -2263581357501621958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_11
+      rect:
+        serializedVersion: 2
+        x: 346
+        y: 973
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f746b8ecd3620d30800000000000000
+      internalID: 4396185986715240435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_12
+      rect:
+        serializedVersion: 2
+        x: 461
+        y: 973
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0aed2510c3801a7f0800000000000000
+      internalID: -603191821277667680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_13
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 973
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18a28398d8252cfe0800000000000000
+      internalID: -1170282185316881791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_14
+      rect:
+        serializedVersion: 2
+        x: 691
+        y: 973
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f870b8f6ac4005a0800000000000000
+      internalID: -6557156777430845193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_15
+      rect:
+        serializedVersion: 2
+        x: 806
+        y: 973
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6eeb27f5e25fbbe60800000000000000
+      internalID: 7979240744335621862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_16
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 813
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c15a918fced63010800000000000000
+      internalID: 1168366136163193287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_17
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 813
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 02b7228464d587b20800000000000000
+      internalID: 3132356097275493152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_18
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 813
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46c1fc337fab7ff20800000000000000
+      internalID: 3456436809919044708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_19
+      rect:
+        serializedVersion: 2
+        x: 346
+        y: 813
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 625220add722ae1a0800000000000000
+      internalID: -6779568365129030362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_20
+      rect:
+        serializedVersion: 2
+        x: 461
+        y: 813
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 553b9b0fca4650aa0800000000000000
+      internalID: -6195435018442394795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_21
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 813
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ac98ce84058c18d0800000000000000
+      internalID: -2874276207547343712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_22
+      rect:
+        serializedVersion: 2
+        x: 691
+        y: 813
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e40875707914ebe0800000000000000
+      internalID: -1449005209308625693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_23
+      rect:
+        serializedVersion: 2
+        x: 806
+        y: 813
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e70267db91c5a5bc0800000000000000
+      internalID: -3793618470483648386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_24
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 653
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3157c988c97df4e40800000000000000
+      internalID: 5642965925425345811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_25
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 653
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5f27290a9dd00ad60800000000000000
+      internalID: 7899328974760866549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_26
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 653
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c94b5e318309349b0800000000000000
+      internalID: -5097071782726880100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_27
+      rect:
+        serializedVersion: 2
+        x: 346
+        y: 653
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e8bbda8d20c9f880800000000000000
+      internalID: -8576612713514682143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_28
+      rect:
+        serializedVersion: 2
+        x: 461
+        y: 653
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b2609fdf929f6a2e0800000000000000
+      internalID: -2114729016253938133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_29
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 653
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0cd5de406d4a32210800000000000000
+      internalID: 1307069555980197312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_30
+      rect:
+        serializedVersion: 2
+        x: 691
+        y: 653
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e510e6b73a9071960800000000000000
+      internalID: 7572531896201904478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_31
+      rect:
+        serializedVersion: 2
+        x: 806
+        y: 653
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c157d90485cb80db0800000000000000
+      internalID: -4825399913500281572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_32
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 493
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cee55dd9f082b7730800000000000000
+      internalID: 3997833141759074028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_33
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 492
+        width: 115
+        height: 160
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 474c367196831e5b0800000000000000
+      internalID: -5340925659069561740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_34
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 493
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 79c198bffba6218a0800000000000000
+      internalID: -6335884352965501801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_35
+      rect:
+        serializedVersion: 2
+        x: 346
+        y: 493
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b3382283be339c1a0800000000000000
+      internalID: -6788837877932195013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_36
+      rect:
+        serializedVersion: 2
+        x: 461
+        y: 493
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1941547c9e496a030800000000000000
+      internalID: 3505653091745993873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_37
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 493
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be6bdfa7a2bb228f0800000000000000
+      internalID: -566684811968792853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_38
+      rect:
+        serializedVersion: 2
+        x: 691
+        y: 493
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9766eb3cbc53e2b10800000000000000
+      internalID: 1958562037231412857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_39
+      rect:
+        serializedVersion: 2
+        x: 806
+        y: 493
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4b46f72ae3bf6a50800000000000000
+      internalID: 6516625004102568779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_40
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 333
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ddc84611c0a848750800000000000000
+      internalID: 6306317162661579997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_41
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 333
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa48818907f0688d0800000000000000
+      internalID: -2844569138375392086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_42
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 333
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62c0efc92d52da7e0800000000000000
+      internalID: -1752703093470000090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_43
+      rect:
+        serializedVersion: 2
+        x: 346
+        y: 333
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 24b52f7ee08952fb0800000000000000
+      internalID: -4673161848538637502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_44
+      rect:
+        serializedVersion: 2
+        x: 461
+        y: 333
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d5068dbdc82abb8f0800000000000000
+      internalID: -523646205791018915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_45
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 333
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ea2e66df7f80a640800000000000000
+      internalID: 5089225358149823207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_46
+      rect:
+        serializedVersion: 2
+        x: 691
+        y: 333
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f6612cb0f47e6830800000000000000
+      internalID: 4066316090859415282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_47
+      rect:
+        serializedVersion: 2
+        x: 806
+        y: 333
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c2c3a123f6be09f0800000000000000
+      internalID: -500261353233857851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_48
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 173
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f523301cdcbe67df0800000000000000
+      internalID: -182699465922891169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_49
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 173
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acfc53edc31f2ac10800000000000000
+      internalID: 2063476823017508810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_50
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 173
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d2a8d6b335ff93670800000000000000
+      internalID: 8519120903092406829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_51
+      rect:
+        serializedVersion: 2
+        x: 346
+        y: 173
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 23648bf73a361ab50800000000000000
+      internalID: 6602668082575459890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_52
+      rect:
+        serializedVersion: 2
+        x: 461
+        y: 173
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6fabe884a3d62f840800000000000000
+      internalID: 5256383812187634422
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_53
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 173
+        width: 113
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 517aa7e1d348f72b0800000000000000
+      internalID: -5584599614876899563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_54
+      rect:
+        serializedVersion: 2
+        x: 690
+        y: 150
+        width: 243
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 77ce04a2ef50e6d60800000000000000
+      internalID: 7885246586761047159
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_55
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 150
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cdb0b696a0dee7f60800000000000000
+      internalID: 8034119414249622492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cards_texture_packed_56
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 68
+        width: 278
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9f5638ee866f0ea10800000000000000
+      internalID: 1936818770307933689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
