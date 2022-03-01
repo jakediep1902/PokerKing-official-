@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 
     public GameObject card1, card2;   
     public GameObject backCard1,backCard2;
+    public TimeCounter timeCounter;
     
     public Vector3 posCard1;
     public Vector3 posCard2;
@@ -33,6 +34,10 @@ public class PlayerController : MonoBehaviour
     public bool isHighCard = false;
     public bool isWinner = false;
 
+    public bool isTurn = false;
+
+
+    
     void Start()
     {
         if(Instance==null)
@@ -42,8 +47,8 @@ public class PlayerController : MonoBehaviour
         backCard = BackCard.Instance;
         backCard.eArrange.AddListener(() => ArrangeCard());
 
+
         ID = int.Parse(gameObject.name);
-          
     }
     public void ArrangeCard()
     {
@@ -81,7 +86,9 @@ public class PlayerController : MonoBehaviour
         listCard.Add(card1);//add card to list to check
         listCard.Add(card2);
 
-       // card1 = transform.GetChild(4).gameObject;
-      //  card2 = transform.GetChild(5).gameObject;
+       // gameController.SetSmallBigBlind(gameController.listPlayer);
+
+        // card1 = transform.GetChild(4).gameObject;
+        //  card2 = transform.GetChild(5).gameObject;
     }   
 }

@@ -9,11 +9,13 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance;
 
-    public GameObject backCard;
+    public GameObject backCardPrefab;
     public GameObject commonCard;
     public GameObject congratulation;
         
     private Transform startPos;
+    BackCard backCard;
+
    // public Transform playerCard_1;
     //public Transform playerCard_2;
     public Vector3 playerStartPos;
@@ -31,8 +33,10 @@ public class GameController : MonoBehaviour
 
     //private List<int[]>listFlush = new List<int[]>();
     private List<Flush> listFlush = new List<Flush>();  
-    private Stack<GameObject> stackCheck = new Stack<GameObject>(7);  
-  
+    private Stack<GameObject> stackCheck = new Stack<GameObject>(7);
+
+    public int indexSBBlind;
+    public int smallBlind;
     public int amountPlayer;
     private int amountCardInit;
     public int NoPlayer = 0;
@@ -80,12 +84,17 @@ public class GameController : MonoBehaviour
         }
 
         listPlayer = FindObjectsOfType<PlayerController>();
+        
         amountPlayer = listPlayer.Length;
         amountCardInit = amountPlayer * 2;
-          
-        startPos = backCard.transform;
+        //StartCoroutine(RunTimeCounter(4f));
+        startPos = backCardPrefab.transform;
         CreateCommonCard(3);
-        CreateBackCard(amountCardInit);                   
+        CreateBackCard(amountCardInit);
+
+        backCard = BackCard.Instance;
+        backCard.eArrange.AddListener(() => SetSmallBigBlind(listPlayer));
+
     }  
     public void CreateCommonCard(int numberOfCard = 3)
     {
@@ -93,7 +102,7 @@ public class GameController : MonoBehaviour
     }
     public void CreateBackCard(int numberOfCard= 1)
     {     
-        StartCoroutine(DelayCreateCard(numberOfCard,backCard));            
+        StartCoroutine(DelayCreateCard(numberOfCard,backCardPrefab));            
     }   
       IEnumerator DelayCreateCard(int numberOfCard,GameObject cardInput)
     {      
@@ -139,6 +148,7 @@ public class GameController : MonoBehaviour
                 stackCheck.Push(tempCard);                           
             }
             tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;
+                
             yield return new WaitForSeconds(0.2f);
         }   
     }
@@ -218,6 +228,14 @@ public class GameController : MonoBehaviour
         }
         else
             Debug.Log("Now we have 5 card aldrealy!!");
+
+        indexSBBlind = smallBlind;
+        listPlayer[indexSBBlind].timeCounter.gameObject.SetActive(true);
+        foreach (var item in listPlayer)
+        {
+            item.isTurn = true;
+            item.timeCounter.imageFill.fillAmount = 1;
+        }     
     }
 
     public void PlayAgain()
@@ -1051,6 +1069,18 @@ public class GameController : MonoBehaviour
         method.Invoke(new object(), null);
     }
 
-
+    public void SetSmallBigBlind(PlayerController[] arrPlayer)     
+    {
+        int i = Random.Range(0, arrPlayer.Length);
+        indexSBBlind = i;
+        smallBlind = i;
+        arrPlayer[i].isTurn = true;
+        arrPlayer[i].timeCounter.gameObject.SetActive(true);
+    }
+    IEnumerator RunTimeCounter(float timeDelay = 3f)
+    {
+        yield return new WaitForSeconds(timeDelay);
+        SetSmallBigBlind(listPlayer);
+    }
 
 }
