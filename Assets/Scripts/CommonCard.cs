@@ -6,6 +6,7 @@ public class CommonCard : MonoBehaviour
 {
     private GameController gameController;
     private Vector3 targetPos;
+   //Sprite spriteTemp;
     void Start()
     {
         gameController = GameController.Instance;
@@ -17,6 +18,10 @@ public class CommonCard : MonoBehaviour
             gameController.isFull = true;
         }
         //gameController.SetRandomCard(this.gameObject);
+
+       // int indexCard = Random.Range((int)0, (int)gameController.cards.Length);
+        //spriteTemp = gameController.cards[indexCard].GetCompo
+
     }
 
     void Update()

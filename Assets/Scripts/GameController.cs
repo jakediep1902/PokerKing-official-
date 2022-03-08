@@ -4,8 +4,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Reflection;
 using UnityEditor;
+using Photon.Pun;
+using Photon.Realtime;
+using UnityEngine.UI;
 
-public class GameController : MonoBehaviour
+public class GameController : MonoBehaviourPunCallbacks
 {
     public static GameController Instance;
 
@@ -15,6 +18,9 @@ public class GameController : MonoBehaviour
         
     private Transform startPos;
     BackCard backCard;
+    public Sprite spriteNeedChange;
+    public PhotonView photonViews;
+    public Text txtIndex;
 
    // public Transform playerCard_1;
     //public Transform playerCard_2;
@@ -35,6 +41,8 @@ public class GameController : MonoBehaviour
     private List<Flush> listFlush = new List<Flush>();  
     private Stack<GameObject> stackCheck = new Stack<GameObject>(7);
 
+    public int tempIndex = 5;
+    public int commonIndex = 0;
     public int indexSBBlind;
     public int smallBlind;
     public int amountPlayer;
@@ -46,56 +54,89 @@ public class GameController : MonoBehaviour
     int conStraightFlush = 5;//edit with value 5 when finish
 
     public bool isFull = false;
-    
+    public bool isStartGame = false;
+
 
     private void Awake()
     {
-        if(Instance==null)
-        Instance = this;
-
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        //else
+        //{
+        //    Destroy(Instance.gameObject);
+        //    Instance = this;
+        //}
+        //DontDestroyOnLoad(this.gameObject);
         cards = GameObject.FindGameObjectsWithTag("Card");     
     }
     void Start()
     {
         playerController = PlayerController.Instance;
-
+        photonViews = GetComponent<PhotonView>();
+       
+        PhotonNetwork.ConnectUsingSettings();
         ClearConsole();
 
-        foreach (var item in cards)
-        {
-            item.SetActive(false);
-        }
-
-        amountPlayer = Random.Range((int)2, (int)7);      
-        for(int i =0;i<amountPlayer;i++)
-        {
-            PlayerController tempPlayer = Instantiate(player, playerStartPos, Quaternion.identity) as PlayerController;
-            tempPlayer.gameObject.SetActive(true);
-            tempPlayer.name = NoPlayer.ToString();
-            NoPlayer++;               
-            for(int j =i;j<posDefaul.Length;j+=10)
+        //if(isStartGame)
+        //{
+            foreach (var item in cards)
             {
-                tempPlayer.transform.position = posDefaul[j].position;
-                tempPlayer.posCard1 = tempPlayer.card1.transform.position;
-                Destroy(tempPlayer.card1);
-                tempPlayer.posCard2 = tempPlayer.card2.transform.position;
-                Destroy(tempPlayer.card2);
-            }           
-        }
+                item.SetActive(false);
+            }
 
-        listPlayer = FindObjectsOfType<PlayerController>();
+            //amountPlayer = Random.Range((int)2, (int)7);
+            //for (int i = 0; i < amountPlayer; i++)
+            //{
+            //    PlayerController tempPlayer = Instantiate(player, playerStartPos, Quaternion.identity) as PlayerController;
+            //    tempPlayer.gameObject.SetActive(true);
+            //    tempPlayer.name = NoPlayer.ToString();
+            //    NoPlayer++;
+            //    for (int j = i; j < posDefaul.Length; j += 10)
+            //    {
+            //        tempPlayer.transform.position = posDefaul[j].position;
+            //        tempPlayer.posCard1 = tempPlayer.card1.transform.position;
+            //        Destroy(tempPlayer.card1);
+            //        tempPlayer.posCard2 = tempPlayer.card2.transform.position;
+            //        Destroy(tempPlayer.card2);
+            //    }
+            //}
+
+            //listPlayer = FindObjectsOfType<PlayerController>();
+
+           // amountPlayer = listPlayer.Length;
+           // amountCardInit = amountPlayer * 2;
+            //StartCoroutine(RunTimeCounter(4f));
+            startPos = backCardPrefab.transform;
+           // CreateCommonCard(3);
+            //CreateBackCard(amountCardInit);
+        //}
         
-        amountPlayer = listPlayer.Length;
-        amountCardInit = amountPlayer * 2;
-        //StartCoroutine(RunTimeCounter(4f));
-        startPos = backCardPrefab.transform;
-        CreateCommonCard(3);
-        CreateBackCard(amountCardInit);
 
         backCard = BackCard.Instance;
         backCard.eArrange.AddListener(() => SetSmallBigBlind(listPlayer));
 
-    }  
+    }
+    private void Update()
+    {
+        txtIndex.text = commonIndex.ToString();
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        PhotonNetwork.JoinLobby();
+    }
+    public override void OnJoinedLobby()
+    {
+        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 6 }, TypedLobby.Default);     
+    }
+    public override void OnJoinedRoom()
+    {      
+        int indexCard = Random.Range((int)0, (int)cards.Length);
+        RPC_SetCommonIndex(indexCard);
+    }
+    [PunRPC]
     public void CreateCommonCard(int numberOfCard = 3)
     {
         StartCoroutine(DelayCreateCard(numberOfCard, commonCard));
@@ -112,21 +153,22 @@ public class GameController : MonoBehaviour
             //int indexCard = Random.Range((int)0, (int)cards.Length);
             //GameObject tempCard = cards[indexCard];
             //RemoveElement(ref cards, indexCard);
-            if(tempCard.GetComponent<BackCard>()!=null)
+            if (tempCard.GetComponent<BackCard>() != null)
             {
                 tempCard.GetComponent<BackCard>().enabled = true;
                 listBackCard.Add(tempCard.GetComponent<BackCard>());
             }
             else
-            {               
-                if(tempCard.activeSelf==false)
-                tempCard.SetActive(true);
-               
-                int indexCard = Random.Range((int)0, (int)cards.Length);
-                tempCard.layer = cards[indexCard].layer;
+            {
+                if (tempCard.activeSelf == false)
+                    tempCard.SetActive(true);
+
+                //int indexCard = Random.Range((int)0, (int)cards.Length);
+                //RPC_SetCommonIndex(indexCard);
+                tempCard.layer = cards[commonIndex].layer;
 
                 int noLayer = tempCard.layer;
-                switch(noLayer)
+                switch (noLayer)
                 {
                     case 7:
                         tempCard.AddComponent<Spades>();
@@ -141,17 +183,42 @@ public class GameController : MonoBehaviour
                         tempCard.AddComponent<Diamonds>();
                         break;
                 }
+                //tempCard.GetComponent<PhotonView>().RPC("RPC_ChangeSprite", RpcTarget.AllBuffered,
+                //    new object[] { tempCard.GetComponent<SpriteRenderer>().sprite, indexCard});
+                tempCard.name = cards[commonIndex].name;
+                tempCard.GetComponent<SpriteRenderer>().sprite = cards[commonIndex].GetComponent<SpriteRenderer>().sprite;
+                RemoveElement(ref cards, commonIndex);
+                tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;
+                // Debug.Log(2);
 
-                tempCard.name = cards[indexCard].name;
-                tempCard.GetComponent<SpriteRenderer>().sprite = cards[indexCard].GetComponent<SpriteRenderer>().sprite;
-                RemoveElement(ref cards, indexCard);          
-                stackCheck.Push(tempCard);                           
+                //DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
+                //pool.ResourceCache.Add(tempCard.name, tempCard);
+
+                //Destroy(tempCard);
+                //PhotonNetwork.Instantiate(tempCard.name, tempCard.transform.position, Quaternion.identity);
+                // Debug.Log(3);
+
+                stackCheck.Push(tempCard);
+                //Debug.Log(4);
             }
-            tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;
-                
+            //tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;
+
+            //if(photonViews.IsMine)
+            //{
+            //    int indexCard = Random.Range((int)0, (int)cards.Length);
+            //    RPC_SetCommonIndex(indexCard);
+            //}
+            
+
             yield return new WaitForSeconds(0.2f);
         }   
     }
+    //[PunRPC]
+    //public void RPC_ChangeSprite(Sprite sprite,int index)
+    //{
+    //    sprite = cards[index].GetComponent<SpriteRenderer>().sprite;
+    //}
+
     public void ChangeSpriteRenderer(GameObject card)
     {
         int indexCard = Random.Range((int)0, arrCards.Length);
@@ -237,10 +304,14 @@ public class GameController : MonoBehaviour
             item.timeCounter.imageFill.fillAmount = 1;
         }     
     }
-
+    [PunRPC]
     public void PlayAgain()
     {
         SceneManager.LoadScene(0);
+    }
+    public void BtnPlayAgain()
+    {
+        photonViews.RPC("PlayAgain", RpcTarget.AllBuffered, null);
     }
 
     public void CheckWinner(PlayerController[] arrPlayer)
@@ -1083,4 +1154,30 @@ public class GameController : MonoBehaviour
         SetSmallBigBlind(listPlayer);
     }
 
+    [PunRPC]
+    public void SetCommonIndex(int index)
+    {        
+        commonIndex = index;
+        Debug.Log(commonIndex);
+    }
+    public void RPC_SetCommonIndex(int index)
+    {
+        photonViews.RPC("SetCommonIndex", RpcTarget.All, index);
+
+    }
+    public void BtnIncrease()
+    {
+        photonViews.RPC("SetCommonIndex", RpcTarget.AllBuffered,commonIndex);
+    }
+    public void PlayGame()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            photonViews.RPC("CreateCommonCard", RpcTarget.All, 1);
+            int indexCard = Random.Range((int)0, (int)cards.Length);
+            photonViews.RPC("SetCommonIndex", RpcTarget.All, indexCard);
+        }
+        
+        //CreateCommonCard(3);
+    }
 }
