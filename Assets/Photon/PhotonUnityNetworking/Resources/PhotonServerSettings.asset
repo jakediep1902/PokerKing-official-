@@ -66,6 +66,10 @@ MonoBehaviour:
   - RPC_IndexBigBlind
   - RPC_InvokeSetBigBlind
   - SetBigBlind
+  - StartCheckCard
+  - InactiveAllTemplateCard
+  - InactiveTempCard
+  - SetRandomBigBlind
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

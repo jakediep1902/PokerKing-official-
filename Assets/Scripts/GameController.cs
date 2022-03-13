@@ -90,7 +90,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 
         PhotonNetwork.ConnectUsingSettings();
         ClearConsole();
-
+        pnlGame.SetActive(true);
         //if(isStartGame)
         //{
         foreach (var item in cards)
@@ -146,10 +146,8 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public override void OnJoinedRoom()
     {
-        pnlGame.SetActive(true);
-
-
-
+        //pnlGame.SetActive(true);
+        SceneManager.LoadScene(0);
     }
     public override void OnLeftRoom()
     {
@@ -245,7 +243,13 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         }
         System.Array.Resize(ref arr, arr.Length - 1);
     }
+    public void BtnCheckCard()
+    {
+        photonViews.RPC("StartCheckCard", RpcTarget.All, null);
+        photonViews.RPC("InactiveTempCard", RpcTarget.All, null);
 
+    }
+    [PunRPC]
     public void StartCheckCard()
     {
         foreach (PlayerController player in arrPlayer)
@@ -253,7 +257,6 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             CheckCard(player);
         }
         //CheckFlush(listFlush);//check Flush affter finish check all Player 
-
         CheckWinner(arrPlayer);
     }
 
@@ -263,7 +266,6 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         {
             player.listCard.Add(item);
         }
-
         CheckStraightFlush(player);
         if (!player.isStraightFlush)
         {
@@ -319,20 +321,20 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             else
                 Debug.Log("Now we have 5 card aldrealy!!");
 
-            
+
             ////indexBigBlind = smallBlind;
             arrPlayer[indexBigBlind].timeCounter.gameObject.SetActive(true);
             foreach (var item in arrPlayer)
-            {           
+            {
                 item.isTurn = true;
                 if (item.timeCounter.imageFill == null)
                 {
                     item.timeCounter.imageFill = item.timeCounter.GetComponent<Image>();
                     item.timeCounter.imageFill.fillAmount = 1;
-                }                   
+                }
                 else
-                item.timeCounter.imageFill.fillAmount = 1;
-               
+                    item.timeCounter.imageFill.fillAmount = 1;
+
             }
             if (photonViews.IsMine)
                 RPC_SetCommonIndex();
@@ -344,7 +346,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public void PlayAgain()
     {
         SceneManager.LoadScene(0);
-       // pnlGame.SetActive(true);
+        // pnlGame.SetActive(true);
     }
     public void BtnPlayAgain()
     {
@@ -494,6 +496,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     {
         List<int> tempList = new List<int>();
         bool isCheckAce = false;
+        Debug.Log(5);
         foreach (var item in arr)
         {
             int vlue = int.Parse(item.name);
@@ -501,7 +504,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         }
         tempList.Sort();
         tempList.Reverse();
-
+        Debug.Log(6);
         List<int> container = new List<int>(5);
         container.Add(tempList[0]);
         bool isStraightFlush = false;
@@ -1179,14 +1182,14 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 
     public void SetSmallBigBlind(PlayerController[] arrPlayer)//using
     {
-        int i = Random.Range(0, arrPlayer.Length);
-        indexBigBlind = i;
-        if (photonViews.IsMine)
-            photonViews.RPC("RPC_IndexBigBlind", RpcTarget.All, indexBigBlind);
+        int index = Random.Range(0, arrPlayer.Length);
+        //indexBigBlind = i;
+        //if (photonViews.IsMine)
+        photonViews.RPC("RPC_IndexBigBlind", RpcTarget.All, index);
         //smallBlind = i;
-       // arrPlayer[i].isTurn = true;
-       // arrPlayer[i].timeCounter.gameObject.SetActive(true);
-        
+        // arrPlayer[i].isTurn = true;
+        // arrPlayer[i].timeCounter.gameObject.SetActive(true);
+
     }
     IEnumerator RunTimeCounter(float timeDelay = 3f)//using
     {
@@ -1211,9 +1214,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     //}
     public void PlayGame()
     {
-        StartCoroutine(nameof(RunTimeCounter),3f);
-        photonViews.RPC("RPC_InvokeSetBigBlind", RpcTarget.All, null);
-        //photonViews.RPC("SetBigBlind", RpcTarget.All, indexBigBlind);
+        StartCoroutine(nameof(RunTimeCounter), 3f);         
         for (int i = 0; i < 3; i++)
         {
             photonViews.RPC("CreateCommonCard", RpcTarget.All, 1);
@@ -1236,7 +1237,6 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         photonViews.RPC("UpdatePlayer", RpcTarget.All, null);
     }
 
-   
     [PunRPC]
     public void InactivePos(int index) //using
     {
@@ -1274,26 +1274,8 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         indexBigBlind = index;
         arrPlayer[indexBigBlind].isTurn = true;
         arrPlayer[indexBigBlind].timeCounter.gameObject.SetActive(true);
+        arrPlayer[indexBigBlind].bigBlind.SetActive(true);
     }
-    [PunRPC]
-    public void RPC_InvokeSetBigBlind()//using
-    {
-        foreach (var item in arrPlayer)
-        {          
-            item.eSetBigBlind.Invoke();          
-        }
-    }
-    //[PunRPC]
-    //public void SetBigBlind(int i)
-    //{
-
-    //    for ( i = Random.Range((int)0, arrPlayer.Length) ; i < arrPlayer.Length;)
-    //    {
-    //        arrPlayer[i].bigBlind.SetActive(true);
-    //        indexBigBlind = i;
-    //        break;
-    //    }
-    //}
 
     //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     //{
@@ -1307,5 +1289,13 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     //        dicCount = dicPosDefaul.Count;
     //    }
     //}
-
+    [PunRPC]
+    public void InactiveTempCard()
+    {
+        TemplateCard[] temp = FindObjectsOfType<TemplateCard>();
+        foreach (var item in temp)
+        {
+            item.gameObject.SetActive(false);
+        }
+    }
 }

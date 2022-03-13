@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public TimeCounter timeCounter;
     public PhotonView PvPlayer;
     public UnityEvent eAddBackCard;
-    public UnityEvent eSetBigBlind;
+   // public UnityEvent eSetBigBlind;
     
     public Vector3 posCard1;
     public Vector3 posCard2;
@@ -59,8 +59,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         card1.GetComponent<SpriteRenderer>().sortingOrder = 7;
         card2.GetComponent<SpriteRenderer>().sortingOrder = 7;
       
-        eAddBackCard.AddListener(() => ArrangeCard());
-        eSetBigBlind.AddListener(() => SetBigBlind());
+        eAddBackCard.AddListener(() => ArrangeCard());      
         PvPlayer = GetComponent<PhotonView>();
 
         for (int i = 0; i < arrPosDefaul.Length; i++)
@@ -93,13 +92,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 PvPlayer.RPC("RPC_SetCard2", RpcTarget.All, indexCard);             
                 //Debug.Log(indexCard);
                 PvPlayer.RPC("CoverCardOtherClient", RpcTarget.Others, null);
-            }
-
-            listCard.Add(card1);//add card to list to check
-            listCard.Add(card2);
-
-            // gameController.SetSmallBigBlind(gameController.listPlayer);
-          
+            }  
+            // gameController.SetSmallBigBlind(gameController.listPlayer);        
             isInvoke = true;
         }
     }
@@ -111,6 +105,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 4;
         cardTemplate1 = card1;//just change card
         card1 = gameController.cards[index];
+        listCard.Add(card1);//add card to list to check
         gameController.cards[index].transform.SetParent(this.transform);
         gameController.RemoveElement(ref gameController.cards, index);
     }
@@ -122,6 +117,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 5;
         cardTemplate2 = card2;
         card2 = gameController.cards[index];
+        listCard.Add(card2);
         gameController.cards[index].transform.SetParent(this.transform);
         gameController.RemoveElement(ref gameController.cards, index);
     }
@@ -138,11 +134,4 @@ public class PlayerController : MonoBehaviourPunCallbacks
         cardTemplate2.transform.localScale = new Vector3(0.5f, 0.5f, 0.7f);
 
     }
-
-    public void SetBigBlind()
-    {
-        gameController.arrPlayer[gameController.indexBigBlind].bigBlind.SetActive(true);
-    }
-
-
 }

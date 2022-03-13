@@ -428,9 +428,6 @@ MonoBehaviour:
   eAddBackCard:
     m_PersistentCalls:
       m_Calls: []
-  eSetBigBlind:
-    m_PersistentCalls:
-      m_Calls: []
   posCard1: {x: 0, y: 0, z: 0}
   posCard2: {x: 0, y: 0, z: 0}
   arrPosDefaul:
