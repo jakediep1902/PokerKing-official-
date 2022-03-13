@@ -26,7 +26,7 @@ public class CommonCard : MonoBehaviour
 
     void Update()
     {
-        transform.position = Vector3.Lerp(transform.position, targetPos, 0.5f);
+        transform.position = Vector3.Lerp(transform.position, targetPos, 0.1f);
         
     }
 }

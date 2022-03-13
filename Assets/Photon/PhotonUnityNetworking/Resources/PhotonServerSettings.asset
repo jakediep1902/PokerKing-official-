@@ -44,6 +44,28 @@ MonoBehaviour:
   - CreateCommonCard
   - SetCommonIndex
   - PlayAgain
+  - Deal
+  - SpawPlayer
+  - SetNoPlayer
+  - SetNamePlayer
+  - ChangeName
+  - SetPosPlayer
+  - UpdatePlayer
+  - SyncName
+  - AddPrefab
+  - UpdateDicPos
+  - SetParent
+  - InactivePos
+  - ReactivePos
+  - CreateBackCard
+  - ActiveBackCard
+  - ActiveAllBackCard
+  - RPC_SetCard1
+  - RPC_SetCard2
+  - CoverCardOtherClient
+  - RPC_IndexBigBlind
+  - RPC_InvokeSetBigBlind
+  - SetBigBlind
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

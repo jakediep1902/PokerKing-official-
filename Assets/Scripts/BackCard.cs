@@ -8,15 +8,13 @@ public class BackCard : MonoBehaviour
     //public TemplateCard[] arrayStarPosCard;
     private GameController gameController;
     public static BackCard Instance;
-    public UnityEvent eArrange;
-    
+    public  UnityEvent eArrange;
+    //PlayerController playerController;
+   // PlayerController[] arrPlayer;
     private Vector3 targetPos;
   
     //public PlayerTemplate[] arrayPlayerTemplate = new PlayerTemplate[6];
-
-    
-
-    public int emptyPlayer;
+     
     public bool isArranged = false;
 
     private void Awake()
@@ -27,23 +25,37 @@ public class BackCard : MonoBehaviour
     private void Start()
     {    
         gameController = GameController.Instance;
-       
-        targetPos = gameController.listPlayer[gameController.NoTemplate].transform.position;
-        if(gameController.listPlayer[gameController.NoTemplate].backCard1==null)
+        //arrPlayer = gameController.arrPlayer;
+        //for (int i = 0; i < arrPlayer.Length; i++)
+        //{
+        //    arrPlayer[i].backCard = this;
+        //}
+
+        targetPos = gameController.arrPlayer[gameController.NoTemplate].transform.position;
+        if (gameController.arrPlayer[gameController.NoTemplate].backCard1 == null)
         {
-            gameController.listPlayer[gameController.NoTemplate].backCard1 = this.gameObject;
+            gameController.arrPlayer[gameController.NoTemplate].backCard1 = this.gameObject;
         }
         else
         {
-            gameController.listPlayer[gameController.NoTemplate].backCard2 = this.gameObject;
+            gameController.arrPlayer[gameController.NoTemplate].backCard2 = this.gameObject;
         }
 
-       // gameObject.transform.SetParent(gameController.listPlayer[gameController.NoTemplate].transform);
-        gameController.NoTemplate++;
-        if (gameController.NoTemplate >= gameController.listPlayer.Length)
+        gameObject.transform.SetParent(gameController.arrPlayer[gameController.NoTemplate].transform);
+        //if (transform.GetComponentInParent<PlayerController>().backCard==null)
+        //{
+        //    transform.GetComponentInParent<PlayerController>().backCard = this;
+        //    Debug.Log("add");
+        //}
+            
+        
+       gameController.NoTemplate++;
+        if (gameController.NoTemplate >= gameController.arrPlayer.Length)
         {
             gameController.NoTemplate = 0;
-        }       
+        }
+        
+        
     }
     private void Update()
     {     
@@ -59,6 +71,7 @@ public class BackCard : MonoBehaviour
             }
             else
             {
+                
                 isArranged = true;
                 float delayTime = 2f;
                 if (gameController.amountPlayer > 3)
@@ -69,6 +82,7 @@ public class BackCard : MonoBehaviour
                 {
                     delayTime = 1.2f;
                 }
+                //Invoke(nameof(SetIsArrange), delayTime);
                 Invoke(nameof(SetIsArrange), delayTime);
             }
         }
@@ -76,8 +90,10 @@ public class BackCard : MonoBehaviour
     public void SetIsArrange()
     {
         //Debug.Log("alarm");
-        eArrange.Invoke();       
-        gameController.ChangeSpriteRenderer(this.gameObject);
+        //eArrange.Invoke();
+        transform.GetComponentInParent<PlayerController>().eAddBackCard.Invoke();
         
+       //gameController.ChangeSpriteRenderer(this.gameObject);       
     }
+    
 }

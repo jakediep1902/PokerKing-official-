@@ -8,21 +8,23 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 
-public class GameController : MonoBehaviourPunCallbacks
+public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 {
     public static GameController Instance;
 
     public GameObject backCardPrefab;
     public GameObject commonCard;
     public GameObject congratulation;
-        
+    public GameObject playerPrefab;
+    public GameObject pnlGame;
+
     private Transform startPos;
     BackCard backCard;
     public Sprite spriteNeedChange;
     public PhotonView photonViews;
     public Text txtIndex;
 
-   // public Transform playerCard_1;
+    // public Transform playerCard_1;
     //public Transform playerCard_2;
     public Vector3 playerStartPos;
 
@@ -31,23 +33,29 @@ public class GameController : MonoBehaviourPunCallbacks
 
     public List<BackCard> listBackCard = new List<BackCard>();
     public Sprite[] arrCards = new Sprite[52];
-    public PlayerController[] listPlayer;
+    public PlayerController[] arrPlayer;
     public Transform[] posDefaul = new Transform[6];
+    public Dictionary<int, Transform> dicPosDefaul = new Dictionary<int, Transform>(6);
+
     public Transform[] commonPos = new Transform[5];
     //public GameObject[] cards = new GameObject[24];//use this value for test
     public GameObject[] cards = new GameObject[52];
 
     //private List<int[]>listFlush = new List<int[]>();
-    private List<Flush> listFlush = new List<Flush>();  
+    private List<Flush> listFlush = new List<Flush>();
     private Stack<GameObject> stackCheck = new Stack<GameObject>(7);
 
+    public List<int> posIndex = new List<int>(6) { 0, 1, 2, 3, 4, 5 };
+    public int IDleftRoom = 0;
+    public int dicCount;
+    public int posPlayer = -1;
     public int tempIndex = 5;
     public int commonIndex = 0;
-    public int indexSBBlind;
+    public int indexBigBlind;
     public int smallBlind;
     public int amountPlayer;
-    private int amountCardInit;
-    public int NoPlayer = 0;
+    public int amountCardInit = 0;
+    [Range(0, 5)] public int NoPlayer = 0;
     public int NoTemplate = 0;
     public int NoCommonPos = 0;
     int isFlush = 5;//edit with value 5 when finish
@@ -69,53 +77,57 @@ public class GameController : MonoBehaviourPunCallbacks
         //    Instance = this;
         //}
         //DontDestroyOnLoad(this.gameObject);
-        cards = GameObject.FindGameObjectsWithTag("Card");     
+        cards = GameObject.FindGameObjectsWithTag("Card");
     }
     void Start()
     {
         playerController = PlayerController.Instance;
         photonViews = GetComponent<PhotonView>();
-       
+        for (int i = 0; i < posDefaul.Length; i++)
+        {
+            dicPosDefaul.Add(i, posDefaul[i]);
+        }
+
         PhotonNetwork.ConnectUsingSettings();
         ClearConsole();
 
         //if(isStartGame)
         //{
-            foreach (var item in cards)
-            {
-                item.SetActive(false);
-            }
+        foreach (var item in cards)
+        {
+            item.SetActive(false);
+        }
 
-            //amountPlayer = Random.Range((int)2, (int)7);
-            //for (int i = 0; i < amountPlayer; i++)
-            //{
-            //    PlayerController tempPlayer = Instantiate(player, playerStartPos, Quaternion.identity) as PlayerController;
-            //    tempPlayer.gameObject.SetActive(true);
-            //    tempPlayer.name = NoPlayer.ToString();
-            //    NoPlayer++;
-            //    for (int j = i; j < posDefaul.Length; j += 10)
-            //    {
-            //        tempPlayer.transform.position = posDefaul[j].position;
-            //        tempPlayer.posCard1 = tempPlayer.card1.transform.position;
-            //        Destroy(tempPlayer.card1);
-            //        tempPlayer.posCard2 = tempPlayer.card2.transform.position;
-            //        Destroy(tempPlayer.card2);
-            //    }
-            //}
-
-            //listPlayer = FindObjectsOfType<PlayerController>();
-
-           // amountPlayer = listPlayer.Length;
-           // amountCardInit = amountPlayer * 2;
-            //StartCoroutine(RunTimeCounter(4f));
-            startPos = backCardPrefab.transform;
-           // CreateCommonCard(3);
-            //CreateBackCard(amountCardInit);
+        //amountPlayer = Random.Range((int)2, (int)7);
+        //for (int i = 0; i < amountPlayer; i++)
+        //{
+        //    PlayerController tempPlayer = Instantiate(player, playerStartPos, Quaternion.identity) as PlayerController;
+        //    tempPlayer.gameObject.SetActive(true);
+        //    tempPlayer.name = NoPlayer.ToString();
+        //    NoPlayer++;
+        //    for (int j = i; j < posDefaul.Length; j += 10)
+        //    {
+        //        tempPlayer.transform.position = posDefaul[j].position;
+        //        tempPlayer.posCard1 = tempPlayer.card1.transform.position;
+        //        Destroy(tempPlayer.card1);
+        //        tempPlayer.posCard2 = tempPlayer.card2.transform.position;
+        //        Destroy(tempPlayer.card2);
+        //    }
         //}
-        
 
-        backCard = BackCard.Instance;
-        backCard.eArrange.AddListener(() => SetSmallBigBlind(listPlayer));
+        //listPlayer = FindObjectsOfType<PlayerController>();
+
+        // amountPlayer = listPlayer.Length;
+        // amountCardInit = amountPlayer * 2;
+        //StartCoroutine(RunTimeCounter(4f));
+        startPos = backCardPrefab.transform;
+        // CreateCommonCard(3);
+        //CreateBackCard(amountCardInit);
+        //}
+
+
+        //backCard = BackCard.Instance;
+        //backCard.eArrange.AddListener(() => SetSmallBigBlind(arrPlayer));
 
     }
     private void Update()
@@ -129,24 +141,32 @@ public class GameController : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedLobby()
     {
-        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 6 }, TypedLobby.Default);     
+        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 6 }, TypedLobby.Default);
+
     }
     public override void OnJoinedRoom()
-    {      
-        int indexCard = Random.Range((int)0, (int)cards.Length);
-        RPC_SetCommonIndex(indexCard);
+    {
+        pnlGame.SetActive(true);
+
+
+
+    }
+    public override void OnLeftRoom()
+    {
+        Debug.Log($"player ID {photonViews.ViewID} has left room");
     }
     [PunRPC]
-    public void CreateCommonCard(int numberOfCard = 3)
+    public void CreateCommonCard(int numberOfCard = 3)//using
     {
         StartCoroutine(DelayCreateCard(numberOfCard, commonCard));
     }
-    public void CreateBackCard(int numberOfCard= 1)
-    {     
-        StartCoroutine(DelayCreateCard(numberOfCard,backCardPrefab));            
-    }   
-      IEnumerator DelayCreateCard(int numberOfCard,GameObject cardInput)
-    {      
+    [PunRPC]
+    public void CreateBackCard(int numberOfCard = 1)//using
+    {
+        StartCoroutine(DelayCreateCard(numberOfCard, backCardPrefab));
+    }
+    IEnumerator DelayCreateCard(int numberOfCard, GameObject cardInput)//using
+    {
         for (int i = 0; i < numberOfCard; i++)
         {
             GameObject tempCard = Instantiate(cardInput, startPos.position, Quaternion.identity) as GameObject;
@@ -155,6 +175,7 @@ public class GameController : MonoBehaviourPunCallbacks
             //RemoveElement(ref cards, indexCard);
             if (tempCard.GetComponent<BackCard>() != null)
             {
+                //Debug.Log("back card");
                 tempCard.GetComponent<BackCard>().enabled = true;
                 listBackCard.Add(tempCard.GetComponent<BackCard>());
             }
@@ -189,29 +210,17 @@ public class GameController : MonoBehaviourPunCallbacks
                 tempCard.GetComponent<SpriteRenderer>().sprite = cards[commonIndex].GetComponent<SpriteRenderer>().sprite;
                 RemoveElement(ref cards, commonIndex);
                 tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;
-                // Debug.Log(2);
-
-                //DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
-                //pool.ResourceCache.Add(tempCard.name, tempCard);
 
                 //Destroy(tempCard);
-                //PhotonNetwork.Instantiate(tempCard.name, tempCard.transform.position, Quaternion.identity);
-                // Debug.Log(3);
+                //PhotonNetwork.Instantiate(tempCard.name, tempCard.transform.position, Quaternion.identity);               
 
                 stackCheck.Push(tempCard);
-                //Debug.Log(4);
+
             }
-            //tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;
-
-            //if(photonViews.IsMine)
-            //{
-            //    int indexCard = Random.Range((int)0, (int)cards.Length);
-            //    RPC_SetCommonIndex(indexCard);
-            //}
-            
-
+            //tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;          
             yield return new WaitForSeconds(0.2f);
-        }   
+
+        }
     }
     //[PunRPC]
     //public void RPC_ChangeSprite(Sprite sprite,int index)
@@ -219,14 +228,15 @@ public class GameController : MonoBehaviourPunCallbacks
     //    sprite = cards[index].GetComponent<SpriteRenderer>().sprite;
     //}
 
-    public void ChangeSpriteRenderer(GameObject card)
-    {
-        int indexCard = Random.Range((int)0, arrCards.Length);
-        card.GetComponent<SpriteRenderer>().sprite = arrCards[indexCard];
-        RemoveElement(ref arrCards, indexCard);
-        //Debug.Log(arrCards.Length);                   
-    }
-    public void RemoveElement<T>(ref T[] arr,int index)
+    //public void ChangeSpriteRenderer(GameObject card)
+    //{
+    //    int indexCard = Random.Range((int)0, arrCards.Length);
+    //    card.GetComponent<SpriteRenderer>().sprite = arrCards[indexCard];
+    //    RemoveElement(ref arrCards, indexCard);
+    //    //Debug.Log(arrCards.Length);                   
+    //}
+
+    public void RemoveElement<T>(ref T[] arr, int index)//using
     //public void RemoveElement(ref Sprite[] arr,int index)
     {
         for (int i = index; i < arr.Length - 1; i++)
@@ -234,17 +244,17 @@ public class GameController : MonoBehaviourPunCallbacks
             arr[i] = arr[i + 1];
         }
         System.Array.Resize(ref arr, arr.Length - 1);
-    }       
+    }
 
     public void StartCheckCard()
     {
-        foreach (PlayerController player in listPlayer)
+        foreach (PlayerController player in arrPlayer)
         {
             CheckCard(player);
         }
         //CheckFlush(listFlush);//check Flush affter finish check all Player 
-        
-        CheckWinner(listPlayer);
+
+        CheckWinner(arrPlayer);
     }
 
     public void CheckCard(PlayerController player)
@@ -276,38 +286,65 @@ public class GameController : MonoBehaviourPunCallbacks
                 }
             }
         }
-           
+
         //CheckBoatAndTrip(player);
         //CheckStraight(player);
         //CheckStraightFlush(player);
     }
+    public void BtnDeal()//using
+    {
+        RPC_SetCommonIndex();
+        photonViews.RPC("Deal", RpcTarget.AllBuffered, null);
+
+    }
+    [PunRPC]
     public void Deal()
-    {       
-        if (!isFull)
+    {
+        if (commonIndex >= cards.Length)
         {
-            int indexCard = Random.Range((int)0, (int)cards.Length);
-            //Debug.Log($"index:"+cards.Length);
-            cards[indexCard].SetActive(true);
-            cards[indexCard].transform.position = startPos.position;
-            cards[indexCard].AddComponent<CommonCard>();
-            stackCheck.Push(cards[indexCard]);           
-            RemoveElement(ref cards, indexCard);                                
+            Debug.Log("error");
         }
         else
-            Debug.Log("Now we have 5 card aldrealy!!");
-
-        indexSBBlind = smallBlind;
-        listPlayer[indexSBBlind].timeCounter.gameObject.SetActive(true);
-        foreach (var item in listPlayer)
         {
-            item.isTurn = true;
-            item.timeCounter.imageFill.fillAmount = 1;
-        }     
+            if (!isFull)
+            {
+                //commonIndex = Random.Range((int)0, (int)cards.Length);
+                //Debug.Log($"index:"+cards.Length);
+                cards[commonIndex].SetActive(true);
+                cards[commonIndex].transform.position = startPos.position;
+                cards[commonIndex].AddComponent<CommonCard>();
+                stackCheck.Push(cards[commonIndex]);
+                RemoveElement(ref cards, commonIndex);
+            }
+            else
+                Debug.Log("Now we have 5 card aldrealy!!");
+
+            
+            ////indexBigBlind = smallBlind;
+            arrPlayer[indexBigBlind].timeCounter.gameObject.SetActive(true);
+            foreach (var item in arrPlayer)
+            {           
+                item.isTurn = true;
+                if (item.timeCounter.imageFill == null)
+                {
+                    item.timeCounter.imageFill = item.timeCounter.GetComponent<Image>();
+                    item.timeCounter.imageFill.fillAmount = 1;
+                }                   
+                else
+                item.timeCounter.imageFill.fillAmount = 1;
+               
+            }
+            if (photonViews.IsMine)
+                RPC_SetCommonIndex();
+        }
+
+
     }
     [PunRPC]
     public void PlayAgain()
     {
         SceneManager.LoadScene(0);
+       // pnlGame.SetActive(true);
     }
     public void BtnPlayAgain()
     {
@@ -327,27 +364,27 @@ public class GameController : MonoBehaviourPunCallbacks
         {
             item.gameObject.SetActive(false);
         }
-      
+
         foreach (var item in arrCardBlur)
-        {          
+        {
             item.gameObject.transform.GetComponent<SpriteRenderer>().color = spriteColor;
         }
 
         float bestScore = 0;
-        List<PlayerController> listWinner = new List<PlayerController>() ;
-      
+        List<PlayerController> listWinner = new List<PlayerController>();
+
         foreach (var player in arrPlayer)
         {
             Debug.Log($"Player {player.ID} have score is : {player.score}");
-            if(player.score>bestScore)
+            if (player.score > bestScore)
             {
                 bestScore = player.score;
                 listWinner.Clear();
                 listWinner.Add(player);
             }
-            else if(player.score == bestScore)
+            else if (player.score == bestScore)
             {
-                listWinner.Add(player);                                        
+                listWinner.Add(player);
             }
             //foreach (var item in player.arrCardWin)
             //{
@@ -357,14 +394,14 @@ public class GameController : MonoBehaviourPunCallbacks
         foreach (var winner in listWinner)
         {
             HighLightCardWin(winner);
-            ScaleCardWin(winner,1.1f);
+            ScaleCardWin(winner, 1.1f);
             Debug.LogError($"Winner is Player {winner.gameObject.name} with Score : {winner.score}" +
                 $" and Card ({winner.arrCardWin[0]} {winner.arrCardWin[1]} {winner.arrCardWin[2]} " +
                 $"{winner.arrCardWin[3]} {winner.arrCardWin[4]})");
             Instantiate(congratulation, winner.gameObject.transform.position, Quaternion.identity);
-        }       
+        }
     }
-    
+
     public void CheckStraightFlush(PlayerController player)
     {
         stackCheck.Push(player.card1);
@@ -394,13 +431,13 @@ public class GameController : MonoBehaviourPunCallbacks
                     break;
             }
         }
-        
+
         if (spades >= isFlush || hearts >= isFlush || clubs >= isFlush || diamonds >= isFlush)
         {
             player.listCard.Clear();
             List<GameObject> listTempObj = new List<GameObject>();
             if (spades >= isFlush)
-            {         
+            {
                 foreach (var item in stackCheck)
                 {
                     if (item.GetComponent<Spades>() != null)
@@ -433,7 +470,7 @@ public class GameController : MonoBehaviourPunCallbacks
                 }
             }
             else if (diamonds >= isFlush)
-            {               
+            {
                 foreach (var item in stackCheck)
                 {
                     if (item.GetComponent<Diamonds>() != null)
@@ -443,7 +480,7 @@ public class GameController : MonoBehaviourPunCallbacks
                     }
                 }
             }
-            CheckStraightOfFlush(listTempObj,player);          
+            CheckStraightOfFlush(listTempObj, player);
         }
         else
         {
@@ -451,9 +488,9 @@ public class GameController : MonoBehaviourPunCallbacks
         }
         stackCheck.Pop();
         stackCheck.Pop();
-        
+
     }
-    public void CheckStraightOfFlush(List<GameObject> arr,PlayerController player)
+    public void CheckStraightOfFlush(List<GameObject> arr, PlayerController player)
     {
         List<int> tempList = new List<int>();
         bool isCheckAce = false;
@@ -463,17 +500,17 @@ public class GameController : MonoBehaviourPunCallbacks
             tempList.Add(vlue);
         }
         tempList.Sort();
-        tempList.Reverse();       
-               
-        List<int> container = new List<int>(5);       
+        tempList.Reverse();
+
+        List<int> container = new List<int>(5);
         container.Add(tempList[0]);
         bool isStraightFlush = false;
 
-        pointGoto:
+    pointGoto:
         for (int i = 1; i < tempList.Count; i++)//check Straight of Flush
-        {         
+        {
             if (tempList[i] + 1 == tempList[i - 1])
-            {               
+            {
                 container.Add(tempList[i]);
                 if (container.Count >= conStraightFlush)
                 {
@@ -484,7 +521,7 @@ public class GameController : MonoBehaviourPunCallbacks
 
                     for (int j = 0; j < container1.Length; j++)
                     {
-                        player.arrCardWin[j] = container1[j];                       
+                        player.arrCardWin[j] = container1[j];
                     }
 
                     int scoreFlush = 0;
@@ -492,12 +529,12 @@ public class GameController : MonoBehaviourPunCallbacks
                     {
                         scoreFlush += item;
                     }
-                    player.score = 1000+scoreFlush;
+                    player.score = 1000 + scoreFlush;
                     player.isStraightFlush = true;
                     isStraightFlush = true;
                     break;
-                }               
-            }           
+                }
+            }
             else
             {
                 container.Clear();
@@ -530,7 +567,7 @@ public class GameController : MonoBehaviourPunCallbacks
                     {
                         tempList[j] = 14;
                         tempList.Sort();
-                        tempList.Reverse();                                                     
+                        tempList.Reverse();
                     }
                 }
             }
@@ -544,15 +581,15 @@ public class GameController : MonoBehaviourPunCallbacks
             Debug.Log($"player {player.gameObject.name} have flush :{arrCopy[0]} {arrCopy[1]} {arrCopy[2]}" +
                 $" {arrCopy[3]} {arrCopy[4]}");
 
-            for (int j = 0; j < arrCopy.Length-2; j++)
+            for (int j = 0; j < arrCopy.Length - 2; j++)
             {
                 player.arrCardWin[j] = arrCopy[j];
-                
+
             }
             Debug.Log(player.arrCardWin[0]);
             //comepare Flush by the way 2 ( check value)
 
-            float scoreFlush = 0f; 
+            float scoreFlush = 0f;
             for (int i = 0; i < arrCopy.Length; i++)
             {
                 switch (i)
@@ -561,10 +598,10 @@ public class GameController : MonoBehaviourPunCallbacks
                         scoreFlush += arrCopy[i];
                         break;
                     case 1:
-                        scoreFlush += arrCopy[i]/20f;
+                        scoreFlush += arrCopy[i] / 20f;
                         break;
                     case 2:
-                        scoreFlush += arrCopy[i]/200f;
+                        scoreFlush += arrCopy[i] / 200f;
                         break;
                     case 3:
                         scoreFlush += arrCopy[i] / 2000f;
@@ -575,12 +612,12 @@ public class GameController : MonoBehaviourPunCallbacks
                 }
             }
 
-            if (player.score<700)
-            player.score = 700 + scoreFlush;
-            player.isFlush = true;                 
-        }                
+            if (player.score < 700)
+                player.score = 700 + scoreFlush;
+            player.isFlush = true;
+        }
     }
-    public void CheckQuad(PlayerController player)  
+    public void CheckQuad(PlayerController player)
     {
         stackCheck.Push(player.card1);
         stackCheck.Push(player.card2);
@@ -599,7 +636,7 @@ public class GameController : MonoBehaviourPunCallbacks
         {
             foreach (var item1 in listTemp)
             {
-                if (item == item1) containerQuad.Add(item1);               
+                if (item == item1) containerQuad.Add(item1);
             }
             if (containerQuad.Count > 3)//edit = 3 when finish test
             {
@@ -610,12 +647,12 @@ public class GameController : MonoBehaviourPunCallbacks
                     {
                         containerQuad.Add(item1);
                         break;
-                    }                               
+                    }
                 }
-                
+
                 Debug.Log($"player {player.ID} have Quad {containerQuad[0]} {containerQuad[1]} " +
                     $"{containerQuad[2]} {containerQuad[3]} {containerQuad[4]}");
-                
+
                 for (int j = 0; j < 5; j++)//add card win to arr to check highlight
                 {
                     player.arrCardWin[j] = containerQuad[j];
@@ -630,7 +667,7 @@ public class GameController : MonoBehaviourPunCallbacks
                 player.score = 900 + scoreQuad;
                 break;
             }
-            else containerQuad.Clear();            
+            else containerQuad.Clear();
         }
         stackCheck.Pop();
         stackCheck.Pop();
@@ -661,14 +698,14 @@ public class GameController : MonoBehaviourPunCallbacks
             {
                 if (item == item1)
                 {
-                    containerBoat.Add(item1);                 
+                    containerBoat.Add(item1);
                 }
             }
             if (containerBoat.Count == 3)
             {
                 listTemp.Remove(item);
                 listTemp.Remove(item);
-                listTemp.Remove(item);             
+                listTemp.Remove(item);
                 //Check Boat
                 for (int i = 0; i < listTemp.Count; i++)
                 {
@@ -678,13 +715,13 @@ public class GameController : MonoBehaviourPunCallbacks
                         {
                             containerBoat2.Add(item3);
                         }
-                    }                 
+                    }
                     float scoreBoat = 0f;
                     if (containerBoat2.Count == 3)
-                    {                      
+                    {
                         Debug.Log($"{containerBoat[0]} {containerBoat2[0]} ");
                         if (containerBoat[0] > containerBoat2[0])
-                        {                     
+                        {
                             containerBoat.Add(containerBoat2[0]);
                             containerBoat.Add(containerBoat2[0]);
                             containerBoat.CopyTo(mainBoat);
@@ -696,7 +733,7 @@ public class GameController : MonoBehaviourPunCallbacks
                             containerBoat2.Add(containerBoat[0]);
                             containerBoat2.CopyTo(mainBoat);
                         }
-                       // Debug.Log($"5");
+                        // Debug.Log($"5");
                         Debug.Log($"player {player.ID} have Boat(6) {mainBoat[0]} " +
                                 $"{mainBoat[1]} {mainBoat[2]} {mainBoat[3]} {mainBoat[4]}");
 
@@ -714,7 +751,7 @@ public class GameController : MonoBehaviourPunCallbacks
                             }
                             else
                             {
-                               //Debug.Log($"8");
+                                //Debug.Log($"8");
                                 scoreBoat += ((float)(mainBoat[j]) / 100f);
                             }
                         }
@@ -760,20 +797,20 @@ public class GameController : MonoBehaviourPunCallbacks
                         //Debug.Log($"12");
                         containerBoat2.Clear();
                     }
-                   // Debug.Log($"13");
+                    // Debug.Log($"13");
                 }
                 containerBoat.Add(listTemp[0]);
                 containerBoat.Add(listTemp[1]);
                 Debug.Log($"player {player.ID} have Trips {containerBoat[0]} {containerBoat[1]} {containerBoat[2]} " +
-                    $"{containerBoat[3]} {containerBoat[4]}");                
-                containerBoat.CopyTo( arrTrip);
+                    $"{containerBoat[3]} {containerBoat[4]}");
+                containerBoat.CopyTo(arrTrip);
 
                 for (int j = 0; j < 5; j++)//add card win to arr to check highlight
                 {
                     player.arrCardWin[j] = arrTrip[j];
                 }
 
-                float scoreTrip = 0f;                               
+                float scoreTrip = 0f;
                 for (int i = 0; i < arrTrip.Length; i++)
                 {
                     switch (i)
@@ -788,29 +825,29 @@ public class GameController : MonoBehaviourPunCallbacks
                             scoreTrip += arrTrip[i];
                             break;
                         case 3:
-                            scoreTrip += arrTrip[i] / 100f;                     
+                            scoreTrip += arrTrip[i] / 100f;
                             break;
                         case 4:
                             scoreTrip += arrTrip[i] / 1000f;
                             break;
                     }
-                }                
+                }
                 player.isTrip = true;
-                if(player.score<500)
-                player.score = 500 + scoreTrip;
+                if (player.score < 500)
+                    player.score = 500 + scoreTrip;
                 break;
             }
             else
             {
                 containerBoat.Clear();
             }
-        }      
+        }
     pointgoto:
 
         stackCheck.Pop();
         stackCheck.Pop();
     }
-    
+
     public void CheckPairAndHighCard(PlayerController player)
     {
         stackCheck.Push(player.card1);
@@ -826,36 +863,36 @@ public class GameController : MonoBehaviourPunCallbacks
         listTemp.Sort();
         listTemp.Reverse();
 
-        int countCheck = 2;        
+        int countCheck = 2;
     pointgoto:
         if (containerPair.Count <= 4)
-        {                    
+        {
             foreach (var item in listTemp)
             {
                 for (int i = 0; i < listTemp.Count; i++)
                 {
                     if (item == listTemp[i])
-                    {                        
+                    {
                         containerPair.Add(item);
                         if (containerPair.Count == 5)
                             goto pointgoto;
                         if (containerPair.Count == countCheck)
                         {
                             listTemp.Remove(item);
-                            listTemp.Remove(item);                            
+                            listTemp.Remove(item);
                             countCheck = 4;
                             goto pointgoto;
-                        }                                 
-                    }                                    
+                        }
+                    }
                 }
-                if(containerPair.Count<2)
-                containerPair.Clear();
-                else if(containerPair.Count==3)
+                if (containerPair.Count < 2)
+                    containerPair.Clear();
+                else if (containerPair.Count == 3)
                 {
                     containerPair.RemoveAt(2);
                 }
             }
-            if(containerPair.Count<2)//Check High Card
+            if (containerPair.Count < 2)//Check High Card
             {
                 Debug.Log($"player {player.ID} have High Card {listTemp[0]} " +
                     $"{listTemp[1]} {listTemp[2]} {listTemp[3]} {listTemp[4]}");
@@ -868,28 +905,28 @@ public class GameController : MonoBehaviourPunCallbacks
                 float scoreHighCard = 0f;
                 for (int i = 0; i < listTemp.Count; i++)
                 {
-                    switch(i)
+                    switch (i)
                     {
                         case 0:
                             scoreHighCard += listTemp[i];
                             break;
                         case 1:
-                            scoreHighCard += listTemp[i]/20f;
+                            scoreHighCard += listTemp[i] / 20f;
                             break;
                         case 2:
-                            scoreHighCard += listTemp[i]/200f;
+                            scoreHighCard += listTemp[i] / 200f;
                             break;
                         case 3:
-                            scoreHighCard += listTemp[i]/2000f;
+                            scoreHighCard += listTemp[i] / 2000f;
                             break;
                         case 4:
                             scoreHighCard += listTemp[i] / 20000f;
                             break;
-                    }                   
+                    }
                 }
                 player.isHighCard = true;
                 player.score = 200 + scoreHighCard;
-            }   
+            }
             else
             {
                 containerPair.Add(listTemp[0]);
@@ -926,8 +963,8 @@ public class GameController : MonoBehaviourPunCallbacks
                     }
                 }
                 player.isOnePair = true;
-                player.score = 300 + scorePair;              
-            }          
+                player.score = 300 + scorePair;
+            }
         }
         else
         {
@@ -944,13 +981,13 @@ public class GameController : MonoBehaviourPunCallbacks
             {
                 if (i < 2)
                     scorePair += containerPair[i];
-                else if(1<i&&i<4)
+                else if (1 < i && i < 4)
                     scorePair += containerPair[i] / 100f;
                 else
                     scorePair += containerPair[i] / 10000f;
             }
             player.isTwoPair = true;
-            player.score = 400+ scorePair;
+            player.score = 400 + scorePair;
         }
 
         stackCheck.Pop();
@@ -971,17 +1008,17 @@ public class GameController : MonoBehaviourPunCallbacks
         }
         listTemp.Sort();
         listTemp.Reverse();
-            
-        pointGoto:
+
+    pointGoto:
 
         containerStraight.Add(listTemp[0]);
         for (int i = 1; i < listTemp.Count; i++)
-        {           
-            if (listTemp[i]==listTemp[i-1])
+        {
+            if (listTemp[i] == listTemp[i - 1])
             {
-                continue;              
+                continue;
             }
-            else if(listTemp[i]==listTemp[i-1]-1)
+            else if (listTemp[i] == listTemp[i - 1] - 1)
             {
                 containerStraight.Add(listTemp[i]);
                 if (containerStraight.Count > 4)
@@ -1003,16 +1040,16 @@ public class GameController : MonoBehaviourPunCallbacks
                     player.isStraight = true;
                     player.score = 600 + scoreStraight;
                     break;
-                }                
+                }
             }
             else
             {
                 containerStraight.Clear();
                 containerStraight.Add(listTemp[i]);
-            }                     
+            }
         }
         if (!player.isStraight && !isCheckAce)//change Ace value and check again
-        {         
+        {
             containerStraight.Clear();
             for (int j = 0; j < listTemp.Count; j++)
             {
@@ -1020,11 +1057,11 @@ public class GameController : MonoBehaviourPunCallbacks
                 {
                     listTemp[j] = 1;
                     listTemp.Sort();
-                    listTemp.Reverse();                    
-                    isCheckAce = true;                   
+                    listTemp.Reverse();
+                    isCheckAce = true;
                     goto pointGoto;
                 }
-            }           
+            }
         }
 
         stackCheck.Pop();
@@ -1104,28 +1141,28 @@ public class GameController : MonoBehaviourPunCallbacks
     public void HighLightCardWin(PlayerController player)
     {
         //Queue<GameObject> queueTemp = new Queue<GameObject>();
-        
+
         for (int i = 0; i < player.arrCardWin.Length; i++)
-        {          
+        {
             for (int j = 0; j < player.listCard.Count; j++)
-            {              
-                    int temp = int.Parse(player.listCard[j].name);
-                    if (temp == player.arrCardWin[i])
-                    {                      
-                        player.listCardWin.Add(player.listCard[j]);
-                        Color spriteColor = Color.white;
-                        spriteColor.a = 1f;
-                        player.listCard[j].GetComponent<SpriteRenderer>().color = spriteColor;
-                        player.listCard.Remove(player.listCard[j]);
-                        break;
-                    }                              
-            }          
-        }             
+            {
+                int temp = int.Parse(player.listCard[j].name);
+                if (temp == player.arrCardWin[i])
+                {
+                    player.listCardWin.Add(player.listCard[j]);
+                    Color spriteColor = Color.white;
+                    spriteColor.a = 1f;
+                    player.listCard[j].GetComponent<SpriteRenderer>().color = spriteColor;
+                    player.listCard.Remove(player.listCard[j]);
+                    break;
+                }
+            }
+        }
     }
-    public void ScaleCardWin(PlayerController player,float value = 1.5f)
+    public void ScaleCardWin(PlayerController player, float value = 1.5f)
     {
         float scale = value;
-        Vector3 vlueScale = new Vector3(scale,scale,scale);
+        Vector3 vlueScale = new Vector3(scale, scale, scale);
         foreach (GameObject item in player.listCardWin)
         {
             item.transform.localScale = vlueScale;
@@ -1140,44 +1177,135 @@ public class GameController : MonoBehaviourPunCallbacks
         method.Invoke(new object(), null);
     }
 
-    public void SetSmallBigBlind(PlayerController[] arrPlayer)     
+    public void SetSmallBigBlind(PlayerController[] arrPlayer)//using
     {
         int i = Random.Range(0, arrPlayer.Length);
-        indexSBBlind = i;
-        smallBlind = i;
-        arrPlayer[i].isTurn = true;
-        arrPlayer[i].timeCounter.gameObject.SetActive(true);
+        indexBigBlind = i;
+        if (photonViews.IsMine)
+            photonViews.RPC("RPC_IndexBigBlind", RpcTarget.All, indexBigBlind);
+        //smallBlind = i;
+       // arrPlayer[i].isTurn = true;
+       // arrPlayer[i].timeCounter.gameObject.SetActive(true);
+        
     }
-    IEnumerator RunTimeCounter(float timeDelay = 3f)
+    IEnumerator RunTimeCounter(float timeDelay = 3f)//using
     {
         yield return new WaitForSeconds(timeDelay);
-        SetSmallBigBlind(listPlayer);
+        SetSmallBigBlind(arrPlayer);
     }
 
     [PunRPC]
-    public void SetCommonIndex(int index)
-    {        
+    public void SetCommonIndex(int index)//using
+    {
         commonIndex = index;
-        Debug.Log(commonIndex);
+        //Debug.Log($"next card to Spaw is {commonIndex}");
     }
-    public void RPC_SetCommonIndex(int index)
+    public void RPC_SetCommonIndex()//using
     {
+        int index = Random.Range((int)0, (int)cards.Length);
         photonViews.RPC("SetCommonIndex", RpcTarget.All, index);
-
     }
-    public void BtnIncrease()
-    {
-        photonViews.RPC("SetCommonIndex", RpcTarget.AllBuffered,commonIndex);
-    }
+    //public void BtnIncrease()
+    //{
+    //    photonViews.RPC("SetCommonIndex", RpcTarget.AllBuffered, commonIndex);
+    //}
     public void PlayGame()
     {
+        StartCoroutine(nameof(RunTimeCounter),3f);
+        photonViews.RPC("RPC_InvokeSetBigBlind", RpcTarget.All, null);
+        //photonViews.RPC("SetBigBlind", RpcTarget.All, indexBigBlind);
         for (int i = 0; i < 3; i++)
         {
             photonViews.RPC("CreateCommonCard", RpcTarget.All, 1);
-            int indexCard = Random.Range((int)0, (int)cards.Length);
-            photonViews.RPC("SetCommonIndex", RpcTarget.All, indexCard);
+            RPC_SetCommonIndex();
         }
-        
-        //CreateCommonCard(3);
+        photonViews.RPC("CreateBackCard", RpcTarget.All, 4);
     }
+
+    [PunRPC]
+    public void UpdatePlayer()//using
+    {
+        arrPlayer = FindObjectsOfType<PlayerController>();
+        //Debug.Log($"there are {arrPlayer.Length} in room");
+    }
+
+    public void BtnReady()//using 7239847283472983472983472984792834782934728934798234782472893472893472893472
+    {
+        SpawPlayer();
+        RPC_SetCommonIndex();
+        photonViews.RPC("UpdatePlayer", RpcTarget.All, null);
+    }
+
+   
+    [PunRPC]
+    public void InactivePos(int index) //using
+    {
+        dicPosDefaul[index].gameObject.SetActive(false);
+    }
+    [PunRPC]
+    public void SpawPlayer()
+    {
+        int safeCount = 0;
+        for (int i = Random.Range((int)0, (int)dicPosDefaul.Count); i < dicPosDefaul.Count; i++)
+        {
+            if (dicPosDefaul[i].gameObject.activeSelf)
+            {
+                GameObject tempObj = PhotonNetwork.Instantiate(i.ToString(), dicPosDefaul[i].position, Quaternion.identity)
+                       as GameObject;
+                photonViews.RPC("InactivePos", RpcTarget.AllBuffered, i);
+                break;
+            }
+            else
+            {
+                safeCount++;
+                if (i == (dicPosDefaul.Count - 1))
+                    i = Random.Range((int)0, (int)dicPosDefaul.Count);
+            }
+            if (safeCount > 500)
+            {
+                Debug.Log("All position is not empty");
+                break;
+            }
+        }
+    } //using
+    [PunRPC]
+    public void RPC_IndexBigBlind(int index)//using
+    {
+        indexBigBlind = index;
+        arrPlayer[indexBigBlind].isTurn = true;
+        arrPlayer[indexBigBlind].timeCounter.gameObject.SetActive(true);
+    }
+    [PunRPC]
+    public void RPC_InvokeSetBigBlind()//using
+    {
+        foreach (var item in arrPlayer)
+        {          
+            item.eSetBigBlind.Invoke();          
+        }
+    }
+    //[PunRPC]
+    //public void SetBigBlind(int i)
+    //{
+
+    //    for ( i = Random.Range((int)0, arrPlayer.Length) ; i < arrPlayer.Length;)
+    //    {
+    //        arrPlayer[i].bigBlind.SetActive(true);
+    //        indexBigBlind = i;
+    //        break;
+    //    }
+    //}
+
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    if (stream.IsWriting)
+    //    {
+    //        stream.SendNext(dicCount);
+    //    }
+    //    else if (stream.IsReading)
+    //    {
+    //        dicCount = (int)stream.ReceiveNext();
+    //        dicCount = dicPosDefaul.Count;
+    //    }
+    //}
+
 }

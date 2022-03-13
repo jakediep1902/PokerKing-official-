@@ -29,7 +29,7 @@ public class TimeCounter : MonoBehaviour
                 imageFill.fillAmount -= 0.003f;
             else
             {
-                playerPlaying = gameController.indexSBBlind;
+                playerPlaying = gameController.indexBigBlind;
                 playerController.isTurn = false;
                 
                 NextPlayer(playerPlaying);
@@ -44,20 +44,20 @@ public class TimeCounter : MonoBehaviour
         CurrentPlayer--;
         if (CurrentPlayer < 0)
         {
-            CurrentPlayer = gameController.listPlayer.Length - 1;
-            gameController.indexSBBlind = CurrentPlayer;          
-            if (gameController.listPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
+            CurrentPlayer = gameController.arrPlayer.Length - 1;
+            gameController.indexBigBlind = CurrentPlayer;          
+            if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
             {
-                gameController.listPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
+                gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
             }
 
         }
         else
         {
-            gameController.indexSBBlind = CurrentPlayer;
-            if (gameController.listPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
+            gameController.indexBigBlind = CurrentPlayer;
+            if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
             {
-                gameController.listPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
+                gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
             }
 
         }
