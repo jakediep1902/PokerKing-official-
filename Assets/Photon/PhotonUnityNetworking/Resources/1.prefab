@@ -514,7 +514,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54ec18a5fdc28344c8ceb35fbea199fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pos: {fileID: 0}
   card1: {fileID: 879985051979209051}
   card2: {fileID: 879985052424849183}
   cardTemplate1: {fileID: 0}
@@ -525,9 +524,6 @@ MonoBehaviour:
   timeCounter: {fileID: 879985052364762716}
   PvPlayer: {fileID: 0}
   eAddBackCard:
-    m_PersistentCalls:
-      m_Calls: []
-  eSetBigBlind:
     m_PersistentCalls:
       m_Calls: []
   posCard1: {x: 0, y: 0, z: 0}
@@ -544,9 +540,6 @@ MonoBehaviour:
   arrCardWin: 0000000000000000000000000000000000000000
   score: 0
   ID: 1
-  noPlayer: 0
-  commonName: 0
-  namePlayer: 
   isInvoke: 0
   isStraightFlush: 0
   isQuad: 0

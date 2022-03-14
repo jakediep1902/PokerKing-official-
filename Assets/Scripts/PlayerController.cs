@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         if(Instance==null)
         Instance= this;
+        DontDestroyOnLoad(this.gameObject);
 
         gameController = GameController.Instance;
 

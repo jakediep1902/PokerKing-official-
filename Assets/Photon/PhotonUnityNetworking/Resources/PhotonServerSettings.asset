@@ -70,6 +70,12 @@ MonoBehaviour:
   - InactiveAllTemplateCard
   - InactiveTempCard
   - SetRandomBigBlind
+  - AutoDeal
+  - Test
+  - PlayerCount
+  - UpdatePlayerPlaying
+  - RPC_ActiveTimeCounter
+  - RPC_InactiveTimeCounter
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

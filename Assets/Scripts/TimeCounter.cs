@@ -50,6 +50,10 @@ public class TimeCounter : MonoBehaviour
             {
                 gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
             }
+            else if (!gameController.isCheckCard)
+            {
+                gameController.BtnDeal();
+            }
 
         }
         else
@@ -59,7 +63,10 @@ public class TimeCounter : MonoBehaviour
             {
                 gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
             }
-
+            else if(!gameController.isCheckCard)
+            {
+                gameController.BtnDeal();
+            }
         }
     }
 }
