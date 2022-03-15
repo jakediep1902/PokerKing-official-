@@ -52,7 +52,8 @@ public class TimeCounter : MonoBehaviour
             }
             else if (!gameController.isCheckCard)
             {
-                gameController.BtnDeal();
+                //gameController.BtnDeal();
+                Invoke(nameof(BtnDeal), 2f);
             }
 
         }
@@ -65,8 +66,12 @@ public class TimeCounter : MonoBehaviour
             }
             else if(!gameController.isCheckCard)
             {
-                gameController.BtnDeal();
+                Invoke(nameof(BtnDeal), 2f);
             }
         }
     }
+    public void BtnDeal()
+    {
+        gameController.BtnDeal();
+    }    
 }

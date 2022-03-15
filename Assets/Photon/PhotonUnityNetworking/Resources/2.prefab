@@ -420,8 +420,6 @@ MonoBehaviour:
   card2: {fileID: 1215529185874064464}
   cardTemplate1: {fileID: 0}
   cardTemplate2: {fileID: 0}
-  backCard1: {fileID: 0}
-  backCard2: {fileID: 0}
   bigBlind: {fileID: 6488893405402342009}
   timeCounter: {fileID: 1215529185814093075}
   PvPlayer: {fileID: 0}

@@ -42,6 +42,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public Transform[] commonPos = new Transform[5];
     //public GameObject[] cards = new GameObject[24];//use this value for test
     public GameObject[] cards = new GameObject[52];
+    public GameObject[] cardsClone = new GameObject[52];
 
     //private List<int[]>listFlush = new List<int[]>();
     private List<Flush> listFlush = new List<Flush>();
@@ -82,20 +83,24 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         //}
         //DontDestroyOnLoad(this.gameObject);
         cards = GameObject.FindGameObjectsWithTag("Card");
+        var clone = cards.Clone();
+        cardsClone = clone as GameObject[];
     }
     void Start()
     {
-        PhotonNetwork.ConnectUsingSettings();
+        
         playerController = PlayerController.Instance;
         photonViews = GetComponent<PhotonView>();
         startPos = backCardPrefab.transform;
-       // ClearConsole();
+        ClearConsole();
         for (int i = 0; i < posDefaul.Length; i++) dicPosDefaul.Add(i, posDefaul[i]);
         foreach (var item in cards) item.SetActive(false);
         pnlGame.SetActive(true);
+        Invoke(nameof(UpdatePlayerPlaying), 5f);
+        arrPlayer = FindObjectsOfType<PlayerController>();
         //if (photonViews.IsMine)
         //    photonViews.RPC("UpdatePlayerPlaying", RpcTarget.AllBuffered, null);
-        Invoke(nameof(UpdatePlayerPlaying),5f);
+
 
         //amountPlayer = Random.Range((int)2, (int)7);
         //for (int i = 0; i < amountPlayer; i++)
@@ -137,28 +142,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         txtIndex.text = commonIndex.ToString();
 
     }
-    public override void OnConnectedToMaster()
-    {
-        PhotonNetwork.JoinLobby();
-    }
-    public override void OnJoinedLobby()
-    {
-        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 6 }, TypedLobby.Default);
-
-    }
-    public override void OnJoinedRoom()
-    {
-
-        //pnlGame.SetActive(true);
-        SceneManager.LoadScene(0);
-       
-
-    }
-    public override void OnLeftRoom()
-    {
-        Debug.Log($"player ID {photonViews.ViewID} has left room");
-        
-    }
+ 
     [PunRPC]
     public void CreateCommonCard(int numberOfCard = 3)//using
     {
@@ -181,6 +165,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             {
                 //Debug.Log("back card");
                 tempCard.GetComponent<BackCard>().enabled = true;
+                //listBackCard.Clear();
                 listBackCard.Add(tempCard.GetComponent<BackCard>());
             }
             else
@@ -362,8 +347,21 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     [PunRPC]
     public void PlayAgain()
     {
-        SceneManager.LoadScene(0);
-        // pnlGame.SetActive(true);
+        //SceneManager.LoadScene(0);
+        var clone = cardsClone.Clone();
+        cards = clone as GameObject[];
+        NoCommonPos = 0;
+        CommonCard[] temp = FindObjectsOfType<CommonCard>();       
+        foreach (var item in temp) Destroy(item.gameObject);        
+        foreach (var item in cards) item.SetActive(false);/////////////////////////////////////////////////////////////////
+        foreach (var item in arrPlayer)
+        {
+            item.card1.SetActive(false);
+            item.card2.SetActive(false);          
+        }
+        congratulation.SetActive(false);
+        //BtnPlayGame();
+        //pnlGame.SetActive(true);
     }
     public void BtnPlayAgain()
     {
@@ -413,10 +411,12 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         {
             HighLightCardWin(winner);
             ScaleCardWin(winner, 1.1f);
-            Debug.LogError($"Winner is Player {winner.gameObject.name} with Score : {winner.score}" +
+            Debug.Log($"Winner is Player {winner.gameObject.name} with Score : {winner.score}" +
                 $" and Card ({winner.arrCardWin[0]} {winner.arrCardWin[1]} {winner.arrCardWin[2]} " +
                 $"{winner.arrCardWin[3]} {winner.arrCardWin[4]})");
-            Instantiate(congratulation, winner.gameObject.transform.position, Quaternion.identity);
+            congratulation.SetActive(true);
+            congratulation.transform.position = winner.gameObject.transform.position;
+            //Instantiate(congratulation, winner.gameObject.transform.position, Quaternion.identity);
         }
     }
     public void CheckStraightFlush(PlayerController player)
@@ -1234,7 +1234,10 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
                 photonViews.RPC("CreateCommonCard", RpcTarget.All, 1);
                 RPC_SetCommonIndex();
             }
-            photonViews.RPC("CreateBackCard", RpcTarget.All, 4);
+            playerPlaying *= 2;
+            photonViews.RPC("CreateBackCard", RpcTarget.All, playerPlaying);
+            //Debug.Log(playerPlaying);
+
         }
         
     }
@@ -1321,16 +1324,19 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             
             yield return new WaitForSeconds(0.5f);
             playerPlaying = (int)PhotonNetwork.CurrentRoom.PlayerCount;
+            if(!timeCounterStart.activeSelf)
+            {
+                if (playerPlaying >= 2 && !isStartGame)
+                {
+                    photonViews.RPC("RPC_ActiveTimeCounter", RpcTarget.All, null);
+                }
+                else
+                {
+                    photonViews.RPC("RPC_InactiveTimeCounter", RpcTarget.All, null);
+                }
+                if (isStartGame) isUpdate = false;
+            }
             
-            if (playerPlaying >= 2 && !isStartGame)
-            {
-                photonViews.RPC("RPC_ActiveTimeCounter", RpcTarget.All, null);
-            }
-            else
-            {
-                photonViews.RPC("RPC_InactiveTimeCounter", RpcTarget.All, null);
-            }
-            if (isStartGame) isUpdate = false;
         }     
     }//using
     [PunRPC]

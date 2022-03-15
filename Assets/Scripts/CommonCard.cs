@@ -9,13 +9,13 @@ public class CommonCard : MonoBehaviour
    //Sprite spriteTemp;
     void Start()
     {
-        gameController = GameController.Instance;
-
+        gameController = GameController.Instance;   
         targetPos = gameController.commonPos[gameController.NoCommonPos].position;
         gameController.NoCommonPos++;
         if(gameController.NoCommonPos>=gameController.commonPos.Length)
         {          
             gameController.isFull = true;
+            gameController.NoCommonPos = 0;
         }
         //gameController.SetRandomCard(this.gameObject);
 

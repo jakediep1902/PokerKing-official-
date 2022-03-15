@@ -12,7 +12,7 @@ public class BackCard : MonoBehaviour
     //PlayerController playerController;
    // PlayerController[] arrPlayer;
     private Vector3 targetPos;
-  
+    public int noTemplate = 0;
     //public PlayerTemplate[] arrayPlayerTemplate = new PlayerTemplate[6];
      
     public bool isArranged = false;
@@ -30,18 +30,19 @@ public class BackCard : MonoBehaviour
         //{
         //    arrPlayer[i].backCard = this;
         //}
-
+        noTemplate = gameController.NoTemplate;
         targetPos = gameController.arrPlayer[gameController.NoTemplate].transform.position;
-        if (gameController.arrPlayer[gameController.NoTemplate].backCard1 == null)
-        {
-            gameController.arrPlayer[gameController.NoTemplate].backCard1 = this.gameObject;
-        }
-        else
-        {
-            gameController.arrPlayer[gameController.NoTemplate].backCard2 = this.gameObject;
-        }
+        //if (gameController.arrPlayer[gameController.NoTemplate].backCard1 == null)
+        //{
+        //    gameController.arrPlayer[gameController.NoTemplate].backCard1 = this.gameObject;
+        //}
+        //else
+        //{
+        //    gameController.arrPlayer[gameController.NoTemplate].backCard2 = this.gameObject;
+        //}
 
-        gameObject.transform.SetParent(gameController.arrPlayer[gameController.NoTemplate].transform);
+        //gameObject.transform.SetParent(gameController.arrPlayer[gameController.NoTemplate].transform);
+
         //if (transform.GetComponentInParent<PlayerController>().backCard==null)
         //{
         //    transform.GetComponentInParent<PlayerController>().backCard = this;
@@ -91,9 +92,9 @@ public class BackCard : MonoBehaviour
     {
         //Debug.Log("alarm");
         //eArrange.Invoke();
-        transform.GetComponentInParent<PlayerController>().eAddBackCard.Invoke();
-        
-       //gameController.ChangeSpriteRenderer(this.gameObject);       
+        //transform.GetComponentInParent<PlayerController>().eAddBackCard.Invoke();      
+        gameController.arrPlayer[noTemplate].eAddBackCard.Invoke();
+        //gameController.ChangeSpriteRenderer(this.gameObject);       
     }
     
 }
