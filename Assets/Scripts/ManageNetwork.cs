@@ -9,6 +9,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
 {
     GameController gameController;
     public static ManageNetwork Instance;
+    public bool isJoinedRoom = false;
     private void Awake()
     {
         if(Instance==null)
@@ -43,7 +44,8 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         //Debug.Log("hello from Network");
         //pnlGame.SetActive(true);
         // SceneManager.LoadScene(0);
-        Invoke(nameof(BtnReady),4f);       
+        Invoke(nameof(BtnReady),4f);
+        isJoinedRoom = true;
     }
     public override void OnLeftRoom()
     {
