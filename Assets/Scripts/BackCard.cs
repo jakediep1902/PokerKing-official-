@@ -7,7 +7,6 @@ public class BackCard : MonoBehaviour
 {
     //public TemplateCard[] arrayStarPosCard;
     private GameController gameController;
-    public static BackCard Instance;
     public  UnityEvent eArrange;
     //PlayerController playerController;
    // PlayerController[] arrPlayer;
@@ -16,11 +15,6 @@ public class BackCard : MonoBehaviour
     //public PlayerTemplate[] arrayPlayerTemplate = new PlayerTemplate[6];
      
     public bool isArranged = false;
-
-    private void Awake()
-    {
-        Instance = this;
-    }
 
     private void Start()
     {    

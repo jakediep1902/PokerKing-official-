@@ -8,8 +8,6 @@ using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviourPunCallbacks
 {
-    public static PlayerController Instance;
-
     //public BackCard backCard;
     GameController gameController;
 
@@ -49,48 +47,39 @@ public class PlayerController : MonoBehaviourPunCallbacks
    
     void Start()
     {
-        if(Instance==null)
-        Instance= this;
+        //Debug.Log("hello from Player");       
         DontDestroyOnLoad(this.gameObject);
         gameController = GameController.Instance;
-        card1.GetComponent<SpriteRenderer>().sortingOrder = 7;
-        card2.GetComponent<SpriteRenderer>().sortingOrder = 7;
+        cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 7;
+        cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 7;
         PvPlayer = GetComponent<PhotonView>();
         eAddBackCard.AddListener(() => ArrangeCard());
         for (int i = 0; i < arrPosDefaul.Length; i++) if (ID == i) transform.position = arrPosDefaul[i].position;
         gameObject.name = ID.ToString();
-        //backCard = BackCard.Instance;
-        //backCard.eArrange.AddListener(() => ArrangeCard());
-
     }
 
     public void ArrangeCard()
     {      
+        if(gameController==null) gameController = GameController.Instance;
+        
         if(!isInvoke)
-        {
-           // Debug.Log(1);
-            
+        {          
             foreach (var item in gameController.listBackCard)
             {
-                //Debug.Log(2);
-                if (item == null) continue;
-                
-                item.gameObject.SetActive(false);
-                //gameController.listBackCard.Remove(item);
-                //Debug.Log(3);
-                Destroy(item.gameObject, 3f);
+                item.gameObject.SetActive(false);     
+                //Destroy(item.gameObject, 3f);    
             }
             gameController.listBackCard.Clear();
 
-             posCard1 = card1.transform.position;
-            posCard2 = card2.transform.position;          
+             posCard1 = cardTemplate1.transform.position;
+             posCard2 = cardTemplate2.transform.position;          
             
             if (PvPlayer.IsMine)
             {
-                int indexCard = Random.Range((int)0, gameController.cards.Length);
+                int indexCard = Random.Range((int)0, (int)gameController.cards.Length);
                 PvPlayer.RPC("RPC_SetCard1", RpcTarget.All, indexCard);              
                 //Debug.Log(indexCard);
-                indexCard = Random.Range((int)0, gameController.cards.Length);
+                indexCard = Random.Range((int)0,(int)gameController.cards.Length);
                 PvPlayer.RPC("RPC_SetCard2", RpcTarget.All, indexCard);             
                 //Debug.Log(indexCard);
                 PvPlayer.RPC("CoverCardOtherClient", RpcTarget.Others, null);
@@ -103,10 +92,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_SetCard1(int index)
     {
+        if (gameController == null) gameController = GameController.Instance;
         gameController.cards[index].SetActive(true);
         gameController.cards[index].transform.position = posCard1;
         gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 4;
-        cardTemplate1 = card1;//just change card
         card1 = gameController.cards[index];
         listCard.Add(card1);//add card to list to check
         //gameController.cards[index].transform.SetParent(this.transform);
@@ -118,7 +107,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
         gameController.cards[index].SetActive(true);
         gameController.cards[index].transform.position = posCard2;
         gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 5;
-        cardTemplate2 = card2;
         card2 = gameController.cards[index];
         listCard.Add(card2);
         //gameController.cards[index].transform.SetParent(this.transform);
@@ -126,9 +114,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     }
     [PunRPC]
     public void CoverCardOtherClient()
-    {
-        cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 7;
-        cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 7;
+    {      
         cardTemplate1.SetActive(true);
         cardTemplate2.SetActive(true);
         card1.transform.position = cardTemplate1.transform.position;//fix sometime position not match;

@@ -14,11 +14,12 @@ public class TimeCounter : MonoBehaviour
     {
         imageFill = GetComponent<Image>();
         imageFill.fillAmount = 1;
-
+        gameController = GameController.Instance;
     }
+   
     void Start()
     {
-        gameController = GameController.Instance;
+        
         playerController.isTurn = true;
     }  
     void Update()
@@ -60,13 +61,16 @@ public class TimeCounter : MonoBehaviour
         else
         {
             gameController.indexBigBlind = CurrentPlayer;
+            //Debug.Log($"current Player is :{CurrentPlayer}");
             if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
             {
                 gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
+                //Debug.Log(1);
             }
             else if(!gameController.isCheckCard)
             {
                 Invoke(nameof(BtnDeal), 2f);
+                //Debug.Log(2);
             }
         }
     }
