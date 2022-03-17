@@ -6,8 +6,11 @@ using UnityEditor;
 using UnityEngine.UI;
 public class Test : MonoBehaviour
 {
-   
-    
+
+    private void Start()
+    {
+        Debug.Log("hello");
+    }
     //Delete all in test
 
 

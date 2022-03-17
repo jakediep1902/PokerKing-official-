@@ -71,11 +71,11 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     void Start()
     {
-        //Debug.Log("hello from gameController");
+        Debug.Log("hello from gameController");
         photonViews = GetComponent<PhotonView>();
         manageNetwork = ManageNetwork.Instance;
         startPos = backCardPrefab.transform;
-        ClearConsole();
+        //ClearConsole();
         for (int i = 0; i < posDefaul.Length; i++) dicPosDefaul.Add(i, posDefaul[i]);
         foreach (var item in cards) item.SetActive(false);
         pnlGame.SetActive(true);
@@ -175,9 +175,9 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
                         tempCard.AddComponent<Diamonds>();
                         break;
                 }
-                //tempCard.GetComponent<PhotonView>().RPC("RPC_ChangeSprite", RpcTarget.AllBuffered,
-                //    new object[] { tempCard.GetComponent<SpriteRenderer>().sprite, indexCard});
+               
                 tempCard.name = cards[commonIndex].name;
+                Debug.Log($"commonIndex is {commonIndex}");
                 tempCard.GetComponent<SpriteRenderer>().sprite = cards[commonIndex].GetComponent<SpriteRenderer>().sprite;
                 RemoveElement(ref cards, commonIndex);
                 tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;
@@ -185,7 +185,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
                 //PhotonNetwork.Instantiate(tempCard.name, tempCard.transform.position, Quaternion.identity);               
                 stackCheck.Push(tempCard);
             }
-            //tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;          
+                 
             yield return new WaitForSeconds(0.2f);
         }
     }  
@@ -309,9 +309,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     [PunRPC]
     public void PlayAgain()
     {
-        SceneManager.LoadScene(0);
-        //var clone = cardsClone.Clone();
-        //cards = clone as GameObject[];
+        SceneManager.LoadScene(0);     
         //NoCommonPos = 0;
         //CommonCard[] temp = FindObjectsOfType<CommonCard>();       
         //foreach (var item in temp) Destroy(item.gameObject);
@@ -349,8 +347,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         //UpdatePlayerPlaying();
         //isStartGame = false;
         //isCheckCard = false;
-        //ClearConsole();
-
+        //ClearConsole();      
         //BtnPlayGame();
         //pnlGame.SetActive(true);
     }//using
@@ -1164,13 +1161,13 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         }
         player.gameObject.GetComponent<SpriteRenderer>().size = new Vector2(1.5f, 1.5f);
     }//using
-    public static void ClearConsole()
-    {
-        var assembly = Assembly.GetAssembly(typeof(SceneView));
-        var type = assembly.GetType("UnityEditor.LogEntries");
-        var method = type.GetMethod("Clear");
-        method.Invoke(new object(), null);
-    }//using
+    //public static void ClearConsole()
+    //{
+    //    var assembly = Assembly.GetAssembly(typeof(SceneView));
+    //    var type = assembly.GetType("UnityEditor.LogEntries");
+    //    var method = type.GetMethod("Clear");
+    //    method.Invoke(new object(), null);
+    //}//using
    
     IEnumerator RunTimeCounter(float timeDelay = 3f)//using
     {
@@ -1306,6 +1303,15 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     {
         timeCounterStart.SetActive(false);
     }//using
+
+    public void Btn_Quit()
+    {
+        Application.Quit();
+        Debug.Log("quit");
+    }
+
+
+
 
     //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     //{
