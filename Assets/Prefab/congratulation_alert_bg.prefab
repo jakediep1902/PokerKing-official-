@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6500133173658204429}
   - component: {fileID: 6500133173658204428}
-  - component: {fileID: 8964522257692100312}
+  - component: {fileID: -55173192407539726}
   m_Layer: 0
   m_Name: congratulation_alert_bg
   m_TagString: Untagged
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8964522257692100312
+--- !u!114 &-55173192407539726
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,6 +92,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6500133173658204431}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b855a11a00227b4c91e38c1e6e2b3b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 81c7a35345a89c74a823c20ceb85d7f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

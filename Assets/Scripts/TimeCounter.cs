@@ -46,32 +46,40 @@ public class TimeCounter : MonoBehaviour
         if (CurrentPlayer < 0)
         {
             CurrentPlayer = gameController.arrPlayer.Length - 1;
-            gameController.indexBigBlind = CurrentPlayer;          
-            if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
+            gameController.indexBigBlind = CurrentPlayer;
+
+            if (gameController.arrPlayer[CurrentPlayer]!= null)
             {
-                gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
-            }
-            else if (!gameController.isCheckCard)
-            {
-                //gameController.BtnDeal();
-                Invoke(nameof(BtnDeal), 2f);
-            }
+                if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
+                {
+                    gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
+                }
+                else if (!gameController.isCheckCard)
+                {
+                    //gameController.BtnDeal();
+                    Invoke(nameof(BtnDeal), 2f);
+                }
+            }               
 
         }
         else
         {
             gameController.indexBigBlind = CurrentPlayer;
             //Debug.Log($"current Player is :{CurrentPlayer}");
-            if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
+            if(gameController.arrPlayer[CurrentPlayer] !=null)
             {
-                gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
-                //Debug.Log(1);
+                if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
+                {
+                    gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
+                    //Debug.Log(1);
+                }
+                else if (!gameController.isCheckCard)
+                {
+                    Invoke(nameof(BtnDeal), 2f);
+                    //Debug.Log(2);
+                }
             }
-            else if(!gameController.isCheckCard)
-            {
-                Invoke(nameof(BtnDeal), 2f);
-                //Debug.Log(2);
-            }
+           
         }
     }
     public void BtnDeal()

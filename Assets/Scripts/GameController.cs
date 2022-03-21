@@ -30,11 +30,11 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 
     public Sprite[] arrCards = new Sprite[52];
     public PlayerController[] arrPlayer;
-    public Transform[] posDefaul = new Transform[6];    
-    public GameObject[] cards = new GameObject[52];
+    public Transform[] posDefaul = new Transform[6];       
     public Transform[] commonPos = new Transform[5];
+    public GameObject[] cards = new GameObject[52];
     //public GameObject[] cards = new GameObject[24];//use this value for test
-    //public GameObject[] cardsClone = new GameObject[52];
+    public GameObject[] cardsClone = new GameObject[52];
    
     public Dictionary<int, Transform> dicPosDefaul = new Dictionary<int, Transform>(6);
     private Stack<GameObject> stackCheck = new Stack<GameObject>(7);
@@ -57,6 +57,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public bool isStartGame = false;
     public bool isCheckCard = false;
     public bool isJoinedRoom = false;
+    public bool isEndGame = false;
 
     private void Awake()
     {
@@ -65,7 +66,8 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         else Destroy(gameObject);
         
         //DontDestroyOnLoad(this.gameObject);
-        cards = GameObject.FindGameObjectsWithTag("Card");
+       // cards = GameObject.FindGameObjectsWithTag("Card");//this method not sync when build(differen index)
+       //-> differen object spaw
         //var clone = cards.Clone();
         //cardsClone = clone as GameObject[];
     }
@@ -122,13 +124,34 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             {
                 if (!timeCounterStart.activeSelf && !isStartGame) RPC_ActiveTimeCounter();
             }
-            else if (timeCounterStart.activeSelf) RPC_InactiveTimeCounter();
-            else
+            else if(timeCounterStart.activeSelf)
             {
-                //do something
+                RPC_InactiveTimeCounter();
+            }
+            if (playerPlaying < 2)
+            {
+                if (isStartGame && !isEndGame)
+                {
+                    UpdatePlayer();
+                    BtnCheckCard();               
+                    isEndGame = true;
+                }
             }
         }
     }
+
+    private void OnValidate()
+    {
+
+        Debug.Log("update");
+        //if (arrPlayer==null)
+        //{
+            
+        //    arrPlayer = FindObjectsOfType<PlayerController>();
+        //}
+        
+    }
+
     [PunRPC]
     public void CreateCommonCard(int numberOfCard = 3)//using
     {
@@ -1317,12 +1340,12 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     //{
     //    if (stream.IsWriting)
     //    {
-    //        stream.SendNext(dicCount);
+    //        stream.SendNext(commonIndex);
     //    }
     //    else if (stream.IsReading)
     //    {
-    //        dicCount = (int)stream.ReceiveNext();
-    //        dicCount = dicPosDefaul.Count;
+    //        commonIndex = (int)stream.ReceiveNext();
+            
     //    }
     //}
 

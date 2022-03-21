@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
    
     void Start()
     {
-        Debug.Log("hello from Player");       
+        Debug.Log($"hello from Player {PvPlayer.ViewID}");       
         DontDestroyOnLoad(this.gameObject);
         gameController = GameController.Instance;
         cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 7;
