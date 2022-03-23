@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     //public GameObject backCard1,backCard2;
     //public List<GameObject> listBackCard = new List<GameObject>(2);
     public GameObject bigBlind;
+
     
     public TimeCounter timeCounter;
     public PhotonView PvPlayer;
@@ -44,19 +45,32 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public bool isWinner = false;
 
     public bool isTurn = false;
-   
+
     void Start()
     {
-        Debug.Log($"hello from Player {PvPlayer.ViewID}");       
+        //Debug.Log($"hello from Player {PvPlayer.ViewID}");       
         DontDestroyOnLoad(this.gameObject);
         gameController = GameController.Instance;
         cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 7;
         cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 7;
         PvPlayer = GetComponent<PhotonView>();
         eAddBackCard.AddListener(() => ArrangeCard());
-        for (int i = 0; i < arrPosDefaul.Length; i++) if (ID == i) transform.position = arrPosDefaul[i].position;
+        for (int i = 0; i < arrPosDefaul.Length; i++)
+        {
+            if (ID == i)
+            {
+                transform.position = arrPosDefaul[i].position;
+            }
+        }
         gameObject.name = ID.ToString();
     }
+
+    public override void OnDisable()
+    {
+        //Debug.Log("Left Room");
+        gameController.UpdatePlayer();
+        timeCounter.imageFill.fillAmount = 0;
+    }   
 
     public void ArrangeCard()
     {      
@@ -92,7 +106,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_SetCard1(int index)
     {
-        if (gameController == null) gameController = GameController.Instance;
+        if (gameController == null)
+        {
+            gameController = GameController.Instance;
+        }
         gameController.cards[index].SetActive(true);
         gameController.cards[index].transform.position = posCard1;
         gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 4;

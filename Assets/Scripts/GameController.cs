@@ -7,6 +7,7 @@ using UnityEditor;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 {
@@ -25,18 +26,20 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 
     ManageNetwork manageNetwork;
     public PhotonView photonViews;
+    
 
     public Text txtIndex;    
 
     public Sprite[] arrCards = new Sprite[52];
     public PlayerController[] arrPlayer;
-    public Transform[] posDefaul = new Transform[6];       
+    //public Transform[] posDefaul = new Transform[6];
+    public PositionDefaul[] posDefaul = new PositionDefaul[6];
     public Transform[] commonPos = new Transform[5];
     public GameObject[] cards = new GameObject[52];
     //public GameObject[] cards = new GameObject[24];//use this value for test
     public GameObject[] cardsClone = new GameObject[52];
    
-    public Dictionary<int, Transform> dicPosDefaul = new Dictionary<int, Transform>(6);
+    //public Dictionary<int, Transform> dicPosDefaul = new Dictionary<int, Transform>(6);
     private Stack<GameObject> stackCheck = new Stack<GameObject>(7);
   
     private List<Flush> listFlush = new List<Flush>();
@@ -73,16 +76,27 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     void Start()
     {
-        Debug.Log("hello from gameController");
+        //Debug.Log("hello from gameController");
         photonViews = GetComponent<PhotonView>();
         manageNetwork = ManageNetwork.Instance;
         startPos = backCardPrefab.transform;
         //ClearConsole();
-        for (int i = 0; i < posDefaul.Length; i++) dicPosDefaul.Add(i, posDefaul[i]);
+        //for (int i = 0; i < posDefaul.Length; i++)
+        //{
+        //    dicPosDefaul.Add(i, posDefaul[i]);
+        //}
+        
         foreach (var item in cards) item.SetActive(false);
         pnlGame.SetActive(true);
-        //Invoke(nameof(UpdatePlayerPlaying), 5f);
-        arrPlayer = FindObjectsOfType<PlayerController>();
+        //Invoke(nameof(UpdatePlayerPlaying), 5f);       
+        UpdatePlayer();
+        UpdatePosDefaul();
+      
+        
+
+
+        //UpdatePlayer();
+        
 
         //if (photonViews.IsMine)
         //    photonViews.RPC("UpdatePlayerPlaying", RpcTarget.AllBuffered, null);
@@ -112,38 +126,36 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         //startPos = backCardPrefab.transform;
         // CreateCommonCard(3);
         //CreateBackCard(amountCardInit);
-       
+
     }
     private void Update()
     {
         if (manageNetwork.isJoinedRoom)
         {
             txtIndex.text = commonIndex.ToString();
-            playerPlaying = (int)PhotonNetwork.CurrentRoom.PlayerCount;
-            if (playerPlaying >= 2)
-            {
-                if (!timeCounterStart.activeSelf && !isStartGame) RPC_ActiveTimeCounter();
-            }
-            else if(timeCounterStart.activeSelf)
-            {
-                RPC_InactiveTimeCounter();
-            }
+
+            CheckStartGame();
+
             if (playerPlaying < 2)
             {
                 if (isStartGame && !isEndGame)
                 {
                     UpdatePlayer();
-                    BtnCheckCard();               
+                    BtnCheckCard();
                     isEndGame = true;
                 }
             }
+
         }
     }
 
     private void OnValidate()
     {
+        //Debug.Log($"PlayerPlaying is {playerPlaying}");
+        //Debug.Log($"arrPlayer count is {arrPlayer.Length}");
+        
 
-        Debug.Log("update");
+        
         //if (arrPlayer==null)
         //{
             
@@ -200,7 +212,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
                 }
                
                 tempCard.name = cards[commonIndex].name;
-                Debug.Log($"commonIndex is {commonIndex}");
+                //Debug.Log($"commonIndex is {commonIndex}");
                 tempCard.GetComponent<SpriteRenderer>().sprite = cards[commonIndex].GetComponent<SpriteRenderer>().sprite;
                 RemoveElement(ref cards, commonIndex);
                 tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;
@@ -236,6 +248,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         foreach (PlayerController player in arrPlayer)
         {
             CheckCard(player);
+            player.timeCounter.imageFill.fillAmount = 0;
         }
         //CheckFlush(listFlush);//check Flush affter finish check all Player 
         CheckWinner(arrPlayer);
@@ -1239,26 +1252,31 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     [PunRPC]
     public void InactivePos(int index) //using
     {
-        dicPosDefaul[index].gameObject.SetActive(false);
+        //dicPosDefaul[index].gameObject.SetActive(false);
+        //posDefaul[index].gameObject.SetActive(false);
+        posDefaul[index].isEmpty = false;
     }
     [PunRPC]
     public void SpawPlayer()
     {
         int safeCount = 0;
-        for (int i = Random.Range((int)0, (int)dicPosDefaul.Count); i < dicPosDefaul.Count; i++)
+        //for (int i = Random.Range((int)0, (int)dicPosDefaul.Count); i < dicPosDefaul.Count; i++)
+        UpdatePosDefaul();
+        for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length; i++)
         {
-            if (dicPosDefaul[i].gameObject.activeSelf)
+            
+            if (posDefaul[i].isEmpty)
             {
-                GameObject tempObj = PhotonNetwork.Instantiate(i.ToString(), dicPosDefaul[i].position, Quaternion.identity)
-                       as GameObject;
+                GameObject tempObj = PhotonNetwork.Instantiate(i.ToString(),
+                    posDefaul[i].transform.position, Quaternion.identity) as GameObject;                
                 photonViews.RPC("InactivePos", RpcTarget.AllBuffered, i);
                 break;
             }
             else
             {
                 safeCount++;
-                if (i == (dicPosDefaul.Count - 1))
-                    i = Random.Range((int)0, (int)dicPosDefaul.Count);
+                if (i == (posDefaul.Length - 1))
+                    i = Random.Range((int)0, (int)posDefaul.Length);
             }
             if (safeCount > 500)
             {
@@ -1317,12 +1335,12 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         StartCoroutine(DelayUpdate());
     }//not used
     [PunRPC]
-    public void RPC_ActiveTimeCounter()
+    public void ActiveTimeCounterStart()
     {
         timeCounterStart.SetActive(true);      
     }//using
     [PunRPC]
-    public void RPC_InactiveTimeCounter()
+    public void InactiveTimeCounterStart()
     {
         timeCounterStart.SetActive(false);
     }//using
@@ -1333,7 +1351,66 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         Debug.Log("quit");
     }
 
+    public void CheckStartGame()
+    {
+        playerPlaying = (int)PhotonNetwork.CurrentRoom.PlayerCount;
+        if (playerPlaying >= 2)
+        {
+            if (!timeCounterStart.activeSelf && !isStartGame) ActiveTimeCounterStart();
+        }
+        else if (timeCounterStart.activeSelf)
+        {
+            InactiveTimeCounterStart();
+        }
+    }
+    
+    //public void CheckPlayerExit()
+    //{
+    //    //if (playerPlaying < 2)
+    //    //{
+    //    //    if (isStartGame && !isEndGame)
+    //    //    {
+    //    //        UpdatePlayer();
+    //    //        BtnCheckCard();
+    //    //        isEndGame = true;
+    //    //    }
+    //    //    else if (!isStartGame)
+    //    //    {
+    //    //        UpdatePlayer();
+    //    //    }
+    //    //}
+    //    //photonViews.RPC("RPC_PerformEvent", RpcTarget.Others, null);
+    //}
+   
+    public void UpdatePosDefaul()
+    {
+        posDefaul = FindObjectsOfType<PositionDefaul>();
+        foreach (var item in posDefaul)
+        {
+            for (int i = 0; i < posDefaul.Length; i++)
+            {
+                if (posDefaul[i].ID != i)
+                {
+                    var temp = posDefaul[posDefaul[i].ID];
+                    posDefaul[posDefaul[i].ID] = posDefaul[i];
+                    posDefaul[i] = temp;
+                }
+            }
+        }
 
+        for (int i = 0; i < posDefaul.Length; i++)
+        {
+            foreach (var player in arrPlayer)
+            {
+                if (player.ID == i)
+                {
+                    //posDefaul[i].gameObject.SetActive(false);
+                    posDefaul[i].isEmpty = false;
+                }               
+            }
+        }
+
+    }
 
 
     //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

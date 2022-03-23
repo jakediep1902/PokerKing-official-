@@ -76,6 +76,9 @@ MonoBehaviour:
   - UpdatePlayerPlaying
   - RPC_ActiveTimeCounter
   - RPC_InactiveTimeCounter
+  - ActiveTimeCounterStart
+  - InactiveTimeCounterStart
+  - RPC_PerformEvent
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

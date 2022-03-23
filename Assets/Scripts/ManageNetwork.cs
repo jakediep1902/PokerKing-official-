@@ -50,6 +50,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         //Debug.Log($"player ID {photonViews.ViewID} has left room");
+        //gameController.CheckPlayerExit();
     }
     public void BtnReady()
     {
