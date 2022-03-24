@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d02a73813a9e5d04b8b45dc7c1e63c3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imageFill: {fileID: 0}
+  imageFill: {fileID: 6123758905901497018}
   playerController: {fileID: 6123758906237394966}
 --- !u!1 &6123758905975739387
 GameObject:
@@ -584,6 +584,7 @@ MonoBehaviour:
   cardTemplate1: {fileID: 6123758905548967359}
   cardTemplate2: {fileID: 6123758905975739387}
   bigBlind: {fileID: 1469084257145567989}
+  btnXemBai: {fileID: 0}
   timeCounter: {fileID: 6123758905901497016}
   PvPlayer: {fileID: 5902643516526401221}
   eAddBackCard:

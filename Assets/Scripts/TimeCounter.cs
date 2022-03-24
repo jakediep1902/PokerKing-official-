@@ -10,6 +10,7 @@ public class TimeCounter : MonoBehaviour
     GameController gameController;
     int playerPlaying;
 
+    
     private void OnEnable()
     {
         imageFill = GetComponent<Image>();

@@ -16,7 +16,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
     //public List<GameObject> listBackCard = new List<GameObject>(2);
     public GameObject bigBlind;
 
-    
+    public Button btnXemBai;
+    public Button btnBoBai;
+
     public TimeCounter timeCounter;
     public PhotonView PvPlayer;
     public UnityEvent eAddBackCard;
@@ -45,6 +47,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public bool isWinner = false;
 
     public bool isTurn = false;
+    public bool isFold = false;
 
     void Start()
     {
@@ -63,7 +66,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
             }
         }
         gameObject.name = ID.ToString();
+        btnXemBai = gameController.btnXemBai;
+        btnXemBai.onClick.AddListener(() => BtnXemBai());
+        btnBoBai = gameController.btnBoBai;
+        btnBoBai.onClick.AddListener(() => BtnBoBai());
     }
+
+   
 
     public override void OnDisable()
     {
@@ -144,4 +153,45 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         isInvoke = false;
     }
+
+    [PunRPC]
+    public void XemBai()
+    {
+        timeCounter.imageFill.fillAmount = 0f;
+    }
+    public void BtnXemBai()
+    {       
+        if (PvPlayer.IsMine)
+        {
+            PvPlayer.RPC("XemBai", RpcTarget.All, null);
+        }
+    }
+    [PunRPC]
+    public void BoBai()
+    {
+        timeCounter.imageFill.fillAmount = 0f;
+        Color tempColor = Color.white;
+        tempColor.a = 0.4f;
+        GetComponent<SpriteRenderer>().color = tempColor;
+        tempColor.a = 0f;
+        card1.GetComponent<SpriteRenderer>().color = tempColor;
+        card2.GetComponent<SpriteRenderer>().color = tempColor;
+        cardTemplate1.GetComponent<SpriteRenderer>().color = tempColor;
+        cardTemplate2.GetComponent<SpriteRenderer>().color = tempColor;
+        isFold = true;
+        gameController.UpdatePlayer();
+    }
+    public void BtnBoBai()
+    {
+        if (PvPlayer.IsMine)
+        {
+            PvPlayer.RPC("BoBai", RpcTarget.All, null);
+            Color tempColor = Color.white;
+            tempColor.a = 0.4f;
+            card1.GetComponent<SpriteRenderer>().color = tempColor;
+            card2.GetComponent<SpriteRenderer>().color = tempColor;
+                                
+        }
+    }
+
 }
