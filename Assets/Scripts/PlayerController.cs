@@ -49,6 +49,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     public bool isTurn = false;
     public bool isFold = false;
+   
+    
 
     void Start()
     {
@@ -66,7 +68,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 transform.position = arrPosDefaul[i].position;
             }
         }
-        gameObject.name = ID.ToString();
+        gameObject.name = ID.ToString();       
+
         btnXemBai = gameController.btnXemBai;
         btnXemBai.onClick.AddListener(() => BtnXemBai());
         btnBoBai = gameController.btnBoBai;
@@ -74,8 +77,21 @@ public class PlayerController : MonoBehaviourPunCallbacks
         btnThemCuoc = gameController.btnThemCuoc;
         btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
     }
+    private void Update()
+    {
+        if (isFold && !PvPlayer.IsMine)
+        {
+            if (card1.transform.position != Vector3.zero)
+            {
+                card1.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
+                card2.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
+                card1.transform.Rotate(1, 2, 1);
+                card2.transform.Rotate(2, 1, 2);
+                
+            }            
+        }      
+    }
 
-   
 
     public override void OnDisable()
     {
@@ -108,7 +124,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
                     Debug.LogError($"index of Card over 51 and the new value is {indexCard}");
                     indexCard--;
                 }
-                Debug.Log($"index of Card over 51 and vlue is {indexCard}");
+                Debug.Log($"index of Card vlue is {indexCard}");
                 PvPlayer.RPC("RPC_SetCard1", RpcTarget.All, indexCard);              
                 //Debug.Log(indexCard);
                 indexCard = Random.Range((int)0,(int)gameController.cards.Length);
@@ -154,8 +170,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
         cardTemplate2.SetActive(true);
         card1.transform.position = cardTemplate1.transform.position;//fix sometime position not match;
         card2.transform.position = cardTemplate2.transform.position;
-        cardTemplate1.transform.localScale = new Vector3(0.5f, 0.5f, 0.7f);
-        cardTemplate2.transform.localScale = new Vector3(0.5f, 0.5f, 0.7f);
+        cardTemplate1.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
+        cardTemplate2.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
 
     }
     public void SetIsInvoke()
@@ -170,7 +186,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     }
     public void BtnXemBai()
     {       
-        if (PvPlayer.IsMine)
+        if (PvPlayer.IsMine && gameController.isStartGame)
         {
             PvPlayer.RPC("XemBai", RpcTarget.All, null);
         }
@@ -180,34 +196,40 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         timeCounter.imageFill.fillAmount = 0f;
         Color tempColor = Color.white;
-        tempColor.a = 0.4f;
+        tempColor.a = 0.3f;
         GetComponent<SpriteRenderer>().color = tempColor;
-        tempColor.a = 0f;
-        card1.GetComponent<SpriteRenderer>().color = tempColor;
-        card2.GetComponent<SpriteRenderer>().color = tempColor;
-        cardTemplate1.GetComponent<SpriteRenderer>().color = tempColor;
-        cardTemplate2.GetComponent<SpriteRenderer>().color = tempColor;
+        Invoke("HandleBoBai", 0.4f);
+        cardTemplate1.SetActive(false);
+        cardTemplate2.SetActive(false);
         isFold = true;
         gameController.UpdatePlayerPlayings();
     }
     public void BtnBoBai()
     {
-        if (PvPlayer.IsMine)
+        if (PvPlayer.IsMine && gameController.isStartGame)
         {
-            PvPlayer.RPC("BoBai", RpcTarget.All, null);
+            PvPlayer.RPC("BoBai", RpcTarget.All, null);          
             Color tempColor = Color.white;
             tempColor.a = 0.4f;
             card1.GetComponent<SpriteRenderer>().color = tempColor;
-            card2.GetComponent<SpriteRenderer>().color = tempColor;
-                                
+            card2.GetComponent<SpriteRenderer>().color = tempColor;                              
         }
     }
     public void BtnThemCuoc()
     {       
-        if (PvPlayer.IsMine)
+        if (PvPlayer.IsMine && gameController.isStartGame)
         {
             bool temp = !gameController.pnlThemCuoc.activeSelf;
             gameController.pnlThemCuoc.SetActive(temp);
         }
+    }
+    
+    public void HandleBoBai()
+    {
+        if(!PvPlayer.IsMine)
+        {
+            card1.SetActive(false);
+            card2.SetActive(false);
+        }       
     }
 }

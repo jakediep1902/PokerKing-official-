@@ -90,6 +90,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         manageNetwork = ManageNetwork.Instance;
         startPos = backCardPrefab.transform;
         ClearConsole();
+       
         //for (int i = 0; i < posDefaul.Length; i++)
         //{
         //    dicPosDefaul.Add(i, posDefaul[i]);
@@ -100,7 +101,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         //Invoke(nameof(UpdatePlayerPlaying), 5f);       
         UpdatePlayerPlayings();
         UpdatePosDefaul();
-
+        
 
         for (int i = 0; i < arrPlayer.Length; i++)
         {
@@ -151,14 +152,15 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 
             if (isStartGame && (playerPlaying < 2) && !isEndGame)
             {
-                if(stackCheck.Count==0)
-                {
-                    CheckWinner(arrPlayer);                
-                }
-                else
-                {
-                    BtnCheckCard();                   
-                }
+                //if(stackCheck.Count==0)
+                //{
+                                   
+                //}
+                //else
+                //{
+                //    BtnCheckCard();                   
+                //}
+                CheckWinner(arrPlayer);
                 isEndGame = true;
                 isCheckCard = true;
             }
@@ -170,10 +172,13 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
                 if (isStartGame && !isEndGame)
                 {
                     // UpdatePlayer();
-                    UpdatePlayerPlayings();
-                    BtnCheckCard();
+                    //UpdatePlayerPlayings();
+                    //BtnCheckCard();
+                    //isEndGame = true;
+
+                    CheckWinner(arrPlayer);
                     isEndGame = true;
-                   
+                    isCheckCard = true;
                 }
             }
         }            
@@ -1174,10 +1179,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public void HighLightCardWin(PlayerController player)
     {
         Color spriteColor = Color.white;
-        spriteColor.a = 1f;
-
-        player.card1.GetComponent<SpriteRenderer>().color = spriteColor;
-        player.card2.GetComponent<SpriteRenderer>().color = spriteColor;
+        spriteColor.a = 1f;          
 
         for (int i = 0; i < player.arrCardWin.Length; i++)
         {
@@ -1194,6 +1196,11 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
                     break;
                 }
             }
+        }
+        if(player.listCardWin.Count<5)
+        {
+            player.card1.GetComponent<SpriteRenderer>().color = spriteColor;
+            player.card2.GetComponent<SpriteRenderer>().color = spriteColor;
         }
     }//using
     public void ScaleCardWin(PlayerController player, float value = 1.5f)
@@ -1330,12 +1337,13 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     [PunRPC]
     public void InactiveTempCard()//using
-    {
+    {       
         TemplateCard[] temp = FindObjectsOfType<TemplateCard>();
         foreach (var item in temp)
         {
             item.gameObject.SetActive(false);
         }
+
     }       
     IEnumerator DelayUpdate()
     {

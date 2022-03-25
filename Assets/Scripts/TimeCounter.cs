@@ -10,17 +10,32 @@ public class TimeCounter : MonoBehaviour
     GameController gameController;
     int playerPlaying;
 
-    
-    private void OnEnable()
-    {
-        imageFill = GetComponent<Image>();
-        imageFill.fillAmount = 1;
-        gameController = GameController.Instance;
-    }
-   
-    void Start()
+    private void Awake()
     {
         
+        imageFill = GetComponent<Image>();
+    }
+    private void OnEnable()
+    {
+        
+        gameController = GameController.Instance;
+        imageFill.fillAmount = 1;      
+        if(playerController.PvPlayer.IsMine)
+        {
+           gameController.pnlGame.SetActive(true);
+        }      
+    }
+    private void OnDisable()
+    {
+        if (playerController.PvPlayer.IsMine)
+        {
+            gameController.pnlGame.SetActive(false);
+        }
+    }
+
+    void Start()
+    {
+      
         playerController.isTurn = true;
     }  
     void Update()
@@ -34,12 +49,13 @@ public class TimeCounter : MonoBehaviour
                 playerPlaying = gameController.indexBigBlind;
                 playerController.isTurn = false;
                 
+
                 NextPlayer(playerPlaying);
                 this.gameObject.SetActive(false);
             }
+            
         }
-        //else
-        //    this.gameObject.SetActive(false);
+        //else  this.gameObject.SetActive(false);
     }
     public void NextPlayer(int CurrentPlayer)
     {       
