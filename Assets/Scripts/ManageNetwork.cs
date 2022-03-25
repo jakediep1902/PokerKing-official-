@@ -45,7 +45,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         //pnlGame.SetActive(true);
         // SceneManager.LoadScene(0);
         Invoke(nameof(BtnReady),4f);
-        isJoinedRoom = true;
+        
     }
     public override void OnLeftRoom()
     {
@@ -55,5 +55,6 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     public void BtnReady()
     {
         gameController.BtnReady();
+        isJoinedRoom = true;
     }  
 }

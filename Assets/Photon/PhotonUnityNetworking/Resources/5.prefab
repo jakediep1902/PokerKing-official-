@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 6123758905548967357}
   - component: {fileID: 6123758905548967346}
   m_Layer: 0
-  m_Name: Card1
+  m_Name: Card Template 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 6123758905975739385}
   - component: {fileID: 6123758905975739390}
   m_Layer: 0
-  m_Name: Card2
+  m_Name: Card Template 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -579,12 +579,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54ec18a5fdc28344c8ceb35fbea199fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameController: {fileID: 0}
   card1: {fileID: 0}
   card2: {fileID: 0}
   cardTemplate1: {fileID: 6123758905548967359}
   cardTemplate2: {fileID: 6123758905975739387}
   bigBlind: {fileID: 1469084257145567989}
   btnXemBai: {fileID: 0}
+  btnBoBai: {fileID: 0}
+  btnThemCuoc: {fileID: 0}
   timeCounter: {fileID: 6123758905901497016}
   PvPlayer: {fileID: 5902643516526401221}
   eAddBackCard:
@@ -616,6 +619,7 @@ MonoBehaviour:
   isHighCard: 0
   isWinner: 0
   isTurn: 0
+  isFold: 0
 --- !u!212 &6123758906237394967
 SpriteRenderer:
   m_ObjectHideFlags: 0

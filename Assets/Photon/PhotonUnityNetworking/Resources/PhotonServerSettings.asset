@@ -81,6 +81,7 @@ MonoBehaviour:
   - RPC_PerformEvent
   - XemBai
   - BoBai
+  - UpdatePlayerPlayings
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

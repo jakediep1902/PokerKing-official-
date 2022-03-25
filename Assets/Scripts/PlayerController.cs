@@ -9,7 +9,7 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviourPunCallbacks
 {
     //public BackCard backCard;
-    GameController gameController;
+    public GameController gameController;
 
     public GameObject card1,card2,cardTemplate1,cardTemplate2;   
     //public GameObject backCard1,backCard2;
@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     public Button btnXemBai;
     public Button btnBoBai;
+    public Button btnThemCuoc;
 
     public TimeCounter timeCounter;
     public PhotonView PvPlayer;
@@ -70,6 +71,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
         btnXemBai.onClick.AddListener(() => BtnXemBai());
         btnBoBai = gameController.btnBoBai;
         btnBoBai.onClick.AddListener(() => BtnBoBai());
+        btnThemCuoc = gameController.btnThemCuoc;
+        btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
     }
 
    
@@ -100,6 +103,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
             if (PvPlayer.IsMine)
             {
                 int indexCard = Random.Range((int)0, (int)gameController.cards.Length);
+                if (indexCard > 51)
+                {
+                    Debug.LogError($"index of Card over 51 and the new value is {indexCard}");
+                    indexCard--;
+                }
+                Debug.Log($"index of Card over 51 and vlue is {indexCard}");
                 PvPlayer.RPC("RPC_SetCard1", RpcTarget.All, indexCard);              
                 //Debug.Log(indexCard);
                 indexCard = Random.Range((int)0,(int)gameController.cards.Length);
@@ -179,7 +188,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         cardTemplate1.GetComponent<SpriteRenderer>().color = tempColor;
         cardTemplate2.GetComponent<SpriteRenderer>().color = tempColor;
         isFold = true;
-        gameController.UpdatePlayer();
+        gameController.UpdatePlayerPlayings();
     }
     public void BtnBoBai()
     {
@@ -193,5 +202,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
                                 
         }
     }
-
+    public void BtnThemCuoc()
+    {       
+        if (PvPlayer.IsMine)
+        {
+            bool temp = !gameController.pnlThemCuoc.activeSelf;
+            gameController.pnlThemCuoc.SetActive(temp);
+        }
+    }
 }

@@ -85,6 +85,6 @@ public class TimeCounter : MonoBehaviour
     }
     public void BtnDeal()
     {
-        gameController.BtnDeal();
+        gameController.BtnDeal();      
     }    
 }
