@@ -35,6 +35,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 
     ManageNetwork manageNetwork;
     public PhotonView photonViews;
+    public UIManager uIManager;
     
 
     public Text txtIndex;
@@ -56,7 +57,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public List<BackCard> listBackCard = new List<BackCard>();
     //private List<int[]>listFlush = new List<int[]>();
 
-    public ulong barTotalMoney = 0;
+    public long barTotalMoney = 0;
 
     public int commonIndex = 0;
     public int indexBigBlind;
@@ -68,6 +69,8 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public int NoCommonPos = 0;
     int isFlush = 5;//edit with value 5 when finish
     int conStraightFlush = 5;//edit with value 5 when finish
+
+    public long bigestBlinded;
 
     public bool isFullFiveCard = false;
     public bool isStartGame = false;
@@ -149,12 +152,13 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 
             item.btnThemCuoc = btnThemCuoc;
             item.btnThemCuoc.onClick.AddListener(() => item.BtnThemCuoc());
+            item.uIManager = uIManager;
         }
     }
     private void Update()
     {
         if (manageNetwork.isJoinedRoom)//waiting for connected
-        {
+        { 
 
             txtIndex.text = commonIndex.ToString();
             txtBarTotalMoney.text = FormatVlueToString(barTotalMoney);
@@ -375,7 +379,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             }
         }
     }//using
-    IEnumerator ResetTimeCounter(float timeDelay)
+    public IEnumerator ResetTimeCounter(float timeDelay)
     {
         yield return new WaitForSeconds(timeDelay);
         arrPlayer[indexBigBlind].timeCounter.gameObject.SetActive(true);
@@ -1441,7 +1445,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         Debug.Log($"StackCheck Count is {stackCheck.Count}");      
     }
 
-    public void InitBlind(ulong moneyVlue = 10000)
+    public void InitBlind(long moneyVlue = 10000)
     {
         UpdatePlayerPlayings();
         for (int i = 0; i < arrPlayer.Length; i++)
@@ -1450,6 +1454,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             if (player.money >= moneyVlue)
             {
                 player.money -= moneyVlue;
+                player.moneyBlinded += moneyVlue;
                 barTotalMoney += moneyVlue;
             }
             else
@@ -1458,7 +1463,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             }
         }
     }
-    public string  FormatVlueToString(ulong score)
+    public string  FormatVlueToString(long score)
     {       
         string str = score.ToString();    
         if (str.Length > 6 && str.Length<=9)
@@ -1483,6 +1488,46 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         }
         return str;
     }
+
+    public void LoadScene()
+    {
+        SceneManager.LoadScene(0);
+    }
+    public bool CheckEqualBlind()
+    {
+        UpdatePlayerPlayings();
+
+        List<PlayerController> temp = new List<PlayerController>();
+        foreach (var item in arrPlayer)
+        {
+            if (item.money > 0)
+            {
+                temp.Add(item);
+            }
+        }
+        if(temp.Count>1)
+        {         
+            foreach (var item1 in temp)
+            {
+                if(item1.moneyBlinded<bigestBlinded)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    
+    }
+    public void UpdateBlind()
+    {
+        foreach (var item in arrPlayer)
+        {         
+            if(item.moneyBlinded>bigestBlinded)
+            {
+                bigestBlinded = item.moneyBlinded;
+            }     
+        }
+    }//using
     //public void Deal3CommonCard()
     //{
     //    for (int i = 0; i < 3; i++)

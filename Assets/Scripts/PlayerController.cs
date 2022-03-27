@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public Text txtMoney;
     public Text txtMoneyBlind;
 
+    public UIManager uIManager;
     public TimeCounter timeCounter;
     public PhotonView PvPlayer;
     public UnityEvent eAddBackCard;
@@ -38,8 +39,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public int[] arrCardWin = new int[5];
 
     public float score = 0f;
-    public ulong money = 1000000;
-    public ulong moneyBlind = 10000;
+    public long money = 1000000;
+    public long moneyBlind = 0;
+    public long moneyBlinded = 0;
 
 
     public int ID = 0;
@@ -61,11 +63,17 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     
     // Create a CultureInfo object for English in Belize.
-    CultureInfo bz = new CultureInfo("en-US");
+    //CultureInfo bz = new CultureInfo("en-US");
     // Display i formatted as currency for bz.
-    
 
 
+    private void Awake()
+    {
+        uIManager = FindObjectOfType<UIManager>();
+        uIManager.btnOKBlind.onClick.AddListener(() => BtnOkBlind());
+        uIManager.btnTheoCuoc.onClick.AddListener(() => BtnTheoCuoc());
+
+    }
 
 
     void Start()
@@ -87,6 +95,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
         }
         gameObject.name = ID.ToString();
         money = 1000000;
+        moneyBlind = 0;
+
+        uIManager.pnlGame.SetActive(false);
 
         btnXemBai = gameController.btnXemBai;
         btnXemBai.onClick.AddListener(() => BtnXemBai());
@@ -94,6 +105,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
         btnBoBai.onClick.AddListener(() => BtnBoBai());
         btnThemCuoc = gameController.btnThemCuoc;
         btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
+
+        
     }
     private void Update()
     {
@@ -110,6 +123,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
         }
         txtMoney.text = gameController.FormatVlueToString(money);
         txtMoneyBlind.text = gameController.FormatVlueToString(moneyBlind);
+
+        if(uIManager.pnlThemCuoc.activeSelf && PvPlayer.IsMine)
+        {
+            float temp = uIManager.sliderVlue.value;
+            moneyBlind = (long)(temp * money);
+            uIManager.txtSetBlindVlue.text = gameController.FormatVlueToString(moneyBlind);
+        }
+       
+
        // txtMoney.text =((money / 1)).ToString("N", bz) + " K";
     }
 
@@ -252,5 +274,34 @@ public class PlayerController : MonoBehaviourPunCallbacks
             card1.SetActive(false);
             card2.SetActive(false);
         }       
+    }
+    [PunRPC]
+    public void SetValueBlind(long vlue)
+    {
+        moneyBlind = vlue;
+        money -= vlue;
+        gameController.barTotalMoney += vlue;
+        moneyBlinded += vlue;
+        gameController.UpdateBlind();
+    }
+    public void BtnOkBlind()
+    {
+        if(PvPlayer.IsMine)
+        {
+            float temp = uIManager.sliderVlue.value;
+            moneyBlind = (long)(temp * money);
+            PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlind);
+            BtnXemBai();
+            Debug.Log("on PlayerController");
+        }
+    }
+    public void BtnTheoCuoc()
+    {
+        if(PvPlayer.IsMine)
+        {
+            moneyBlind = gameController.bigestBlinded - moneyBlinded;
+            PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlind);
+            BtnXemBai();
+        }      
     }
 }

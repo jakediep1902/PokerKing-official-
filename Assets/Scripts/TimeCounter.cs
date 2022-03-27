@@ -23,7 +23,19 @@ public class TimeCounter : MonoBehaviour
         if(playerController.PvPlayer.IsMine)
         {
            gameController.pnlGame.SetActive(true);
-        }      
+        }
+        Debug.Log($"bigest Blinded is {gameController.bigestBlinded}");
+        Debug.Log($"money Blinded is {playerController.moneyBlinded}");
+        if (gameController.bigestBlinded > playerController.moneyBlinded)
+        {
+            
+            playerController.uIManager.btnTheoCuoc.gameObject.SetActive(true);
+        }
+        else
+        {
+            playerController.uIManager.btnTheoCuoc.gameObject.SetActive(false);
+        }
+
     }
     private void OnDisable()
     {
@@ -43,7 +55,7 @@ public class TimeCounter : MonoBehaviour
         if (playerController.isTurn)
         {
             if (imageFill.fillAmount > 0)
-                imageFill.fillAmount -= 0.003f;
+                imageFill.fillAmount -= 0.0003f;
             else
             {
                 playerPlaying = gameController.indexBigBlind;
@@ -75,6 +87,16 @@ public class TimeCounter : MonoBehaviour
                 {
                     //gameController.BtnDeal();
                     Invoke(nameof(BtnDeal), 2f);
+
+                    //if (gameController.CheckEqualBlind())
+                    //{
+                    //    Invoke(nameof(BtnDeal), 2f);
+                    //}
+                    //else
+                    //{
+                    //    Debug.Log(1);
+                    //    StartCoroutine(gameController.ResetTimeCounter(0.5f));
+                    //}                   
                 }
             }               
 
@@ -92,6 +114,15 @@ public class TimeCounter : MonoBehaviour
                 }
                 else if (!gameController.isCheckCard)
                 {
+                    //if (gameController.CheckEqualBlind())
+                    //{
+                    //    Invoke(nameof(BtnDeal), 2f);
+                    //}
+                    //else
+                    //{
+                    //    Debug.Log(2);
+                    //    StartCoroutine(gameController.ResetTimeCounter(0.5f));
+                    //}
                     Invoke(nameof(BtnDeal), 2f);
                     //Debug.Log(2);
                 }

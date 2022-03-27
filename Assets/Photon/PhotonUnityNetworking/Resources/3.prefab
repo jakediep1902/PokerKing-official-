@@ -912,6 +912,7 @@ MonoBehaviour:
   btnThemCuoc: {fileID: 0}
   txtMoney: {fileID: 3800988056083807814}
   txtMoneyBlind: {fileID: 3741937977226005038}
+  uIManager: {fileID: 0}
   timeCounter: {fileID: 6370991498925641643}
   PvPlayer: {fileID: 6736222059795981270}
   eAddBackCard:
@@ -932,6 +933,7 @@ MonoBehaviour:
   score: 0
   money: 100000000
   moneyBlind: 10000
+  moneyBlinded: 0
   ID: 3
   isInvoke: 0
   isStraightFlush: 0
