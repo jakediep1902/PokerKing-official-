@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.Events;
+using System.Globalization;
 
 public class PlayerController : MonoBehaviourPunCallbacks
 {
@@ -20,6 +21,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public Button btnBoBai;
     public Button btnThemCuoc;
 
+    public Text txtMoney;
+    public Text txtMoneyBlind;
+
     public TimeCounter timeCounter;
     public PhotonView PvPlayer;
     public UnityEvent eAddBackCard;
@@ -32,7 +36,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public List<GameObject> listCard = new List<GameObject>();
     public List<GameObject> listCardWin = new List<GameObject>();
     public int[] arrCardWin = new int[5];
+
     public float score = 0f;
+    public ulong money = 1000000;
+    public ulong moneyBlind = 10000;
+
+
     public int ID = 0;
 
     public bool isInvoke = false;
@@ -49,12 +58,20 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     public bool isTurn = false;
     public bool isFold = false;
-   
+
     
+    // Create a CultureInfo object for English in Belize.
+    CultureInfo bz = new CultureInfo("en-US");
+    // Display i formatted as currency for bz.
+    
+
+
+
 
     void Start()
     {
-        //Debug.Log($"hello from Player {PvPlayer.ViewID}");       
+        //Debug.Log($"hello from Player {i.ToString("c", bz)}");
+        
         DontDestroyOnLoad(this.gameObject);
         gameController = GameController.Instance;
         cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 7;
@@ -68,7 +85,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 transform.position = arrPosDefaul[i].position;
             }
         }
-        gameObject.name = ID.ToString();       
+        gameObject.name = ID.ToString();
+        money = 1000000;
 
         btnXemBai = gameController.btnXemBai;
         btnXemBai.onClick.AddListener(() => BtnXemBai());
@@ -89,7 +107,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 card2.transform.Rotate(2, 1, 2);
                 
             }            
-        }      
+        }
+        txtMoney.text = gameController.FormatVlueToString(money);
+        txtMoneyBlind.text = gameController.FormatVlueToString(moneyBlind);
+       // txtMoney.text =((money / 1)).ToString("N", bz) + " K";
     }
 
 

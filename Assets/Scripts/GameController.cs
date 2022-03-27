@@ -30,12 +30,15 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public Button btnXemBai;
     public Button btnBoBai;
     public Button btnThemCuoc;
+    
+    public Slider sliceBlind;
 
     ManageNetwork manageNetwork;
     public PhotonView photonViews;
     
 
-    public Text txtIndex;    
+    public Text txtIndex;
+    public Text txtBarTotalMoney;
 
     public Sprite[] arrCards = new Sprite[52];
     public PlayerController[] arrPlayer;
@@ -52,6 +55,8 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     private List<Flush> listFlush = new List<Flush>();
     public List<BackCard> listBackCard = new List<BackCard>();
     //private List<int[]>listFlush = new List<int[]>();
+
+    public ulong barTotalMoney = 0;
 
     public int commonIndex = 0;
     public int indexBigBlind;
@@ -71,9 +76,10 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public bool isEndGame = false;
     public bool isFirstDeal = true;
 
+  
     private void Awake()
     {
-        //Debug.Log("awake from gameController");
+        
         if (Instance == null) Instance = this;     
         else Destroy(gameObject);
         
@@ -83,9 +89,9 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         //var clone = cards.Clone();
         //cardsClone = clone as GameObject[];
     }
-    void Start()
+    public void Start()
     {
-        //Debug.Log("hello from gameController");
+        
         photonViews = GetComponent<PhotonView>();
         manageNetwork = ManageNetwork.Instance;
         startPos = backCardPrefab.transform;
@@ -101,7 +107,9 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         //Invoke(nameof(UpdatePlayerPlaying), 5f);       
         UpdatePlayerPlayings();
         UpdatePosDefaul();
+
         
+     
 
         for (int i = 0; i < arrPlayer.Length; i++)
         {
@@ -149,7 +157,8 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         {
 
             txtIndex.text = commonIndex.ToString();
-
+            txtBarTotalMoney.text = FormatVlueToString(barTotalMoney);
+           
             if (isStartGame && (playerPlaying < 2) && !isEndGame)
             {
                 //if(stackCheck.Count==0)
@@ -1432,6 +1441,48 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         Debug.Log($"StackCheck Count is {stackCheck.Count}");      
     }
 
+    public void InitBlind(ulong moneyVlue = 10000)
+    {
+        UpdatePlayerPlayings();
+        for (int i = 0; i < arrPlayer.Length; i++)
+        {
+            var player = arrPlayer[i];
+            if (player.money >= moneyVlue)
+            {
+                player.money -= moneyVlue;
+                barTotalMoney += moneyVlue;
+            }
+            else
+            {
+                //All in 
+            }
+        }
+    }
+    public string  FormatVlueToString(ulong score)
+    {       
+        string str = score.ToString();    
+        if (str.Length > 6 && str.Length<=9)
+        {
+            score = score / 1000;
+            Mathf.RoundToInt(score);
+            str = score.ToString();
+            str = str.Insert(str.Length-3, ","); //string is immutable
+            str = str + " M";
+        }
+        else if (str.Length > 3 && str.Length <=6)
+        {
+            str = str.Insert(str.Length - 3, ",");
+        }
+        else if (str.Length > 9)
+        {
+            score = score / 1000000;
+            Mathf.RoundToInt(score);
+            str = score.ToString();
+            str = str.Insert(str.Length - 3, ",");
+            str = str + " B";
+        }
+        return str;
+    }
     //public void Deal3CommonCard()
     //{
     //    for (int i = 0; i < 3; i++)

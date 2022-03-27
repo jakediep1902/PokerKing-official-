@@ -41,7 +41,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
-        //Debug.Log("hello from Network");
+        
         //pnlGame.SetActive(true);
         // SceneManager.LoadScene(0);
         Invoke(nameof(BtnReady),4f);
