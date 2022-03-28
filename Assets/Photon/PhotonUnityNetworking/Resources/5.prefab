@@ -574,6 +574,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imageFill: {fileID: 6123758905901497018}
   playerController: {fileID: 6123758906237394966}
+  isFirstGround: 1
 --- !u!1 &6123758905975739387
 GameObject:
   m_ObjectHideFlags: 0

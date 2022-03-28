@@ -381,6 +381,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imageFill: {fileID: 1215529185814093073}
   playerController: {fileID: 1215529185613645757}
+  isFirstGround: 1
 --- !u!1 &1215529185874064464
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,7 +835,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6488893405402342009}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.19, y: 1.11, z: 0}
+  m_LocalPosition: {x: -2.7, y: 1.22, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 1215529185613645754}

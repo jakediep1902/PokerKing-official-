@@ -259,12 +259,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
         }
     }
     public void BtnThemCuoc()
-    {       
+    {
+       
         if (PvPlayer.IsMine && gameController.isStartGame)
         {
             bool temp = !gameController.pnlThemCuoc.activeSelf;
             gameController.pnlThemCuoc.SetActive(temp);
         }
+
+
     }
     
     public void HandleBoBai()
@@ -286,13 +289,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
     }
     public void BtnOkBlind()
     {
+        BtnTheoCuoc();
         if(PvPlayer.IsMine)
         {
             float temp = uIManager.sliderVlue.value;
             moneyBlind = (long)(temp * money);
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlind);
             BtnXemBai();
-            Debug.Log("on PlayerController");
+            // Debug.Log("on PlayerController");
         }
     }
     public void BtnTheoCuoc()

@@ -9,46 +9,70 @@ public class TimeCounter : MonoBehaviour
     public PlayerController playerController;
     GameController gameController;
     int playerPlaying;
+    public bool isFirstGround = true;
 
     private void Awake()
     {
-        
         imageFill = GetComponent<Image>();
     }
     private void OnEnable()
     {
-        
         gameController = GameController.Instance;
-        imageFill.fillAmount = 1;      
-        if(playerController.PvPlayer.IsMine)
+        playerController.isTurn = true;
+
+        if(gameController.isShowDown)
         {
-           gameController.pnlGame.SetActive(true);
+            playerController.isTurn = false;
         }
-        Debug.Log($"bigest Blinded is {gameController.bigestBlinded}");
-        Debug.Log($"money Blinded is {playerController.moneyBlinded}");
-        if (gameController.bigestBlinded > playerController.moneyBlinded)
+
+        if (playerController.money == 0)
         {
-            
-            playerController.uIManager.btnTheoCuoc.gameObject.SetActive(true);
+            playerController.BtnXemBai();
         }
         else
         {
-            playerController.uIManager.btnTheoCuoc.gameObject.SetActive(false);
+            if (playerController.PvPlayer.IsMine)
+            {
+                gameController.pnlGame.SetActive(true);
+            }
+
+            Debug.Log($"bigest Blinded is {gameController.bigestBlinded} money Blinded is {playerController.moneyBlinded}");
+            if (gameController.bigestBlinded > playerController.moneyBlinded)
+            {
+                playerController.uIManager.btnTheoCuoc.gameObject.SetActive(true);
+
+            }
+            else
+            {
+                if (isFirstGround)
+                {
+                    playerController.uIManager.btnTheoCuoc.gameObject.SetActive(false);
+                }
+                else
+                {
+                    playerController.BtnXemBai();
+                }
+            }
+            isFirstGround = false;
         }
 
+        
+       
     }
     private void OnDisable()
     {
-        if (playerController.PvPlayer.IsMine)
-        {
+        
+        if (playerController.PvPlayer.IsMine && playerController!=null && playerController.PvPlayer!=null)
+        { 
             gameController.pnlGame.SetActive(false);
-        }
+        }      
     }
 
     void Start()
     {
-      
-        playerController.isTurn = true;
+        
+        imageFill.fillAmount = 1;
+        //playerController.isTurn = true;
     }  
     void Update()
     {
@@ -75,59 +99,56 @@ public class TimeCounter : MonoBehaviour
         if (CurrentPlayer < 0)
         {
             CurrentPlayer = gameController.arrPlayer.Length - 1;
-            gameController.indexBigBlind = CurrentPlayer;
+            //gameController.indexBigBlind = CurrentPlayer;
 
             if (gameController.arrPlayer[CurrentPlayer]!= null)
             {
+                //if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
                 if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
                 {
                     gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
                 }
-                else if (!gameController.isCheckCard)
+                else if (!gameController.isCheckCard && !gameController.isShowDown)
                 {
                     //gameController.BtnDeal();
-                    Invoke(nameof(BtnDeal), 2f);
+                    //Invoke(nameof(BtnDeal), 2f);
 
-                    //if (gameController.CheckEqualBlind())
-                    //{
-                    //    Invoke(nameof(BtnDeal), 2f);
-                    //}
-                    //else
-                    //{
-                    //    Debug.Log(1);
-                    //    StartCoroutine(gameController.ResetTimeCounter(0.5f));
-                    //}                   
+                    if (gameController.CheckEqualBlind())
+                    {
+                        Invoke(nameof(BtnDeal), 2f);
+                    }
+                    else
+                    {
+                        gameController.RefreshTimeCounter();
+                        //Debug.Log(1);
+                    }
                 }
             }               
-
         }
         else
         {
-            gameController.indexBigBlind = CurrentPlayer;
-            //Debug.Log($"current Player is :{CurrentPlayer}");
+            //gameController.indexBigBlind = CurrentPlayer;
             if(gameController.arrPlayer[CurrentPlayer] !=null)
             {
-                if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
+                if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0) //!gameController.arrPlayer[CurrentPlayer].isTurn &&
                 {
                     gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
-                    //Debug.Log(1);
                 }
-                else if (!gameController.isCheckCard)
+                else if (!gameController.isCheckCard && !gameController.isShowDown)
                 {
-                    //if (gameController.CheckEqualBlind())
-                    //{
-                    //    Invoke(nameof(BtnDeal), 2f);
-                    //}
-                    //else
-                    //{
-                    //    Debug.Log(2);
-                    //    StartCoroutine(gameController.ResetTimeCounter(0.5f));
-                    //}
-                    Invoke(nameof(BtnDeal), 2f);
+                    if (gameController.CheckEqualBlind())
+                    {
+                        Invoke(nameof(BtnDeal), 2f);
+                    }
+                    else
+                    {
+                        gameController.RefreshTimeCounter();
+                        //Debug.Log(2);
+                    }
+                    //Invoke(nameof(BtnDeal), 2f);
                     //Debug.Log(2);
                 }
-            }
-           
+            }    
         }
     }
     public void BtnDeal()

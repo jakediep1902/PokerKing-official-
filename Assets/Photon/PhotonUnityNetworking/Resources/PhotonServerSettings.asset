@@ -84,6 +84,9 @@ MonoBehaviour:
   - UpdatePlayerPlayings
   - HandleBoBai
   - SetValueBlind
+  - ShowDown
+  - RPC_ShowDown
+  - SetNewGround
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

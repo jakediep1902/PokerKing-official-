@@ -6,7 +6,7 @@ public class TImeCounterStart : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject[] objNumber;
-    GameController gameController;   
+    GameController gameController; 
     private void Start()
     {
         gameController = GameController.Instance;
