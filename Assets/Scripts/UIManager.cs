@@ -31,8 +31,8 @@ public class UIManager : MonoBehaviourPunCallbacks
         {
             Destroy(this.gameObject);
         }
-        //DontDestroyOnLoad(this.gameObject);
-        gameController = GameController.Instance;
+        DontDestroyOnLoad(this.gameObject);
+       // gameController = GameController.Instance;
     }
     private void Start()
     {

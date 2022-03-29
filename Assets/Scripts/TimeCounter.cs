@@ -8,7 +8,7 @@ public class TimeCounter : MonoBehaviour
     public Image imageFill;
     public PlayerController playerController;
     GameController gameController;
-    int playerPlaying;
+    [SerializeField] int playerChecking;
     public bool isFirstGround = true;
 
     private void Awake()
@@ -19,6 +19,8 @@ public class TimeCounter : MonoBehaviour
     {
         gameController = GameController.Instance;
         playerController.isTurn = true;
+        //gameController.pnlGame.SetActive(true);
+        //Debug.Log("set true");
 
         if(gameController.isShowDown)
         {
@@ -36,7 +38,7 @@ public class TimeCounter : MonoBehaviour
                 gameController.pnlGame.SetActive(true);
             }
 
-            Debug.Log($"bigest Blinded is {gameController.bigestBlinded} money Blinded is {playerController.moneyBlinded}");
+            //Debug.Log($"bigest Blinded is {gameController.bigestBlinded} money Blinded is {playerController.moneyBlinded}");
             if (gameController.bigestBlinded > playerController.moneyBlinded)
             {
                 playerController.uIManager.btnTheoCuoc.gameObject.SetActive(true);
@@ -61,16 +63,17 @@ public class TimeCounter : MonoBehaviour
     }
     private void OnDisable()
     {
-        
-        if (playerController.PvPlayer.IsMine && playerController!=null && playerController.PvPlayer!=null)
-        { 
-            gameController.pnlGame.SetActive(false);
-        }      
+
+        //if (playerController.PvPlayer.IsMine && playerController!=null && playerController.PvPlayer!=null)
+        //{ 
+        //gameController.pnlGame.SetActive(false);
+        //}      
     }
 
     void Start()
     {
-        
+        //Debug.Log("set false");
+        //gameController.pnlGame.SetActive(false);
         imageFill.fillAmount = 1;
         //playerController.isTurn = true;
     }  
@@ -82,11 +85,10 @@ public class TimeCounter : MonoBehaviour
                 imageFill.fillAmount -= 0.0003f;
             else
             {
-                playerPlaying = gameController.indexBigBlind;
+                playerChecking = gameController.indexBigBlind;
                 playerController.isTurn = false;
-                
-
-                NextPlayer(playerPlaying);
+             
+                NextPlayer(playerChecking);
                 this.gameObject.SetActive(false);
             }
             
@@ -95,7 +97,7 @@ public class TimeCounter : MonoBehaviour
     }
     public void NextPlayer(int CurrentPlayer)
     {       
-        CurrentPlayer--;
+        CurrentPlayer--;       
         if (CurrentPlayer < 0)
         {
             CurrentPlayer = gameController.arrPlayer.Length - 1;

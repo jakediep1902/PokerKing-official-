@@ -20,26 +20,32 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 
     public GameObject timeCounterStart;
 
-    public GameObject pnlGame;
-    public GameObject pnlThemCuoc;
-
     private Transform startPos;
 
     public Vector3 playerStartPos;
+
+    UnityAction<PlayerController> setOptionWinner;
+
+    public UIManager uIManager;
+
+    public GameObject pnlGame;
+    public GameObject pnlThemCuoc;
 
     public Button btnXemBai;
     public Button btnBoBai;
     public Button btnThemCuoc;
 
+    public Text txtIndex;
+    public Text txtBarTotalMoney;
+
     public Slider sliceBlind;
 
     ManageNetwork manageNetwork;
     public PhotonView photonViews;
-    public UIManager uIManager;
+    
 
 
-    public Text txtIndex;
-    public Text txtBarTotalMoney;
+    
 
     public Sprite[] arrCards = new Sprite[52];
     public PlayerController[] arrPlayer;
@@ -79,8 +85,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public bool isEndGame = false;
     public bool isFirstDeal = true;
     public bool isShowDown = false;
-
-
+   
     private void Awake()
     {
 
@@ -95,11 +100,14 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void Start()
     {
-
+        uIManager = UIManager.Instance;
         photonViews = GetComponent<PhotonView>();
         manageNetwork = ManageNetwork.Instance;
         startPos = backCardPrefab.transform;
         ClearConsole();
+
+        setOptionWinner += ReturnBlindedToWinner;
+        setOptionWinner += PayMoneyWonToWinner;
 
         //for (int i = 0; i < posDefaul.Length; i++)
         //{
@@ -112,7 +120,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         UpdatePlayerPlayings();
         UpdatePosDefaul();
 
-
+        
 
 
         for (int i = 0; i < arrPlayer.Length; i++)
@@ -274,7 +282,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void BtnCheckCard()
     {
-        if (photonViews.IsMine)
+        if (photonViews.IsMine && !isCheckCard)
         {
             photonViews.RPC("StartCheckCard", RpcTarget.All, null);
             photonViews.RPC("InactiveTempCard", RpcTarget.All, null);
@@ -331,7 +339,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         {
             if (isFirstDeal)
             {
-                RPC_Deal(3);
+                RPC_Deal(3,0.5f);
                 RPC_SetNewGround(4f);
                 isFirstDeal = false;
             }
@@ -369,20 +377,21 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             else
             {
                 //Debug.Log("Now we have 5 card aldrealy!!");
+                isShowDown = true;
                 Invoke(nameof(BtnCheckCard), 3f);
             }
         }
     }//using
-    public void RPC_Deal(int times = 1)
+    public void RPC_Deal(int times = 1,float delay = 1f)
     {
-        StartCoroutine(DelayDeal(times));
+        StartCoroutine(DelayDeal(times,delay));
     }//using
-    IEnumerator DelayDeal(int DealTimes = 1)//using
+    IEnumerator DelayDeal(int DealTimes = 1,float delay = 1f)//using
     {
         for (int i = 0; i < DealTimes; i++)
         {
             RPC_SetCommonIndex();
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(delay);
             photonViews.RPC("Deal", RpcTarget.AllBuffered, null);
         }
 
@@ -463,6 +472,8 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         }
         foreach (PlayerController winner in listWinner)
         {
+            //AddMoneyToWiner(winner);
+            setOptionWinner(winner);
             HighLightCardWin(winner);
             ScaleCardWin(winner, 1.1f);
             Debug.Log($"Winner is Player {winner.gameObject.name} with Score : {winner.score}" +
@@ -1606,8 +1617,26 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             
         }
         Invoke(nameof(BtnCheckCard), 9);
-
     }  
+    public void ReturnBlindedToWinner(PlayerController winer)
+    {
+        winer.money += winer.moneyBlinded;
+        barTotalMoney -= winer.moneyBlinded;
+    }
+    public void PayMoneyWonToWinner(PlayerController winner)
+    {
+        UpdatePlayerPlayings();
+        if (barTotalMoney <= winner.moneyBlind)
+        {
+            winner.money += barTotalMoney;
+            barTotalMoney = 0;
+        }
+        else
+        {
+            winner.money += winner.moneyBlinded;
+            barTotalMoney -= winner.moneyBlinded;
+        }
+    }
     //public void Deal3CommonCard()
     //{
     //    for (int i = 0; i < 3; i++)

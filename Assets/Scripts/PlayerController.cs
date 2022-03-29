@@ -105,8 +105,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
         btnBoBai.onClick.AddListener(() => BtnBoBai());
         btnThemCuoc = gameController.btnThemCuoc;
         btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
+       
 
-        
     }
     private void Update()
     {
@@ -131,6 +131,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
             uIManager.txtSetBlindVlue.text = gameController.FormatVlueToString(moneyBlind);
         }
        
+        if(!timeCounter.gameObject.activeSelf && uIManager.pnlGame.activeSelf)
+        {
+            if(PvPlayer.IsMine)
+            uIManager.pnlGame.SetActive(false);
+        }
 
        // txtMoney.text =((money / 1)).ToString("N", bz) + " K";
     }
@@ -289,14 +294,19 @@ public class PlayerController : MonoBehaviourPunCallbacks
     }
     public void BtnOkBlind()
     {
-        BtnTheoCuoc();
-        if(PvPlayer.IsMine)
+        //BtnTheoCuoc();
+        Debug.Log("them cuoc 1");
+        if (PvPlayer.IsMine)
         {
+            moneyBlind = gameController.bigestBlinded - moneyBlinded;
+            PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlind);
+
             float temp = uIManager.sliderVlue.value;
             moneyBlind = (long)(temp * money);
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlind);
             BtnXemBai();
             // Debug.Log("on PlayerController");
+            Debug.Log("them cuoc 2");
         }
     }
     public void BtnTheoCuoc()
