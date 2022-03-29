@@ -9,17 +9,10 @@ using System.Globalization;
 
 public class PlayerController : MonoBehaviourPunCallbacks
 {
-    //public BackCard backCard;
     public GameController gameController;
 
-    public GameObject card1,card2,cardTemplate1,cardTemplate2;   
-    //public GameObject backCard1,backCard2;
-    //public List<GameObject> listBackCard = new List<GameObject>(2);
-    public GameObject bigBlind;
-
-    public Button btnXemBai;
-    public Button btnBoBai;
-    public Button btnThemCuoc;
+    public GameObject card1,card2,cardTemplate1,cardTemplate2;      
+    public GameObject bigBlindIcon;
 
     public Text txtMoney;
     public Text txtMoneyBlind;
@@ -28,7 +21,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public TimeCounter timeCounter;
     public PhotonView PvPlayer;
     public UnityEvent eAddBackCard;
-   // public UnityEvent eSetBigBlind;
     
     public Vector3 posCard1;
     public Vector3 posCard2;
@@ -40,9 +32,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     public float score = 0f;
     public long money = 1000000;
-    public long moneyBlind = 0;
+    public long moneyBlinding = 0;
     public long moneyBlinded = 0;
-
 
     public int ID = 0;
 
@@ -61,25 +52,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public bool isTurn = false;
     public bool isFold = false;
 
-    
-    // Create a CultureInfo object for English in Belize.
-    //CultureInfo bz = new CultureInfo("en-US");
-    // Display i formatted as currency for bz.
-
-
     private void Awake()
     {
-        uIManager = FindObjectOfType<UIManager>();
-        uIManager.btnOKBlind.onClick.AddListener(() => BtnOkBlind());
-        uIManager.btnTheoCuoc.onClick.AddListener(() => BtnTheoCuoc());
-
+        uIManager = FindObjectOfType<UIManager>();      
     }
-
-
     void Start()
-    {
-        //Debug.Log($"hello from Player {i.ToString("c", bz)}");
-        
+    {    
         DontDestroyOnLoad(this.gameObject);
         gameController = GameController.Instance;
         cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 7;
@@ -94,18 +72,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
             }
         }
         gameObject.name = ID.ToString();
-        money = 1000000;
-        moneyBlind = 0;
+        money = 10000000;
+        moneyBlinding = 0;
 
         uIManager.pnlGame.SetActive(false);
-
-        btnXemBai = gameController.btnXemBai;
-        btnXemBai.onClick.AddListener(() => BtnXemBai());
-        btnBoBai = gameController.btnBoBai;
-        btnBoBai.onClick.AddListener(() => BtnBoBai());
-        btnThemCuoc = gameController.btnThemCuoc;
-        btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
-       
+        uIManager.btnOKBlind.onClick.AddListener(() => BtnOkBlind());
+        uIManager.btnTheoCuoc.onClick.AddListener(() => BtnTheoCuoc());
+        uIManager.btnXemBai.onClick.AddListener(() => BtnXemBai());
+        uIManager.btnBoBai.onClick.AddListener(() => BtnBoBai());
+        uIManager.btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
 
     }
     private void Update()
@@ -117,27 +92,30 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 card1.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
                 card2.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
                 card1.transform.Rotate(1, 2, 1);
-                card2.transform.Rotate(2, 1, 2);
-                
+                card2.transform.Rotate(2, 1, 2);          
             }            
         }
         txtMoney.text = gameController.FormatVlueToString(money);
-        txtMoneyBlind.text = gameController.FormatVlueToString(moneyBlind);
+        txtMoneyBlind.text = gameController.FormatVlueToString(moneyBlinding);
 
         if(uIManager.pnlThemCuoc.activeSelf && PvPlayer.IsMine)
         {
             float temp = uIManager.sliderVlue.value;
-            moneyBlind = (long)(temp * money);
-            uIManager.txtSetBlindVlue.text = gameController.FormatVlueToString(moneyBlind);
+            moneyBlinding = (long)(temp * money);
+            uIManager.txtSetBlindVlue.text = gameController.FormatVlueToString(moneyBlinding);
         }
        
-        if(!timeCounter.gameObject.activeSelf && uIManager.pnlGame.activeSelf)
+        if(timeCounter.gameObject.activeSelf)
         {
             if(PvPlayer.IsMine)
-            uIManager.pnlGame.SetActive(false);
+            uIManager.pnlGame.SetActive(true);
+        }
+        else
+        {
+            if (PvPlayer.IsMine)
+               uIManager.pnlGame.SetActive(false);
         }
 
-       // txtMoney.text =((money / 1)).ToString("N", bz) + " K";
     }
 
 
@@ -172,8 +150,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
                     Debug.LogError($"index of Card over 51 and the new value is {indexCard}");
                     indexCard--;
                 }
-                Debug.Log($"index of Card vlue is {indexCard}");
-                PvPlayer.RPC("RPC_SetCard1", RpcTarget.All, indexCard);              
+                PvPlayer.RPC("RPC_SetCard1", RpcTarget.All, indexCard);
                 //Debug.Log(indexCard);
                 indexCard = Random.Range((int)0,(int)gameController.cards.Length);
                 PvPlayer.RPC("RPC_SetCard2", RpcTarget.All, indexCard);             
@@ -188,9 +165,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_SetCard1(int index)
     {
-        if (gameController == null)
+        if (gameController.cards[index] == null)
         {
-            gameController = GameController.Instance;
+            index--;
+            //gameController = GameController.Instance;
+            Debug.Log("gameController is null");
         }
         gameController.cards[index].SetActive(true);
         gameController.cards[index].transform.position = posCard1;
@@ -203,6 +182,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_SetCard2(int index)
     {
+        if (gameController.cards[index] == null)
+        {
+            index--;
+            //gameController = GameController.Instance;
+            Debug.Log("gameController2 is null");
+        }
         gameController.cards[index].SetActive(true);
         gameController.cards[index].transform.position = posCard2;
         gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 5;
@@ -264,17 +249,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
         }
     }
     public void BtnThemCuoc()
-    {
-       
+    {    
         if (PvPlayer.IsMine && gameController.isStartGame)
         {
-            bool temp = !gameController.pnlThemCuoc.activeSelf;
-            gameController.pnlThemCuoc.SetActive(temp);
+            bool temp = !uIManager.pnlThemCuoc.activeSelf;
+            uIManager.pnlThemCuoc.SetActive(temp);
         }
-
-
-    }
-    
+    }   
     public void HandleBoBai()
     {
         if(!PvPlayer.IsMine)
@@ -286,35 +267,35 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetValueBlind(long vlue)
     {
-        moneyBlind = vlue;
+        moneyBlinding = vlue;
         money -= vlue;
         gameController.barTotalMoney += vlue;
         moneyBlinded += vlue;
         gameController.UpdateBlind();
     }
     public void BtnOkBlind()
-    {
-        //BtnTheoCuoc();
-        Debug.Log("them cuoc 1");
+    {       
         if (PvPlayer.IsMine)
         {
-            moneyBlind = gameController.bigestBlinded - moneyBlinded;
-            PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlind);
+            moneyBlinding = gameController.bigestBlinded - moneyBlinded;//Theo cuoc
+            PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
 
             float temp = uIManager.sliderVlue.value;
-            moneyBlind = (long)(temp * money);
-            PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlind);
+            moneyBlinding = (long)(temp * money);
+            PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
             BtnXemBai();
-            // Debug.Log("on PlayerController");
-            Debug.Log("them cuoc 2");
-        }
+                
+            uIManager.pnlThemCuoc.SetActive(false);
+            uIManager.pnlGame.SetActive(false);
+        }   
     }
     public void BtnTheoCuoc()
     {
         if(PvPlayer.IsMine)
         {
-            moneyBlind = gameController.bigestBlinded - moneyBlinded;
-            PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlind);
+            uIManager.pnlGame.SetActive(false);
+            moneyBlinding = gameController.bigestBlinded - moneyBlinded;
+            PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
             BtnXemBai();
         }      
     }

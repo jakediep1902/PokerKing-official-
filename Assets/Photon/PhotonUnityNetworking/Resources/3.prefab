@@ -326,7 +326,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7863545577846432096
 Transform:
   m_ObjectHideFlags: 0
@@ -335,7 +335,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3310510286497674328}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.47, y: 1.04, z: 0}
+  m_LocalPosition: {x: 2.11, y: 1.52, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 6370991499126084866}
@@ -908,10 +908,7 @@ MonoBehaviour:
   card2: {fileID: 0}
   cardTemplate1: {fileID: 6370991498304567468}
   cardTemplate2: {fileID: 6370991498863453928}
-  bigBlind: {fileID: 3310510286497674328}
-  btnXemBai: {fileID: 0}
-  btnBoBai: {fileID: 0}
-  btnThemCuoc: {fileID: 0}
+  bigBlindIcon: {fileID: 3310510286497674328}
   txtMoney: {fileID: 3800988056083807814}
   txtMoneyBlind: {fileID: 3741937977226005038}
   uIManager: {fileID: 0}
@@ -934,7 +931,7 @@ MonoBehaviour:
   arrCardWin: 0000000000000000000000000000000000000000
   score: 0
   money: 100000000
-  moneyBlind: 10000
+  moneyBlinding: 0
   moneyBlinded: 0
   ID: 3
   isInvoke: 0

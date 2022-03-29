@@ -2038,6 +2038,12 @@ MonoBehaviour:
   btnOKBlind: {fileID: 986017650}
   btnTheoCuoc: {fileID: 1755977281}
   sliderVlue: {fileID: 615137811}
+  btnXemBai: {fileID: 43375998}
+  btnBoBai: {fileID: 1031048995}
+  btnThemCuoc: {fileID: 396555511}
+  txtIndex: {fileID: 1731854394}
+  txtBarTotalMoney: {fileID: 1071853251}
+  photonViews: {fileID: 0}
   txtSetBlindVlue: {fileID: 2077415756}
   blindVlue: 0
 --- !u!4 &411639156
@@ -7406,7 +7412,7 @@ GameObject:
   - component: {fileID: 1071853252}
   - component: {fileID: 1071853251}
   m_Layer: 5
-  m_Name: Text Total Blind
+  m_Name: Text Bar Total Blind
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7464,7 +7470,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 100.000.000
+  m_Text: 100.000 M
 --- !u!222 &1071853252
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9472,17 +9478,9 @@ MonoBehaviour:
   congratulation: {fileID: 6500133173658204431, guid: 80cc50722c58e154387bb97e0ec73335, type: 3}
   playerPrefab: {fileID: 713623376267355582, guid: 8db7863112a7bba4784b5af33fbc4e48, type: 3}
   timeCounterStart: {fileID: 2081227201}
-  pnlGame: {fileID: 1764015618}
-  pnlThemCuoc: {fileID: 1510318762}
   playerStartPos: {x: 0, y: 0, z: 0}
-  btnXemBai: {fileID: 43375998}
-  btnBoBai: {fileID: 1031048995}
-  btnThemCuoc: {fileID: 396555511}
-  sliceBlind: {fileID: 0}
-  photonViews: {fileID: 1428603470}
   uIManager: {fileID: 411639155}
-  txtIndex: {fileID: 1731854394}
-  txtBarTotalMoney: {fileID: 1071853251}
+  photonViews: {fileID: 1428603470}
   arrCards:
   - {fileID: -3785512530016009588, guid: 47549f4cb9cafb24383f04933be09bf9, type: 3}
   - {fileID: 2635119014170364837, guid: 47549f4cb9cafb24383f04933be09bf9, type: 3}
@@ -11248,7 +11246,7 @@ GameObject:
   - component: {fileID: 1731854395}
   - component: {fileID: 1731854394}
   m_Layer: 5
-  m_Name: Index Card
+  m_Name: Common Index Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -13,11 +13,14 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 {
     public static GameController Instance;
 
+    UIManager uIManager;
+    ManageNetwork manageNetwork;
+    PhotonView photonViews;
+
     public GameObject backCardPrefab;
     public GameObject commonCard;
     public GameObject congratulation;
     public GameObject playerPrefab;
-
     public GameObject timeCounterStart;
 
     private Transform startPos;
@@ -25,27 +28,6 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public Vector3 playerStartPos;
 
     UnityAction<PlayerController> setOptionWinner;
-
-    public UIManager uIManager;
-
-    public GameObject pnlGame;
-    public GameObject pnlThemCuoc;
-
-    public Button btnXemBai;
-    public Button btnBoBai;
-    public Button btnThemCuoc;
-
-    public Text txtIndex;
-    public Text txtBarTotalMoney;
-
-    public Slider sliceBlind;
-
-    ManageNetwork manageNetwork;
-    public PhotonView photonViews;
-    
-
-
-    
 
     public Sprite[] arrCards = new Sprite[52];
     public PlayerController[] arrPlayer;
@@ -115,13 +97,10 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         //}
 
         foreach (var item in cards) item.SetActive(false);
-        pnlGame.SetActive(true);
+        //uIManager.pnlGame.SetActive(true);
         //Invoke(nameof(UpdatePlayerPlaying), 5f);       
         UpdatePlayerPlayings();
         UpdatePosDefaul();
-
-        
-
 
         for (int i = 0; i < arrPlayer.Length; i++)
         {
@@ -133,7 +112,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             item.cardTemplate2.SetActive(false);
             item.timeCounter.imageFill.fillAmount = 1;
             //item.isTurn = true;
-            item.bigBlind.SetActive(false);
+            item.bigBlindIcon.SetActive(false);
             item.listCard.Clear();
             item.listCardWin.Clear();
             System.Array.Clear(item.arrCardWin, 0, item.arrCardWin.Length);
@@ -148,20 +127,17 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             item.isOnePair = false;
             item.isHighCard = false;
             item.isWinner = false;
-            item.btnXemBai = btnXemBai;
-            item.btnXemBai.onClick.AddListener(() => item.BtnXemBai());
+            item.timeCounter.isFirstGround = true;
 
-            item.btnBoBai = btnBoBai;
-            item.btnBoBai.onClick.AddListener(() => item.BtnBoBai());
+            item.moneyBlinding = 0;
+            item.moneyBlinded = 0;
+       
             Color tempColor = Color.white;
             tempColor.a = 1f;
             item.GetComponent<SpriteRenderer>().color = tempColor;
             item.cardTemplate1.GetComponent<SpriteRenderer>().color = tempColor;
             item.cardTemplate2.GetComponent<SpriteRenderer>().color = tempColor;
-
-            item.btnThemCuoc = btnThemCuoc;
-            item.btnThemCuoc.onClick.AddListener(() => item.BtnThemCuoc());
-            item.uIManager = uIManager;
+         
         }
     }
     private void Update()
@@ -169,19 +145,12 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         if (manageNetwork.isJoinedRoom)//waiting for connected
         {
 
-            txtIndex.text = commonIndex.ToString();
-            txtBarTotalMoney.text = FormatVlueToString(barTotalMoney);
+            uIManager.txtIndex.text = commonIndex.ToString();
+            uIManager.txtBarTotalMoney.text = FormatVlueToString(barTotalMoney);
 
             if (isStartGame && (playerPlaying < 2) && !isEndGame)
-            {
-                //if(stackCheck.Count==0)
-                //{
-
-                //}
-                //else
-                //{
-                //    BtnCheckCard();                   
-                //}
+            {                            
+                //BtnCheckCard(); //can't use because stackCheck = 0 (there is no Card to check)                              
                 CheckWinner(arrPlayer);
                 isEndGame = true;
                 isCheckCard = true;
@@ -189,15 +158,10 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 
             CheckStartGame();
 
-            if (playerInRoom < 2)
+            if (playerInRoom < 2)//playerInroom different player playing(Fold)
             {
                 if (isStartGame && !isEndGame)
-                {
-                    // UpdatePlayer();
-                    //UpdatePlayerPlayings();
-                    //BtnCheckCard();
-                    //isEndGame = true;
-
+                {                                               
                     CheckWinner(arrPlayer);
                     isEndGame = true;
                     isCheckCard = true;
@@ -205,7 +169,6 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             }
         }
     }
-
     private void OnValidate()
     {
 
@@ -348,8 +311,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
                 RPC_SetCommonIndex();
                 photonViews.RPC("Deal", RpcTarget.AllBuffered, null);
                 RPC_SetNewGround();
-            }
-            
+            }            
         }
     }
     [PunRPC]
@@ -369,10 +331,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
                 cards[commonIndex].transform.position = startPos.position;
                 cards[commonIndex].AddComponent<CommonCard>();
                 stackCheck.Push(cards[commonIndex]);
-                RemoveElement(ref cards, commonIndex);
-
-                //SetNewGround();
-                //StartCoroutine(ResetTimeCounter(1f));
+                RemoveElement(ref cards, commonIndex);              
             }
             else
             {
@@ -401,20 +360,16 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         yield return new WaitForSeconds(timeDelay);        
         UpdatePlayerPlayings();
         foreach (var item in arrPlayer)
-        {
-            //item.isTurn = true;
+        {            
             if (item.timeCounter.imageFill == null)
             {
                 item.timeCounter.imageFill = item.timeCounter.GetComponent<Image>();
-                item.timeCounter.imageFill.fillAmount = 1;
-                //item.timeCounter.isFirstGround = true;
+                item.timeCounter.imageFill.fillAmount = 1;           
             }
             else
             {
                 item.timeCounter.imageFill.fillAmount = 1;
-                //item.timeCounter.isFirstGround = true;
             }
-
         }
         if(!isShowDown)
         arrPlayer[indexBigBlind].timeCounter.gameObject.SetActive(true);
@@ -1370,9 +1325,8 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public void RPC_IndexBigBlind(int index)//using
     {
         indexBigBlind = index;
-        //arrPlayer[indexBigBlind].isTurn = true;
         arrPlayer[indexBigBlind].timeCounter.gameObject.SetActive(true);
-        arrPlayer[indexBigBlind].bigBlind.SetActive(true);
+        arrPlayer[indexBigBlind].bigBlindIcon.SetActive(true);
     }
     [PunRPC]
     public void InactiveTempCard()//using
@@ -1436,7 +1390,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         {
             InactiveTimeCounterStart();
         }
-    }
+    }//using
     public void UpdatePosDefaul()
     {
         posDefaul = FindObjectsOfType<PositionDefaul>();
@@ -1465,8 +1419,8 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             }
         }
 
-    }
-    public void BtnCheckStackCheck()
+    }//using
+    public void BtnTest()//Button test
     {
         Debug.Log($"StackCheck Count is {stackCheck.Count}");
     }
@@ -1514,13 +1468,13 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             str = str + " B";
         }
         return str;
-    }
+    }//using
 
     public void LoadScene()
     {
         SceneManager.LoadScene(0);
     }
-    public bool CheckEqualBlind()
+    public bool CheckEqualBlind()//using
     {
         UpdatePlayerPlayings();
 
@@ -1544,12 +1498,18 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         }
         else
         {
-            Debug.Log("Show Down above !!!");
-            //show card          
-            BtnShowDown();
+            if (temp.Count>0 && (temp[0].moneyBlinded < bigestBlinded))
+            {
+                return false;
+            }
+            else
+            {
+                //show card
+                Debug.Log($"Let Show Down now !!!");
+                BtnShowDown();
+            }        
         }
         return true;
-
     }
     public void UpdateBlind()
     {
@@ -1565,30 +1525,30 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public void RefreshTimeCounter(float delay = 0.5f)
     {
         StartCoroutine(ResetTimeCounter(delay));
-    }
+    }//using
     [PunRPC]
-    public void SetNewGround(float delay = 1f)
+    public void SetNewGround(float delay = 1f)//using
     {
         UpdatePlayerPlayings();
         foreach (var item in arrPlayer)
         {
             item.timeCounter.isFirstGround = true;
+            item.moneyBlinding = 0;
         }
         RefreshTimeCounter(delay);
     }
-    public void RPC_SetNewGround(float delay =1f)
+    public void RPC_SetNewGround(float delay =1f)//using
     {
         photonViews.RPC("SetNewGround", RpcTarget.AllBuffered, delay);
     }
 
-    public void BtnShowDown()
+    public void BtnShowDown()//using
     {
-        //if (photonViews.IsMine)
-            photonViews.RPC("RPC_ShowDown", RpcTarget.All, null);
-        
+        //if (photonViews.IsMine) // alway only one player call therefor no need
+            photonViews.RPC("RPC_ShowDown", RpcTarget.All, null);     
     }
     [PunRPC]
-    public void RPC_ShowDown()
+    public void RPC_ShowDown()//using
     {
         Debug.Log("Show Down!!!");
         isShowDown = true;
@@ -1602,19 +1562,15 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
                     break;
                 case 3:
                     RPC_Deal(2);
-                    RPC_SetNewGround(4);
-                    Debug.Log($"NoCommonPos is 3");
+                    RPC_SetNewGround(4);                  
                     break;
                 case 4:
                     RPC_Deal(1);
-                    RPC_SetNewGround(3);
-                    Debug.Log($"NoCommonPos is 4");
+                    RPC_SetNewGround(3);                 
                     break;
-                case 5:
-                    Debug.Log($"NoCommonPos is 5");
+                case 5:              
                     break;
-            }
-            
+            }       
         }
         Invoke(nameof(BtnCheckCard), 9);
     }  
@@ -1626,7 +1582,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public void PayMoneyWonToWinner(PlayerController winner)
     {
         UpdatePlayerPlayings();
-        if (barTotalMoney <= winner.moneyBlind)
+        if (barTotalMoney <= winner.moneyBlinding)
         {
             winner.money += barTotalMoney;
             barTotalMoney = 0;
@@ -1637,14 +1593,6 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             barTotalMoney -= winner.moneyBlinded;
         }
     }
-    //public void Deal3CommonCard()
-    //{
-    //    for (int i = 0; i < 3; i++)
-    //    {
-    //        photonViews.RPC("CreateCommonCard", RpcTarget.All, 1);
-    //        RPC_SetCommonIndex();
-    //    }
-    //}
 
     //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     //{

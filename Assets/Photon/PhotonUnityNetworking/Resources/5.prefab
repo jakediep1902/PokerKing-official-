@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5502224617919471437
 Transform:
   m_ObjectHideFlags: 0
@@ -574,6 +574,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imageFill: {fileID: 6123758905901497018}
   playerController: {fileID: 6123758906237394966}
+  playerChecking: 0
   isFirstGround: 1
 --- !u!1 &6123758905975739387
 GameObject:
@@ -726,10 +727,7 @@ MonoBehaviour:
   card2: {fileID: 0}
   cardTemplate1: {fileID: 6123758905548967359}
   cardTemplate2: {fileID: 6123758905975739387}
-  bigBlind: {fileID: 1469084257145567989}
-  btnXemBai: {fileID: 0}
-  btnBoBai: {fileID: 0}
-  btnThemCuoc: {fileID: 0}
+  bigBlindIcon: {fileID: 1469084257145567989}
   txtMoney: {fileID: 8635910537837304575}
   txtMoneyBlind: {fileID: 6888321709598114367}
   uIManager: {fileID: 0}
@@ -752,7 +750,7 @@ MonoBehaviour:
   arrCardWin: 0000000000000000000000000000000000000000
   score: 0
   money: 100000000
-  moneyBlind: 10000
+  moneyBlinding: 0
   moneyBlinded: 0
   ID: 5
   isInvoke: 0

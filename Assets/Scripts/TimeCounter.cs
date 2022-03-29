@@ -8,19 +8,20 @@ public class TimeCounter : MonoBehaviour
     public Image imageFill;
     public PlayerController playerController;
     GameController gameController;
+    UIManager uIManager;
     [SerializeField] int playerChecking;
     public bool isFirstGround = true;
 
     private void Awake()
     {
         imageFill = GetComponent<Image>();
+        uIManager = UIManager.Instance;
     }
     private void OnEnable()
     {
         gameController = GameController.Instance;
         playerController.isTurn = true;
-        //gameController.pnlGame.SetActive(true);
-        //Debug.Log("set true");
+        //playerController.uIManager.pnlGame.SetActive(true);
 
         if(gameController.isShowDown)
         {
@@ -35,7 +36,7 @@ public class TimeCounter : MonoBehaviour
         {
             if (playerController.PvPlayer.IsMine)
             {
-                gameController.pnlGame.SetActive(true);
+                uIManager.pnlGame.SetActive(true);
             }
 
             //Debug.Log($"bigest Blinded is {gameController.bigestBlinded} money Blinded is {playerController.moneyBlinded}");
@@ -57,13 +58,10 @@ public class TimeCounter : MonoBehaviour
             }
             isFirstGround = false;
         }
-
-        
-       
+     
     }
     private void OnDisable()
     {
-
         //if (playerController.PvPlayer.IsMine && playerController!=null && playerController.PvPlayer!=null)
         //{ 
         //gameController.pnlGame.SetActive(false);
@@ -71,11 +69,8 @@ public class TimeCounter : MonoBehaviour
     }
 
     void Start()
-    {
-        //Debug.Log("set false");
-        //gameController.pnlGame.SetActive(false);
-        imageFill.fillAmount = 1;
-        //playerController.isTurn = true;
+    {      
+        imageFill.fillAmount = 1;       
     }  
     void Update()
     {
@@ -104,8 +99,7 @@ public class TimeCounter : MonoBehaviour
             //gameController.indexBigBlind = CurrentPlayer;
 
             if (gameController.arrPlayer[CurrentPlayer]!= null)
-            {
-                //if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
+            {              
                 if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
                 {
                     gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
@@ -147,13 +141,12 @@ public class TimeCounter : MonoBehaviour
                         gameController.RefreshTimeCounter();
                         //Debug.Log(2);
                     }
-                    //Invoke(nameof(BtnDeal), 2f);
-                    //Debug.Log(2);
+                    //Invoke(nameof(BtnDeal), 2f);                
                 }
             }    
         }
     }
-    public void BtnDeal()
+    public void BtnDeal()//to delay
     {
         gameController.BtnDeal();      
     }    

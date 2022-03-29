@@ -10,15 +10,23 @@ public class UIManager : MonoBehaviourPunCallbacks
     public static UIManager Instance;
     GameController gameController;
     PhotonView PvUI;
+    ManageNetwork manageNetwork;
 
     public GameObject pnlThemCuoc;
     public GameObject pnlGame;
 
     public Button btnOKBlind;
-    public Button btnTheoCuoc;
-    public Slider sliderVlue;
-    
+    public Button btnTheoCuoc; 
+    public Button btnXemBai;
+    public Button btnBoBai;
+    public Button btnThemCuoc;
+
+    public Text txtIndex;
+    public Text txtBarTotalMoney;
     public Text txtSetBlindVlue;
+
+    public Slider sliderVlue;
+   
     public float blindVlue = 0;
 
     private void Awake()
@@ -32,25 +40,10 @@ public class UIManager : MonoBehaviourPunCallbacks
             Destroy(this.gameObject);
         }
         DontDestroyOnLoad(this.gameObject);
-       // gameController = GameController.Instance;
     }
     private void Start()
     {
         gameController = GameController.Instance;
-        btnTheoCuoc.gameObject.SetActive(false);
-        btnOKBlind.onClick.AddListener(() => BtnOKBlind());
-        btnTheoCuoc.onClick.AddListener(() => BtnTheoCuoc());
-    }
-    public void BtnOKBlind()
-    {
-        //Debug.Log("BtnOKBlind");
-        pnlThemCuoc.SetActive(false);
-        pnlGame.SetActive(false);
-    }
-    public void BtnTheoCuoc()
-    {
-        //do something
-        gameController.pnlGame.SetActive(false);
-        
-    }    
+        btnTheoCuoc.gameObject.SetActive(false);     
+    }  
 }
