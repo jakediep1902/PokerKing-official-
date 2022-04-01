@@ -41,11 +41,13 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
+        Debug.Log($"isStartGame is {gameController.isStartGame}");
         
-        //pnlGame.SetActive(true);
-        // SceneManager.LoadScene(0);
-        Invoke(nameof(BtnReady),4f);
-        isJoinedRoom = true;
+        //BtnReady();
+        Invoke(nameof(BtnReady), 2f);
+                        
+        //SceneManager.LoadScene(0);
+        
     }
     public override void OnLeftRoom()
     {
@@ -54,7 +56,12 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public void BtnReady()
     {
-        gameController.BtnReady();
-       
+        if (!gameController.isStartGame)
+        {
+            isJoinedRoom = true;
+            gameController.BtnReady();
+            
+        }
+        Debug.Log($"isStartGame after waited is {gameController.isStartGame}");
     }  
 }

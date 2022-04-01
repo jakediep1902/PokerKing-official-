@@ -87,6 +87,10 @@ MonoBehaviour:
   - ShowDown
   - RPC_ShowDown
   - SetNewGround
+  - CheckMoneyPlayer
+  - StartCount
+  - SetIsStartGame
+  - RPC_SetIsStartGame
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

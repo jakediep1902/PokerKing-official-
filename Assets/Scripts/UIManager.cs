@@ -45,5 +45,10 @@ public class UIManager : MonoBehaviourPunCallbacks
     {
         gameController = GameController.Instance;
         btnTheoCuoc.gameObject.SetActive(false);     
-    }  
+    }
+    private void Update()
+    {
+        txtIndex.text = gameController.commonIndex.ToString();
+        txtBarTotalMoney.text = gameController.FormatVlueToString(gameController.barTotalMoney);
+    }
 }

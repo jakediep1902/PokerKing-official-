@@ -673,6 +673,8 @@ MonoBehaviour:
   isWinner: 0
   isTurn: 0
   isFold: 0
+  isBroke: 0
+  isWaiting: 0
 --- !u!212 &8019202327998940194
 SpriteRenderer:
   m_ObjectHideFlags: 0

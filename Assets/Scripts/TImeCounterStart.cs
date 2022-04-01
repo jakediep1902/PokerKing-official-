@@ -1,20 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class TImeCounterStart : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject[] objNumber;
-    GameController gameController; 
+    GameController gameController;
+    public PhotonView PvTimeCounterStart;
+
+    private void Awake()
+    {
+        
+    }
+
+    private void OnEnable()
+    {
+        
+        StartCoroutine(CoStartCount());
+        //RPC_StartCount();
+    } 
+
+
     private void Start()
     {
         gameController = GameController.Instance;
+
     }
-    private void OnEnable()
-    {
-        StartCoroutine(StartCount());
-    }
+    
     private void OnDisable()
     {
         foreach (var item in objNumber)
@@ -22,8 +36,15 @@ public class TImeCounterStart : MonoBehaviour
             item.SetActive(false);
         }
     }
-
-    IEnumerator StartCount(int seconds = 10)
+    
+    private void Update()
+    {
+        if(gameController.isStartGame)
+        {
+            this.gameObject.SetActive(false);
+        }
+    }
+    IEnumerator CoStartCount(int seconds = 10)
     {
         if (seconds >= objNumber.Length)
         {
@@ -45,8 +66,21 @@ public class TImeCounterStart : MonoBehaviour
             }
         }       
         this.gameObject.SetActive(false);
-        gameController.isStartGame = true;
         gameController.InitBlind();
+        gameController.RPC_SetIsStartGame(true);
+        //gameController.isStartGame = true;
         gameController.BtnPlayGame();
+        
+        
     }
+    
+    //public void RPC_StartCount()
+    //{
+    //    PvTimeCounterStart.RPC("StartCount", RpcTarget.All, null);      
+    //} 
+    //[PunRPC]
+    //public void StartCount()
+    //{
+    //    StartCoroutine(CoStartCount());
+    //}
 }

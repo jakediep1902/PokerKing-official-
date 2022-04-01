@@ -51,15 +51,24 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     public bool isTurn = false;
     public bool isFold = false;
+    public bool isBroke = false;
+    public bool isWaiting = false;
 
     private void Awake()
-    {
-        uIManager = FindObjectOfType<UIManager>();      
+    {        
+        gameController = GameController.Instance;
+        DontDestroyOnLoad(this.gameObject);
+        uIManager = FindObjectOfType<UIManager>();
     }
     void Start()
-    {    
-        DontDestroyOnLoad(this.gameObject);
-        gameController = GameController.Instance;
+    {
+        if (gameController.isStartGame)
+        {
+            Debug.Log("isStartGame is true");
+            isWaiting = true;
+            return;
+        }
+        
         cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 7;
         cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 7;
         PvPlayer = GetComponent<PhotonView>();
@@ -74,7 +83,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         gameObject.name = ID.ToString();
         money = 10000000;
         moneyBlinding = 0;
-
+        
         uIManager.pnlGame.SetActive(false);
         uIManager.btnOKBlind.onClick.AddListener(() => BtnOkBlind());
         uIManager.btnTheoCuoc.onClick.AddListener(() => BtnTheoCuoc());
@@ -82,48 +91,61 @@ public class PlayerController : MonoBehaviourPunCallbacks
         uIManager.btnBoBai.onClick.AddListener(() => BtnBoBai());
         uIManager.btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
 
+      
+
     }
     private void Update()
     {
-        if (isFold && !PvPlayer.IsMine)
-        {
-            if (card1.transform.position != Vector3.zero)
+        if (!isWaiting) return;
+        
+            if (isFold && !PvPlayer.IsMine)
             {
-                card1.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
-                card2.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
-                card1.transform.Rotate(1, 2, 1);
-                card2.transform.Rotate(2, 1, 2);          
-            }            
-        }
-        txtMoney.text = gameController.FormatVlueToString(money);
-        txtMoneyBlind.text = gameController.FormatVlueToString(moneyBlinding);
-
-        if(uIManager.pnlThemCuoc.activeSelf && PvPlayer.IsMine)
-        {
-            float temp = uIManager.sliderVlue.value;
-            moneyBlinding = (long)(temp * money);
-            uIManager.txtSetBlindVlue.text = gameController.FormatVlueToString(moneyBlinding);
-        }
+                if (card1.transform.position != Vector3.zero)//Fold card
+                {
+                    card1.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
+                    card2.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
+                    card1.transform.Rotate(1, 2, 1);
+                    card2.transform.Rotate(2, 1, 2);
+                }
+            }
+            txtMoney.text = gameController.FormatVlueToString(money);
+            txtMoneyBlind.text = gameController.FormatVlueToString(moneyBlinding);
        
-        if(timeCounter.gameObject.activeSelf)
-        {
-            if(PvPlayer.IsMine)
-            uIManager.pnlGame.SetActive(true);
-        }
-        else
-        {
-            if (PvPlayer.IsMine)
-               uIManager.pnlGame.SetActive(false);
-        }
+        if (uIManager.pnlThemCuoc.activeSelf && PvPlayer.IsMine)
+            {
+                float temp = uIManager.sliderVlue.value;
+                moneyBlinding = (long)(temp * money);
+                uIManager.txtSetBlindVlue.text = gameController.FormatVlueToString(moneyBlinding);
+            }
 
+            if (timeCounter.gameObject.activeSelf)
+            {
+                if (PvPlayer.IsMine)
+                    uIManager.pnlGame.SetActive(true);
+            }
+            else
+            {
+                if (PvPlayer.IsMine)
+                    uIManager.pnlGame.SetActive(false);
+            }
+              
     }
 
 
     public override void OnDisable()
     {
+        gameController.UpdatePlayerPlayings();
         //Debug.Log("Left Room");
-        gameController.UpdatePlayer();
+        //gameController.UpdatePlayer();
         timeCounter.imageFill.fillAmount = 0;
+        
+        if (card1!=null && card2!=null)
+        {
+            card1.SetActive(false);
+            card2.SetActive(false);
+        }
+        timeCounter.CheckNextPlayer();
+        
     }   
 
     public void ArrangeCard()
@@ -267,11 +289,17 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SetValueBlind(long vlue)
     {
+        if(vlue>money)
+        {
+            //All in
+            vlue = money;          
+        }      
         moneyBlinding = vlue;
         money -= vlue;
         gameController.barTotalMoney += vlue;
         moneyBlinded += vlue;
         gameController.UpdateBlind();
+
     }
     public void BtnOkBlind()
     {       
