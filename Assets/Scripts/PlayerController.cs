@@ -130,18 +130,16 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     public override void OnDisable()
     {
-        if (!gameController.photonViews==null)
+        gameController.UpdatePlayerPlayings();
+        if (!PvPlayer.IsMine)
         {
-            Debug.Log("null null");
-        }
-        else
-        {
-            gameController.UpdatePlayerPlayings();
             timeCounter.imageFill.fillAmount = 0;
-        }
+            card1.SetActive(false);
+            card2.SetActive(false);
             
-        Debug.Log("Left Room 2");
-              
+        }
+        //Debug.Log("Left Room 2");
+
         //if (card1 != null && card2 != null)
         //{
         //    card1.SetActive(false);

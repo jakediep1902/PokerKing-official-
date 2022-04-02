@@ -31,11 +31,11 @@ public class TImeCounterStart : MonoBehaviour
     }
     
     private void OnDisable()
-    {
+    {      
         foreach (var item in objNumber)
         {
             item.SetActive(false);
-        }
+        }    
     }
     
     private void Update()
