@@ -41,7 +41,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
-        Debug.Log($"isStartGame is {gameController.isStartGame}");
+       // Debug.Log($"isStartGame is {gameController.isStartGame}");
         
         //BtnReady();
         Invoke(nameof(BtnReady), 2f);
@@ -59,9 +59,12 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         if (!gameController.isStartGame)
         {
             isJoinedRoom = true;
-            gameController.BtnReady();
-            
+            gameController.BtnReady();           
         }
-        Debug.Log($"isStartGame after waited is {gameController.isStartGame}");
+        else
+        {
+            gameController.SpawPlayer();
+        }
+       // Debug.Log($"isStartGame after waited is {gameController.isStartGame}");
     }  
 }

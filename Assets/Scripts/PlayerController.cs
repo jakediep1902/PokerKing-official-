@@ -64,11 +64,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         if (gameController.isStartGame)
         {
-            Debug.Log("isStartGame is true");
             isWaiting = true;
-            return;
         }
-        
+        gameController.UpdatePlayer();
         cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 7;
         cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 7;
         PvPlayer = GetComponent<PhotonView>();
@@ -95,9 +93,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     }
     private void Update()
-    {
-        if (!isWaiting) return;
-        
+    {    
             if (isFold && !PvPlayer.IsMine)
             {
                 if (card1.transform.position != Vector3.zero)//Fold card
@@ -118,35 +114,40 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 uIManager.txtSetBlindVlue.text = gameController.FormatVlueToString(moneyBlinding);
             }
 
-            if (timeCounter.gameObject.activeSelf)
-            {
-                if (PvPlayer.IsMine)
-                    uIManager.pnlGame.SetActive(true);
-            }
-            else
-            {
-                if (PvPlayer.IsMine)
-                    uIManager.pnlGame.SetActive(false);
-            }
+            //if (timeCounter.gameObject.activeSelf)
+            //{
+            //    if (PvPlayer.IsMine)
+            //        uIManager.pnlGame.SetActive(true);
+            //}
+            //else
+            //{
+            //    if (PvPlayer.IsMine)
+            //        uIManager.pnlGame.SetActive(false);
+            //}
               
     }
 
 
     public override void OnDisable()
     {
-        gameController.UpdatePlayerPlayings();
-        //Debug.Log("Left Room");
-        //gameController.UpdatePlayer();
-        timeCounter.imageFill.fillAmount = 0;
-        
-        if (card1!=null && card2!=null)
+        if (!gameController.photonViews==null)
         {
-            card1.SetActive(false);
-            card2.SetActive(false);
+            Debug.Log("null null");
         }
-        timeCounter.CheckNextPlayer();
-        
-    }   
+        else
+        {
+            gameController.UpdatePlayerPlayings();
+            timeCounter.imageFill.fillAmount = 0;
+        }
+            
+        Debug.Log("Left Room 2");
+              
+        //if (card1 != null && card2 != null)
+        //{
+        //    card1.SetActive(false);
+        //    card2.SetActive(false);
+        //}
+    }    
 
     public void ArrangeCard()
     {      

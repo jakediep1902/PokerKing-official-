@@ -2,26 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
-public class TimeCounter : MonoBehaviour
+public class TimeCounter : MonoBehaviourPunCallbacks
 {
     public Image imageFill;
     public PlayerController playerController;
+    //public PhotonView PvTimeCounter;
     GameController gameController;
     UIManager uIManager;
     [SerializeField] int playerChecking;
     public bool isFirstGround = true;
-    int test = 0;
+    
     private void Awake()
     {
+        //gameController = GameController.Instance;
         imageFill = GetComponent<Image>();
         uIManager = UIManager.Instance;
     }
-    private void OnEnable()
+    public override void OnEnable()
     {
         gameController = GameController.Instance;
+      
+
+
         playerController.isTurn = true;
-        //playerController.uIManager.pnlGame.SetActive(true);
+        if(playerController.PvPlayer.IsMine)
+        uIManager.pnlGame.SetActive(true);
 
         if(gameController.isShowDown)
         {
@@ -60,7 +67,7 @@ public class TimeCounter : MonoBehaviour
         }
      
     }
-    private void OnDisable()
+    public override void OnDisable()
     {
         //if (playerController.PvPlayer.IsMine && playerController!=null && playerController.PvPlayer!=null)
         //{ 
@@ -76,30 +83,8 @@ public class TimeCounter : MonoBehaviour
         imageFill.fillAmount = 1;
         
     }  
-    void Update()
-    {
-        //if (playerController.isTurn)
-        //{
-        //    if (imageFill.fillAmount > 0)
-        //    {
-        //        imageFill.fillAmount -= 0.0005f;
-        //        Debug.Log(test++);
-        //    }
-        //    else
-        //    {
-        //        Time.timeScale = 0;
-        //        playerController.isTurn = false;
-        //        playerChecking = gameController.indexBigBlind;
-        //        //Debug.Log(playerChecking);
-        //        NextPlayer(playerChecking);
-        //        this.gameObject.SetActive(false);
-        //    }
-            
-        //}
-        //else  this.gameObject.SetActive(false);
-    }
     private void FixedUpdate()
-    {
+    {     
         if (playerController.isTurn)
         {
             if (imageFill.fillAmount > 0)
@@ -108,20 +93,35 @@ public class TimeCounter : MonoBehaviour
                 //Debug.Log(test++);
             }
             else
-            {
-                
+            {         
                 playerController.isTurn = false;
                 playerChecking = gameController.indexBigBlind;
                 //Debug.Log(playerChecking);
-                NextPlayer(playerChecking);
+                uIManager.pnlGame.SetActive(false);
+                NextPlayer(playerChecking);              
                 this.gameObject.SetActive(false);
             }
-
         }
     }
     public void NextPlayer(int CurrentPlayer)
-    {       
-        CurrentPlayer--;       
+    {
+        CurrentPlayer--;
+        for (int i = 0; i < gameController.arrPlayer.Length; i++)
+        {
+            if (CurrentPlayer < 0)
+            {
+                CurrentPlayer = gameController.arrPlayer.Length - 1;             
+            }
+            if (gameController.arrPlayer[CurrentPlayer] == null)
+            {
+                CurrentPlayer--;           
+            } 
+            else
+            {
+                break;
+            }
+        }
+        
         if (CurrentPlayer < 0)
         {
             CurrentPlayer = gameController.arrPlayer.Length - 1;

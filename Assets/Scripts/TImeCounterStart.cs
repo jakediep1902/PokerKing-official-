@@ -8,7 +8,7 @@ public class TImeCounterStart : MonoBehaviour
     // Start is called before the first frame update
     public GameObject[] objNumber;
     GameController gameController;
-    public PhotonView PvTimeCounterStart;
+    //public PhotonView PvTimeCounterStart;
 
     private void Awake()
     {
@@ -17,16 +17,17 @@ public class TImeCounterStart : MonoBehaviour
 
     private void OnEnable()
     {
-        
+        gameController = GameController.Instance;
         StartCoroutine(CoStartCount());
+        //GetComponent<Animator>().Play();
         //RPC_StartCount();
     } 
 
 
     private void Start()
     {
-        gameController = GameController.Instance;
-
+        
+        
     }
     
     private void OnDisable()
@@ -41,7 +42,7 @@ public class TImeCounterStart : MonoBehaviour
     {
         if(gameController.isStartGame)
         {
-            this.gameObject.SetActive(false);
+            this.gameObject.SetActive(false);         
         }
     }
     IEnumerator CoStartCount(int seconds = 10)
@@ -67,8 +68,6 @@ public class TImeCounterStart : MonoBehaviour
         }       
         this.gameObject.SetActive(false);
         gameController.InitBlind();
-        gameController.RPC_SetIsStartGame(true);
-        //gameController.isStartGame = true;
         gameController.BtnPlayGame();
         
         
