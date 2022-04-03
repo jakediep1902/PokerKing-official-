@@ -126,53 +126,48 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         {
             CurrentPlayer = gameController.arrPlayer.Length - 1;
             gameController.indexBigBlind = CurrentPlayer;
+            if (gameController.arrPlayer[CurrentPlayer]?.timeCounter.GetComponent<Image>().fillAmount > 0)
+            {
+                gameController.arrPlayer[CurrentPlayer]?.timeCounter.gameObject.SetActive(true);
+            }
+            else if (!gameController.isCheckCard && !gameController.isShowDown)
+            {
+                //gameController.BtnDeal();
+                //Invoke(nameof(BtnDeal), 2f);
 
-            if (gameController.arrPlayer[CurrentPlayer]!= null)
-            {              
-                if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0)
+                if (gameController.CheckEqualBlind())
                 {
-                    gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
+                    Invoke(nameof(BtnDeal), 2f);
                 }
-                else if (!gameController.isCheckCard && !gameController.isShowDown)
+                else
                 {
-                    //gameController.BtnDeal();
-                    //Invoke(nameof(BtnDeal), 2f);
+                    gameController.RefreshTimeCounter();
+                    //Debug.Log(1);
+                }
+            }
 
-                    if (gameController.CheckEqualBlind())
-                    {
-                        Invoke(nameof(BtnDeal), 2f);
-                    }
-                    else
-                    {
-                        gameController.RefreshTimeCounter();
-                        //Debug.Log(1);
-                    }
-                }
-            }               
         }
         else
         {
             gameController.indexBigBlind = CurrentPlayer;
-            if(gameController.arrPlayer[CurrentPlayer] !=null)
+            if (gameController.arrPlayer[CurrentPlayer]?.timeCounter.GetComponent<Image>().fillAmount > 0) //!gameController.arrPlayer[CurrentPlayer].isTurn &&
             {
-                if (gameController.arrPlayer[CurrentPlayer].timeCounter.GetComponent<Image>().fillAmount > 0) //!gameController.arrPlayer[CurrentPlayer].isTurn &&
+                gameController.arrPlayer[CurrentPlayer]?.timeCounter.gameObject.SetActive(true);
+            }
+            else if (!gameController.isCheckCard && !gameController.isShowDown)
+            {
+                if (gameController.CheckEqualBlind())
                 {
-                    gameController.arrPlayer[CurrentPlayer].timeCounter.gameObject.SetActive(true);
+                    Invoke(nameof(BtnDeal), 2f);
                 }
-                else if (!gameController.isCheckCard && !gameController.isShowDown)
+                else
                 {
-                    if (gameController.CheckEqualBlind())
-                    {
-                        Invoke(nameof(BtnDeal), 2f);
-                    }
-                    else
-                    {
-                        gameController.RefreshTimeCounter();
-                        //Debug.Log(2);
-                    }
-                    //Invoke(nameof(BtnDeal), 2f);                
+                    gameController.RefreshTimeCounter();
+                    //Debug.Log(2);
                 }
-            }    
+                //Invoke(nameof(BtnDeal), 2f);                
+            }
+
         }
     }
     public void BtnDeal()//to delay

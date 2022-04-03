@@ -8,6 +8,7 @@ using Photon.Pun;
 using Photon.Realtime;
 public class Test : MonoBehaviourPunCallbacks
 {
+    
     //int[] test = new int[9] { 3, 4, 2, 3, 7, 4, 9, 0, 3 };
     //public Image image;
     //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -20,7 +21,7 @@ public class Test : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-
+       
         //for (int i = 0; i < test.Length; i++)
         //{
         //    for (int j = i; j < test.Length; j++)

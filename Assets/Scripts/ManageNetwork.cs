@@ -56,15 +56,8 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public void BtnReady()
     {
-        if (!gameController.isStartGame)
-        {
-            isJoinedRoom = true;
-            gameController.BtnReady();           
-        }
-        else
-        {
-            gameController.SpawPlayer();
-        }
-       // Debug.Log($"isStartGame after waited is {gameController.isStartGame}");
-    }  
+        isJoinedRoom = true;
+        gameController.BtnReady();
+        //gameController.SpawPlayer();           
+    }
 }

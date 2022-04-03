@@ -12,8 +12,8 @@ public class CommonCard : MonoBehaviour
         targetPos = gameController.commonPos[gameController.NoCommonPos].position;
         gameController.NoCommonPos++;
         if(gameController.NoCommonPos>=gameController.commonPos.Length)
-        {          
-            gameController.isFullFiveCard = true;
+        {
+            gameController.RPC_SetIsFullFiveCard(true);
             gameController.NoCommonPos = 0;
         }
         //gameController.SetRandomCard(this.gameObject);

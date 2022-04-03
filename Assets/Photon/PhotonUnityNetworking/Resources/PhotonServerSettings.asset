@@ -91,6 +91,11 @@ MonoBehaviour:
   - StartCount
   - SetIsStartGame
   - RPC_SetIsStartGame
+  - SetIsFirstDeal
+  - RefreshListcard
+  - SetIsFullFiveCard
+  - PushCardToStackCheck
+  - Pause
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
