@@ -10,6 +10,7 @@ using System.Globalization;
 public class PlayerController : MonoBehaviourPunCallbacks
 {
     public GameController gameController;
+    public GameController2 gameController2;
 
     public GameObject card1, card2, cardTemplate1, cardTemplate2;
     public GameObject bigBlindIcon;
@@ -57,16 +58,21 @@ public class PlayerController : MonoBehaviourPunCallbacks
     private void Awake()
     {
         gameController = GameController.Instance;
+        gameController2 = GameController2.Instance;
         DontDestroyOnLoad(this.gameObject);
         uIManager = FindObjectOfType<UIManager>();
     }
     void Start()
     {
-        if (gameController.isStartGame)
+        if (gameController2.isStartGame)
         {
             isWaiting = true;
         }
-        gameController.UpdatePlayer();
+        else
+        {
+            gameController.UpdatePlayer();
+        }
+        //gameController.UpdatePlayer();
         cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 7;
         cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 7;
         PvPlayer = GetComponent<PhotonView>();

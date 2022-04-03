@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class ManageNetwork : MonoBehaviourPunCallbacks
 {
     GameController gameController;
+    GameController2 gameController2;
     public static ManageNetwork Instance;
     public bool isJoinedRoom = false;
     private void Awake()
@@ -28,6 +29,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     void Start()
     {
         gameController = GameController.Instance;
+        gameController2 = GameController2.Instance;
         if(!PhotonNetwork.IsConnected)
         PhotonNetwork.ConnectUsingSettings();
     }
@@ -56,8 +58,18 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public void BtnReady()
     {
-        isJoinedRoom = true;
-        gameController.BtnReady();
-        //gameController.SpawPlayer();           
+        if (gameController2.isStartGame)
+        {
+            gameController.SpawPlayer();
+            Debug.Log($"isStartGame is true");
+        }
+        else
+        {
+            isJoinedRoom = true;
+            gameController.BtnReady();
+            Debug.Log($"isStartGame is fasle");
+        }
+       
+              
     }
 }

@@ -15,6 +15,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 
     UIManager uIManager;
     ManageNetwork manageNetwork;
+    GameController2 gameController2;
     public PhotonView photonViews;
 
     public GameObject backCardPrefab;
@@ -84,7 +85,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void Start()
     {
-
+        gameController2 = GameController2.Instance;
         uIManager = UIManager.Instance;
         photonViews = GetComponent<PhotonView>();
         manageNetwork = ManageNetwork.Instance;
@@ -177,12 +178,12 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             CheckStartGame();
 
             //playerInroom different player playing(Fold)
-            if (isStartGame && (playerInRoom < 2) && !isEndGame)
-            {
-                CheckWinner(arrPlayer);
-                isEndGame = true;
-                isCheckCard = true;
-            }
+            //if (isStartGame && (playerInRoom < 2) && !isEndGame)
+            //{
+            //    CheckWinner(arrPlayer);
+            //    isEndGame = true;
+            //    isCheckCard = true;
+            //}
         }
     }
     private void OnValidate()
@@ -415,7 +416,8 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     [PunRPC]
     public void PlayAgain()
     {
-        arrPlayer = FindObjectsOfType<PlayerController>();
+        //arrPlayer = FindObjectsOfType<PlayerController>();
+        photonViews.RPC("SetIsStartGame", RpcTarget.All, false);
         foreach (var item in arrPlayer)
         {
             item.isFold = false;
@@ -425,7 +427,9 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     }//using
     public void BtnPlayAgain()
     {
-        photonViews.RPC("PlayAgain", RpcTarget.AllBuffered, null);
+        if(photonViews.IsMine)
+        photonViews.RPC("PlayAgain", RpcTarget.All, null);
+        //photonViews.RPC("PlayAgain", RpcTarget.AllBuffered, null);
     }//using
     public void CheckWinner(PlayerController[] arrPlayer)
     {
@@ -491,7 +495,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         int diamonds = 0;
         foreach (var card in stackCheck)
         {
-            switch (card.layer)
+            switch (card?.layer)
             {
                 case 7:
                     spades++;
@@ -1273,15 +1277,17 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public void SetIsStartGame(bool status)
     {
         isStartGame = status;
+        gameController2.isStartGame = status;
     }   //using
     public void BtnPlayGame()
     {
         if (photonViews.IsMine)
         {
             //photonViews.RPC("SetIsStartGame", RpcTarget.AllBuffered, true);
-            photonViews.RPC("SetIsStartGame", RpcTarget.All, true);
-            photonViews.RPC("CheckMoneyPlayer", RpcTarget.All, null);
+            photonViews.RPC("SetIsStartGame", RpcTarget.All, true);       
             photonViews.RPC("UpdatePlayer", RpcTarget.All, null);
+            photonViews.RPC("CheckMoneyPlayer", RpcTarget.All, null);
+            photonViews.RPC("InitBlind", RpcTarget.All,(long)10000);
             StartCoroutine(nameof(RunTimeCounter), 3f);
             //playerInRoom *= 2;
             playerPlaying *= 2;
@@ -1501,10 +1507,10 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         
         photonViews.RPC("Pause", RpcTarget.All, null);
     }
-
+    [PunRPC]
     public void InitBlind(long moneyVlue = 10000)
     {
-        UpdatePlayerPlayings();
+        //UpdatePlayerPlayings();
         for (int i = 0; i < arrPlayer.Length; i++)
         {
             var player = arrPlayer[i];

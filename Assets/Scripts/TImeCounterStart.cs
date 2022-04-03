@@ -67,7 +67,7 @@ public class TImeCounterStart : MonoBehaviour
             }
         }       
         this.gameObject.SetActive(false);
-        gameController.InitBlind();
+        //gameController.InitBlind();
         gameController.BtnPlayGame();
         
         
