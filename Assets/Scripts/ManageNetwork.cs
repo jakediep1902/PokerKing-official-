@@ -32,6 +32,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         gameController2 = GameController2.Instance;
         if(!PhotonNetwork.IsConnected)
         PhotonNetwork.ConnectUsingSettings();
+        
     }
     public override void OnConnectedToMaster()
     {
@@ -46,7 +47,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
        // Debug.Log($"isStartGame is {gameController.isStartGame}");
         
         //BtnReady();
-        Invoke(nameof(BtnReady), 2f);
+        Invoke(nameof(BtnReady), 4f);
                         
         //SceneManager.LoadScene(0);
         
@@ -58,7 +59,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public void BtnReady()
     {
-        if (gameController2.isStartGame)
+        if (gameController.isStartGame)
         {
             gameController.SpawPlayer();
             Debug.Log($"isStartGame is true");

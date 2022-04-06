@@ -9,7 +9,7 @@ using Photon.Realtime;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
+public class GameController : MonoBehaviourPunCallbacks,IPunObservable
 {
     public static GameController Instance;
 
@@ -63,8 +63,19 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 
     public bool isFullFiveCard = false;
 
+    [SerializeField]private bool _isStartGame = false;
+    public bool isStartGame
+    {
+        get => _isStartGame;
+        set
+        {
+            _isStartGame = value;
+            //gameController2.isStartGame = value;
+        }
+    }
 
-    public bool isStartGame = false;
+
+
     public bool isCheckCard = false;
     public bool isJoinedRoom = false;
     public bool isEndGame = false;
@@ -76,6 +87,8 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
 
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        
 
         //DontDestroyOnLoad(this.gameObject);
         // cards = GameObject.FindGameObjectsWithTag("Card");//this method not sync when builded (differen index)
@@ -90,6 +103,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         photonViews = GetComponent<PhotonView>();
         manageNetwork = ManageNetwork.Instance;
         startPos = backCardPrefab.transform;
+
         //ClearConsole();
 
         setOptionWinner += ReturnBlindedToWinner;
@@ -103,8 +117,16 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         foreach (var item in cards) item.SetActive(true);
         //uIManager.pnlGame.SetActive(true);
         //Invoke(nameof(UpdatePlayerPlaying), 5f);
-
-        UpdatePlayerPlayings();
+        if (!isStartGame)
+        {
+            UpdatePlayerPlayings();
+            Debug.Log($"isStarGame false on StartGame");
+        }
+        else
+        {
+            Debug.Log($"isStarGame true on StartGame");
+        }
+        //UpdatePlayerPlayings();
         UpdatePosDefaul();
 
         for (int i = 0; i < arrPlayer.Length; i++)
@@ -420,7 +442,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         photonViews.RPC("SetIsStartGame", RpcTarget.All, false);
         foreach (var item in arrPlayer)
         {
-            item.isFold = false;
+            item.isFold = false;           
         }
 
         SceneManager.LoadScene(0);
@@ -1277,7 +1299,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     public void SetIsStartGame(bool status)
     {
         isStartGame = status;
-        gameController2.isStartGame = status;
+        //gameController2.isStartGame = status;
     }   //using
     public void BtnPlayGame()
     {
@@ -1312,6 +1334,7 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
             }
         }
         playerInRoom = arrPlayer.Length;
+       // playerInRoom = (int)PhotonNetwork.CurrentRoom.PlayerCount;
     }
     [PunRPC]
     public void UpdatePlayerPlayings()
@@ -1485,7 +1508,8 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
     }//using
     public void BtnTest()//Button test
     {
-        Debug.Log($"StackCheck Count is {stackCheck.Count}");
+        //Debug.Log($"StackCheck Count is {stackCheck.Count}");
+        //photonViews.RPC("SetIsStartGame", RpcTarget.All, !isStartGame);
     }
     [PunRPC]
     public void Pause()
@@ -1690,18 +1714,18 @@ public class GameController : MonoBehaviourPunCallbacks//,IPunObservable
         }
     }
 
-    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    //{
-    //    if (stream.IsWriting)
-    //    {
-    //        stream.SendNext(isStartGame);
-    //        Debug.Log("SendNext");            
-    //    }
-    //    else if (stream.IsReading)
-    //    {
-    //        Debug.Log("ReceiveNext");
-    //        //commonIndex = (int)stream.ReceiveNext();
-    //        isStartGame = (bool)stream.ReceiveNext();
-    //    }
-    //}
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(isStartGame);
+            Debug.Log("SendNext");
+        }
+        else if (stream.IsReading)
+        {
+            Debug.Log("ReceiveNext");
+            //commonIndex = (int)stream.ReceiveNext();
+            isStartGame = (bool)stream.ReceiveNext();
+        }
+    }
 }

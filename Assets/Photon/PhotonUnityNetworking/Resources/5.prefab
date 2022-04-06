@@ -401,6 +401,7 @@ GameObject:
   - component: {fileID: 6123758905548967357}
   - component: {fileID: 6123758905548967346}
   - component: {fileID: 8438261064980716778}
+  - component: {fileID: 4041243799839014169}
   m_Layer: 0
   m_Name: Card Template 1
   m_TagString: Untagged
@@ -503,10 +504,27 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 4041243799839014169}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &4041243799839014169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6123758905548967359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &6123758905975739387
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,6 +537,7 @@ GameObject:
   - component: {fileID: 6123758905975739385}
   - component: {fileID: 6123758905975739390}
   - component: {fileID: 8906019800262277842}
+  - component: {fileID: 198131349144765412}
   m_Layer: 0
   m_Name: Card Template 2
   m_TagString: Untagged
@@ -625,6 +644,22 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &198131349144765412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6123758905975739387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &6123758906237394960
 GameObject:
   m_ObjectHideFlags: 0

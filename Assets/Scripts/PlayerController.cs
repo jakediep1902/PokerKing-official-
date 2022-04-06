@@ -64,9 +64,10 @@ public class PlayerController : MonoBehaviourPunCallbacks
     }
     void Start()
     {
-        if (gameController2.isStartGame)
+        if (gameController.isStartGame)
         {
             isWaiting = true;
+            Debug.Log($"Player waiting!!");
         }
         else
         {
@@ -136,14 +137,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     void OnDisable()
     {
-        gameController.UpdatePlayer();
-        if (!PvPlayer.IsMine)
-        {
-            timeCounter.imageFill.fillAmount = 0;
-            card1?.SetActive(false);
-            card2?.SetActive(false);
+        //gameController.UpdatePlayer();
+        //if (!PvPlayer.IsMine)
+        //{
+        //    timeCounter.imageFill.fillAmount = 0;
+        //    card1?.SetActive(false);
+        //    card2?.SetActive(false);
 
-        }
+        //}
         //Debug.Log("Left Room 2");
 
         //if (card1 != null && card2 != null)
@@ -192,7 +193,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_SetCard1(int index)
     {
-        RefreshListcard();
+       // RefreshListcard();
         if (gameController.cards[index] == null)
         {
             index--;
@@ -210,7 +211,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_SetCard2(int index)
     {
-        RefreshListcard();
+        //RefreshListcard();
         if (gameController.cards[index] == null)
         {
             index--;
@@ -334,13 +335,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
             BtnXemBai();
         }
     }
-    [PunRPC]
-    public void RefreshListcard()
-    {
-        for (int j = 0; j < listCard.Count; j++)
-        {
-            if (listCard[j] == null)
-                listCard.RemoveAt(j);
-        }
-    }
+    //[PunRPC]
+    //public void RefreshListcard()
+    //{
+    //    for (int j = 0; j < listCard.Count; j++)
+    //    {
+    //        if (listCard[j] == null)
+    //            listCard.RemoveAt(j);
+    //    }
+    //}
 }

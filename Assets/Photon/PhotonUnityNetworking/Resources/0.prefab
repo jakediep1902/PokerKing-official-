@@ -346,6 +346,7 @@ GameObject:
   - component: {fileID: 2759077291995362528}
   - component: {fileID: 2759077291995362543}
   - component: {fileID: 1680877929433522144}
+  - component: {fileID: 4573139550952195324}
   m_Layer: 0
   m_Name: Card Template 1
   m_TagString: Untagged
@@ -448,10 +449,27 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 4573139550952195324}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &4573139550952195324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2759077291995362530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &2759077292198885293
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,6 +561,7 @@ GameObject:
   - component: {fileID: 2759077292621359780}
   - component: {fileID: 2759077292621359779}
   - component: {fileID: 2183352544497083754}
+  - component: {fileID: 258271259236588004}
   m_Layer: 0
   m_Name: Card Template 2
   m_TagString: Untagged
@@ -649,6 +668,22 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &258271259236588004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2759077292621359782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1 &2759077292883925325
 GameObject:
   m_ObjectHideFlags: 0
@@ -701,6 +736,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameController: {fileID: 0}
+  gameController2: {fileID: 0}
   card1: {fileID: 0}
   card2: {fileID: 0}
   cardTemplate1: {fileID: 2759077291995362530}
