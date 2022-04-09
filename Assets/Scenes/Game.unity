@@ -442,6 +442,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &101691421
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -506,6 +507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &101691423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -598,6 +600,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &147137823
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -662,6 +665,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &147137825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -696,7 +700,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 147137825}
   sceneViewId: 60
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -844,6 +849,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &151140446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -857,6 +863,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &151140447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -943,6 +950,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &161552110
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1007,6 +1015,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &161552112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1585,6 +1594,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &292269181
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1649,6 +1659,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &292269183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2375,6 +2386,7 @@ MonoBehaviour:
   moneyBlinding: 0
   moneyBlinded: 0
   ID: 0
+  test: 0
   isInvoke: 0
   isStraightFlush: 0
   isQuad: 0
@@ -2649,6 +2661,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &433204234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2662,6 +2675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &433204235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2823,6 +2837,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &446379304
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2887,6 +2902,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &446379306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2973,6 +2989,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &463127706
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3037,6 +3054,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &463127708
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3256,6 +3274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &488925687
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3320,6 +3339,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &488925689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3914,6 +3934,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &591924614
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3978,6 +3999,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &591924616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4427,6 +4449,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &623493500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4440,6 +4463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &623493501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4869,6 +4893,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &677581591
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4933,6 +4958,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &677581593
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5114,6 +5140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &704202771
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5178,6 +5205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &704202773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5315,6 +5343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &723678378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5328,6 +5357,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &723678379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5503,6 +5533,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &759864435
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5567,6 +5598,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &759864437
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5808,6 +5840,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &782207671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5821,6 +5854,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &782207672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6170,6 +6204,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &790903641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6183,6 +6218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &790903642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6431,6 +6467,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &813162477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6444,6 +6481,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &813162478
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6530,6 +6568,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &813267227
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6594,6 +6633,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &813267229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6731,6 +6771,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &820006304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6744,6 +6785,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &820006305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6881,6 +6923,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &822267620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6894,6 +6937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &822267621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7248,6 +7292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &876166047
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7261,6 +7306,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &876166048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7477,6 +7523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &957628726
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7490,6 +7537,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &957628727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7655,6 +7703,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &976018529
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7719,6 +7768,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &976018531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7753,7 +7803,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 976018531}
   sceneViewId: 45
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -7900,6 +7951,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &982483855
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7964,6 +8016,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &982483857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8050,6 +8103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &983480971
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8114,6 +8168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &983480973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8410,6 +8465,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &993703824
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8474,6 +8530,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &993703826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8706,6 +8763,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1004855866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8719,6 +8777,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1004855867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9876,6 +9935,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &1239934030
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9940,6 +10000,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1239934032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10220,6 +10281,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1269298958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10233,6 +10295,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1269298959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10355,6 +10418,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &1295545860
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10419,6 +10483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1295545862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10584,6 +10649,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &1305580716
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10648,6 +10714,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1305580718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10734,6 +10801,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &1324447042
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10798,6 +10866,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1324447044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10928,6 +10997,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &1350914599
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10992,6 +11062,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1350914601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11078,6 +11149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &1389341883
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11142,6 +11214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1389341885
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11611,6 +11684,10 @@ MonoBehaviour:
   amountCardInit: 0
   NoTemplate: 0
   NoCommonPos: 0
+  arrSaveIDCardToSync: 
+  arrCardsRemoved: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  listCardsRemoved: 
+  countIndexSave: -1
   bigestBlinded: 0
   isFullFiveCard: 0
   _isStartGame: 0
@@ -11637,7 +11714,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 1428603468}
   sceneViewId: 2
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -11771,6 +11849,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &1470042337
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11835,6 +11914,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1470042339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12051,6 +12131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1503622191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12064,6 +12145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1503622192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12098,7 +12180,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 1503622192}
   sceneViewId: 31
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -12435,6 +12518,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1561417096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12448,6 +12532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1561417097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12797,6 +12882,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &1654421423
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -12861,6 +12947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1654421425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13212,6 +13299,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &1714195695
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13276,6 +13364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1714195697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13587,6 +13676,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1743475684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13600,6 +13690,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1743475685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13634,7 +13725,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 1743475685}
   sceneViewId: 32
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -14093,7 +14185,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1849241739}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9077595af5335fa459a4a89fc14ee4ab, type: 3}
   m_Name: 
@@ -14292,6 +14384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &1920015455
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -14356,6 +14449,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1920015457
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14447,6 +14541,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &1936799913
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -14511,6 +14606,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1936799915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14858,6 +14954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1980119205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14871,6 +14968,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1980119206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15008,6 +15106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1988645378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15021,6 +15120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &1988645379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15228,6 +15328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &2005924333
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -15292,6 +15393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &2005924335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15429,6 +15531,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &2013785183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15442,6 +15545,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &2013785184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15650,6 +15754,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &2053419097
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -15714,6 +15819,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &2053419099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15845,6 +15951,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &2072321190
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -15909,6 +16016,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &2072321192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16103,6 +16211,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &2084804923
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -16167,6 +16276,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &2084804925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16332,6 +16442,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!212 &2110595495
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -16396,6 +16507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &2110595497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16608,6 +16720,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &2123405988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16621,6 +16734,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  ID: 0
 --- !u!114 &2123405989
 MonoBehaviour:
   m_ObjectHideFlags: 0

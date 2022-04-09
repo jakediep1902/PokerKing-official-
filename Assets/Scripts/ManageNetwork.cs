@@ -62,13 +62,13 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         if (gameController.isStartGame)
         {
             gameController.SpawPlayer();
-            Debug.Log($"isStartGame is true");
+            //Debug.Log($"isStartGame is true");
         }
         else
         {
             isJoinedRoom = true;
             gameController.BtnReady();
-            Debug.Log($"isStartGame is fasle");
+            //Debug.Log($"isStartGame is fasle");
         }
        
               

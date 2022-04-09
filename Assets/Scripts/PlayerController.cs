@@ -6,15 +6,16 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.Events;
 using System.Globalization;
+using ExitGames.Client.Photon;
 
-public class PlayerController : MonoBehaviourPunCallbacks
+public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
 {
     public GameController gameController;
     public GameController2 gameController2;
 
     public GameObject card1, card2, cardTemplate1, cardTemplate2;
     public GameObject bigBlindIcon;
-
+    
     public Text txtMoney;
     public Text txtMoneyBlind;
 
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public Transform[] arrPosDefaul = new Transform[6];
     public List<GameObject> listCard = new List<GameObject>();
     public List<GameObject> listCardWin = new List<GameObject>();
+    //public Dictionary<int,object> dicBufferedCard= new Dictionary<int,object>();
     public int[] arrCardWin = new int[5];
 
     public float score = 0f;
@@ -37,6 +39,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public long moneyBlinded = 0;
 
     public int ID = 0;
+    public int test = 0;
+    
 
     public bool isInvoke = false;
     public bool isStraightFlush = false;
@@ -55,19 +59,31 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public bool isBroke = false;
     public bool isWaiting = false;
 
+    public enum PhotonEventCodes
+    {
+        SyncLateJoin = 0
+    }
     private void Awake()
     {
         gameController = GameController.Instance;
         gameController2 = GameController2.Instance;
         DontDestroyOnLoad(this.gameObject);
-        uIManager = FindObjectOfType<UIManager>();
+        uIManager = FindObjectOfType<UIManager>();     
     }
     void Start()
     {
         if (gameController.isStartGame)
         {
+            if(!PvPlayer.IsMine)
+            {
+                Debug.Log($"Player waiting!!");
+                //Debug.Log(dicBufferedCard.Count);
+                gameController.SyncCardLateJoin();
+
+                
+            }
             isWaiting = true;
-            Debug.Log($"Player waiting!!");
+                       
         }
         else
         {
@@ -89,15 +105,29 @@ public class PlayerController : MonoBehaviourPunCallbacks
         money = 10000000;
         moneyBlinding = 0;
 
+        if(PvPlayer.IsMine)
         uIManager.pnlGame.SetActive(false);
+
         uIManager.btnOKBlind.onClick.AddListener(() => BtnOkBlind());
         uIManager.btnTheoCuoc.onClick.AddListener(() => BtnTheoCuoc());
         uIManager.btnXemBai.onClick.AddListener(() => BtnXemBai());
         uIManager.btnBoBai.onClick.AddListener(() => BtnBoBai());
         uIManager.btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
 
+        if(PvPlayer.IsMine)
+        {
+            test = Random.Range(0, 100);
+            PvPlayer.RPC("SetTest", RpcTarget.All, test);          
+        }
+        Debug.Log($"Random test is {test}");
+
+    }
 
 
+    [PunRPC]
+    public void SetTest(int vlue)
+    {
+        test = vlue;
     }
     private void Update()
     {
@@ -133,10 +163,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
         //}
 
     }
-
-
-    void OnDisable()
+    public override void OnEnable()
     {
+        PhotonNetwork.NetworkingClient.EventReceived += NetworkingClient_EventReceived;
+    }
+    private void OnDisable()
+    {
+        PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
+
+
         //gameController.UpdatePlayer();
         //if (!PvPlayer.IsMine)
         //{
@@ -153,6 +188,77 @@ public class PlayerController : MonoBehaviourPunCallbacks
         //    card2.SetActive(false);
         //}
     }
+    private void NetworkingClient_EventReceived(EventData obj)
+    {
+        if(obj.Code == (byte)PhotonEventCodes.SyncLateJoin)
+        {
+            
+            object[] datas = obj.CustomData as object[];
+            int viewID = (int)datas[0];
+            if(PvPlayer.ViewID == viewID)
+            {
+                //card1 = (GameObject)datas[1];
+                //Debug.Log($"ID { PvPlayer.ViewID} Received Event and card1 name is {card1.name}");
+                foreach (var item in gameController.cards)
+                {
+                    if(item.GetComponent<Card>().ID == (int)datas[1])
+                    {
+                        card1 = item;
+                        Debug.Log($"card1 added");
+                    }
+                    if (item.GetComponent<Card>().ID == (int)datas[2])
+                    {
+                        card2 = item;
+                        Debug.Log($"card2 added");
+                    }
+                }
+
+                //int[] temp = (int[])datas[3];
+                //foreach (var item in gameController.cards)
+                //{
+                //    Debug.Log($"ID to Push is {temp[0]}");
+                //    if(item.GetComponent<Card>().ID == temp[0])
+                //        gameController.stackCheck.Push(item);
+                //    Debug.Log($"ID to Push is {temp[1]}");
+                //    if (item.GetComponent<Card>().ID == temp[1])
+                //        gameController.stackCheck.Push(item);
+                //    Debug.Log($"ID to Push is {temp[2]}");
+                //    if (item.GetComponent<Card>().ID == temp[2])
+                //        gameController.stackCheck.Push(item);
+                //    break;
+                //}
+
+                //gameController.stackCheck.Push(gameController.arrSaveIDCardToSync[1]);
+                //Debug.Log($"ID { PvPlayer.ViewID} Received Event and test is {test}");
+
+            }          
+            //card1 = (GameObject)datas[0];
+            //card2 = (GameObject)datas[1];
+        }
+    }
+    public void SyncPlayerJoinLate()
+    {
+
+        object[] datas = new object[]
+        {
+            PvPlayer.ViewID,
+            card1.GetComponent<Card>().ID,
+            card2.GetComponent<Card>().ID,
+            //gameController.arrSaveIDCardToSync  // it should be a new RaiseEvent
+        };
+        RaiseEventOptions option = new RaiseEventOptions()
+        {
+            Receivers = ReceiverGroup.All,
+            CachingOption = EventCaching.DoNotCache
+        };
+        //Debug.Log($"ID {PvPlayer.ViewID} Invoke RaiseEvent and sent card1");
+        Debug.Log($"ID {PvPlayer.ViewID} Invoke RaiseEvent and sent test {test}");
+        PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncLateJoin, datas, option,
+            ExitGames.Client.Photon.SendOptions.SendUnreliable);
+
+    }
+
+   
 
     public void ArrangeCard()
     {
@@ -178,10 +284,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
                     Debug.LogError($"index of Card over 51 and the new value is {indexCard}");
                     indexCard--;
                 }
+                
                 PvPlayer.RPC("RPC_SetCard1", RpcTarget.All, indexCard);
+                //PvPlayer.RPC("BuffererCard", RpcTarget.All,1,indexCard);
                 //Debug.Log(indexCard);
                 indexCard = Random.Range((int)0, (int)gameController.cards.Length);
                 PvPlayer.RPC("RPC_SetCard2", RpcTarget.All, indexCard);
+                //PvPlayer.RPC("BuffererCard", RpcTarget.All,2, indexCard);
                 //Debug.Log(indexCard);
                 PvPlayer.RPC("CoverCardOtherClient", RpcTarget.Others, null);
             }
@@ -190,6 +299,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
             Invoke(nameof(SetIsInvoke), 20f);
         }
     }
+    //[PunRPC]
+    //public void BuffererCard(int name, int index)
+    //{
+    //    dicBufferedCard.Remove(name);
+    //    dicBufferedCard.Add(name, gameController.cards[index]);
+    //}
     [PunRPC]
     public void RPC_SetCard1(int index)
     {
@@ -206,6 +321,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         card1 = gameController.cards[index];
         listCard.Add(card1);//add card to list to check
         //gameController.cards[index].transform.SetParent(this.transform);
+        gameController.listCardsRemoved.Add(card1.GetComponent<Card>().ID);
         gameController.RemoveElement(ref gameController.cards, index);
     }
     [PunRPC]
@@ -224,6 +340,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         card2 = gameController.cards[index];
         listCard.Add(card2);
         //gameController.cards[index].transform.SetParent(this.transform);
+        gameController.listCardsRemoved.Add(card2.GetComponent<Card>().ID);
         gameController.RemoveElement(ref gameController.cards, index);
     }
     [PunRPC]
@@ -335,6 +452,20 @@ public class PlayerController : MonoBehaviourPunCallbacks
             BtnXemBai();
         }
     }
+
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    if(stream.IsWriting)
+    //    {
+    //        stream.SendNext(dicBufferedCard);
+    //        //Debug.Log("Send");
+    //    }
+    //    else if(stream.IsReading)
+    //    {
+    //        dicBufferedCard = (Dictionary<int,object>)stream.ReceiveNext();
+    //        //Debug.Log("Receive");
+    //    }
+    //}
     //[PunRPC]
     //public void RefreshListcard()
     //{
@@ -344,4 +475,5 @@ public class PlayerController : MonoBehaviourPunCallbacks
     //            listCard.RemoveAt(j);
     //    }
     //}
+    
 }

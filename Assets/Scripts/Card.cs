@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    public int value = 0;     
+    public int value = 0;
+    public int ID = 0;
     private void Start()
     {
         //Debug.Log("hello from Card");

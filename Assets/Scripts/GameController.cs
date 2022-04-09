@@ -8,6 +8,8 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using ExitGames.Client.Photon;
+using System.Linq;
 
 public class GameController : MonoBehaviourPunCallbacks,IPunObservable
 {
@@ -23,6 +25,8 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject congratulation;
     public GameObject playerPrefab;
     public GameObject timeCounterStart;
+   // public GameObject test;
+   // public object[] arrTest = new object[3];
 
     private Transform startPos;
 
@@ -40,7 +44,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject[] cardsClone = new GameObject[52];
 
     //public Dictionary<int, Transform> dicPosDefaul = new Dictionary<int, Transform>(6);
-    private Stack<GameObject> stackCheck = new Stack<GameObject>(7);
+    public Stack<GameObject> stackCheck = new Stack<GameObject>(7);
 
     private List<Flush> listFlush = new List<Flush>();
     public List<BackCard> listBackCard = new List<BackCard>();
@@ -56,6 +60,10 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     public int amountCardInit = 0;//not used
     public int NoTemplate = 0;
     public int NoCommonPos = 0;
+    public int[] arrSaveIDCardToSync;
+    public int[] arrCardsRemoved = new int[52];
+    public List<int> listCardsRemoved = new List<int>();
+    public int countIndexSave = -1;
     int isFlush = 5;//edit with value 5 when finish
     int conStraightFlush = 5;//edit with value 5 when finish
 
@@ -96,15 +104,76 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         //var clone = cards.Clone();
         //cardsClone = clone as GameObject[];
     }
+    private void OnEnable()
+    {
+        PhotonNetwork.NetworkingClient.EventReceived += NetworkingClient_EventReceived;
+    }
+
+    public enum RaiseEventCode
+    {
+        SyncGameController = 1
+    }
+    public void SyncGameControllerJoinLate()
+    {
+        arrCardsRemoved = listCardsRemoved.ToArray();
+        object[] datas = new object[]
+        {
+            photonViews.ViewID,
+          arrSaveIDCardToSync,
+          commonIndex,
+          countIndexSave,
+          arrCardsRemoved
+        };
+        RaiseEventOptions option = new RaiseEventOptions()
+        {
+            CachingOption = EventCaching.DoNotCache,
+            Receivers = ReceiverGroup.All
+        };
+
+        PhotonNetwork.RaiseEvent((byte)RaiseEventCode.SyncGameController, datas, option, SendOptions.SendUnreliable);
+    }
+    private void NetworkingClient_EventReceived(EventData obj)
+    {
+        if(obj.Code==(byte)RaiseEventCode.SyncGameController)
+        {
+            Debug.Log("Received");
+            object[] datas = obj.CustomData as object[];
+            if((int)datas[0]==photonViews.ViewID)
+            {
+                arrSaveIDCardToSync = datas[1] as int[];
+                foreach (var ID in arrSaveIDCardToSync)
+                {
+                    foreach (var item in cards)
+                    {
+                        if(ID==item.GetComponent<Card>().ID)
+                        {
+                            stackCheck.Push(item);
+                            break;
+                        }
+                    }
+                }
+                
+                commonIndex = (int)datas[2];
+                countIndexSave = (int)datas[3];
+                arrCardsRemoved = (int[])datas[4];
+                RemoveCards();
+            }
+        }
+    }
+
+    private void OnDisable()
+    {
+        PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
+    }
     public void Start()
     {
         gameController2 = GameController2.Instance;
         uIManager = UIManager.Instance;
         photonViews = GetComponent<PhotonView>();
         manageNetwork = ManageNetwork.Instance;
-        startPos = backCardPrefab.transform;
-
+        startPos = backCardPrefab.transform;       
         //ClearConsole();
+        //Debug.Log(arrTest.Length);
 
         setOptionWinner += ReturnBlindedToWinner;
         setOptionWinner += PayMoneyWonToWinner;
@@ -113,8 +182,13 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         //{
         //    dicPosDefaul.Add(i, posDefaul[i]);
         //}
-
-        foreach (var item in cards) item.SetActive(true);
+        int autoID = 0;
+        foreach (var item in cards)
+        {
+            item.SetActive(true);
+            item.GetComponent<Card>().ID = autoID++;
+        }
+       
         //uIManager.pnlGame.SetActive(true);
         //Invoke(nameof(UpdatePlayerPlaying), 5f);
         if (!isStartGame)
@@ -163,7 +237,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
             item.isHighCard = false;
             item.isWinner = false;
             item.timeCounter.isFirstGround = true;
-            item.isWaiting = false;
+            //item.isWaiting = false;
             //item.isFold = false;
 
             item.score = 0;
@@ -261,13 +335,15 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
                         break;
                 }
 
-                tempCard.name = cards[commonIndex].name;
-                //Debug.Log($"commonIndex is {commonIndex}");
+                tempCard.name = cards[commonIndex].name;           
                 tempCard.GetComponent<SpriteRenderer>().sprite = cards[commonIndex].GetComponent<SpriteRenderer>().sprite;
                 RemoveElement(ref cards, commonIndex);
                 tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;
-                //Destroy(tempCard);
-                //PhotonNetwork.Instantiate(tempCard.name, tempCard.transform.position, Quaternion.identity);               
+
+                //countIndexSave++;
+                //Debug.Log($"countIndexSave is {countIndexSave}");
+                //arrSaveIDCardToSync[countIndexSave] = tempCard.GetComponent<Card>().ID;
+                Debug.Log("hello");
                 stackCheck.Push(tempCard);
             }
 
@@ -373,9 +449,21 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     public void PushCardToStackCheck(int commonIndex)
     {
+        countIndexSave++; // save ID card
+        Debug.Log($"countIndexSave is {countIndexSave}");
+        for (int i = countIndexSave; i < arrSaveIDCardToSync.Length; i++)
+        {
+            arrSaveIDCardToSync[i] = cards[commonIndex].GetComponent<Card>().ID;
+            break;
+        }
+
         stackCheck.Push(cards[commonIndex]);
+
+        int temp = cards[commonIndex].GetComponent<Card>().ID;
+        listCardsRemoved.Add(temp);
         RemoveElement(ref cards, commonIndex);      
     }
+    
     [PunRPC]
     public void Deal()
     {
@@ -440,9 +528,11 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     {
         //arrPlayer = FindObjectsOfType<PlayerController>();
         photonViews.RPC("SetIsStartGame", RpcTarget.All, false);
+        UpdatePlayer();//update to Set few variable before loadScene
         foreach (var item in arrPlayer)
         {
-            item.isFold = false;           
+            item.isFold = false;
+            item.isWaiting = false;
         }
 
         SceneManager.LoadScene(0);
@@ -1508,9 +1598,25 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     }//using
     public void BtnTest()//Button test
     {
-        //Debug.Log($"StackCheck Count is {stackCheck.Count}");
+        Debug.Log($"StackCheck Count is {stackCheck.Count}");
         //photonViews.RPC("SetIsStartGame", RpcTarget.All, !isStartGame);
+        //if (arrTest[0] == null)
+        //{
+        //    arrTest[0] = test;
+        //    Debug.Log("add");
+        //}          
+        //else
+        //{
+        //    Debug.Log(arrTest[0]);
+        //}
+        //foreach (var item in arrPlayer)
+        //{
+        //   // Debug.Log($"dicCount is {item.dicBufferedCard.Count}");
+        //}
+        
+
     }
+    
     [PunRPC]
     public void Pause()
     {           
@@ -1719,13 +1825,47 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(isStartGame);
-            Debug.Log("SendNext");
+            //stream.SendNext(arrTest);
+            //Debug.Log("SendNext");
         }
         else if (stream.IsReading)
         {
-            Debug.Log("ReceiveNext");
+            //Debug.Log("ReceiveNext");
             //commonIndex = (int)stream.ReceiveNext();
             isStartGame = (bool)stream.ReceiveNext();
+            //arrTest = (object[])stream.ReceiveNext();
+        }
+    }
+    public void SyncCardLateJoin()
+    {
+        if(photonViews.IsMine)
+        {
+            foreach (var item in arrPlayer)
+            {
+                //item.card1 = item.dicBufferedCard["card1"];
+                //item.card2 = item.dicBufferedCard["card2"];
+                //Debug.Log($"dicCount is {item.dicBufferedCard.Count}");
+                //Debug.Log(item.dicBufferedCard.Count);
+                //item.card1 = item.dicBufferedCard[1] as GameObject;
+                //item.card1 = item.dicBufferedCard[2] as GameObject;
+                item.SyncPlayerJoinLate();
+            }
+            SyncGameControllerJoinLate();
+        }
+       
+    }
+   public void RemoveCards()
+    {
+        for (int i = 0; i < arrCardsRemoved.Length; i++)
+        {
+            for (int j = 0; j < cards.Length; j++)
+            {
+                if(arrCardsRemoved[i]==cards[j].GetComponent<Card>().ID)
+                {
+                    RemoveElement(ref cards, j);
+                    break;
+                }
+            }
         }
     }
 }

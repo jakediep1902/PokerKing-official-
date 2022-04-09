@@ -89,7 +89,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         {
             if (imageFill.fillAmount > 0)
             {
-                imageFill.fillAmount -= 0.005f;
+                imageFill.fillAmount -= 0.0005f;
                 //Debug.Log(test++);
             }
             else

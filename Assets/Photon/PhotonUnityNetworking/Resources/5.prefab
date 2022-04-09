@@ -743,6 +743,7 @@ MonoBehaviour:
   moneyBlinding: 0
   moneyBlinded: 0
   ID: 5
+  test: 0
   isInvoke: 0
   isStraightFlush: 0
   isQuad: 0
