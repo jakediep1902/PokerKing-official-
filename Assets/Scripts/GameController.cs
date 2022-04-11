@@ -64,7 +64,8 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     public int NoCommonPos = 0;
     public int[] arrSaveIDCardToSync;
     public int[] arrCardsRemoved;
-    
+    int autoID = 0;
+
     public int countIndexSave = -1;
     int isFlush = 5;//edit with value 5 when finish
     int conStraightFlush = 5;//edit with value 5 when finish
@@ -98,8 +99,6 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        
-
         //DontDestroyOnLoad(this.gameObject);
         // cards = GameObject.FindGameObjectsWithTag("Card");//this method not sync when builded (differen index)
         //-> differen object spaw
@@ -126,7 +125,8 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
           commonIndex,//2
           countIndexSave,//3
           arrCardsRemoved,//4
-          playerPlaying
+          playerPlaying,//5
+          barTotalMoney
         };
         RaiseEventOptions option = new RaiseEventOptions()
         {
@@ -140,7 +140,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     {
         if(obj.Code==(byte)RaiseEventCode.SyncGameController)
         {
-            Debug.Log("Received");
+            Debug.Log("GameController Received datas");
             object[] datas = obj.CustomData as object[];
             if((int)datas[0]==photonViews.ViewID)
             {
@@ -162,27 +162,20 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
                 arrCardsRemoved = (int[])datas[4];
                 RemoveCards();
                 playerPlaying = (int)datas[5];
+                barTotalMoney = (long)datas[6];
             }
         }
     }
 
-    private void OnDisable()
+    public override void OnDisable()
     {
-        //PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
-        //try
-        //{
-        //    PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
-        //}
-        //catch
-        //{
-        //    Debug.Log("Error in GameController Disabled");
-        //}
-        
+        PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
     }
     public void Start()
     {
         gameController2 = GameController2.Instance;
         uIManager = UIManager.Instance;
+        uIManager.gameController = this;
         photonViews = GetComponent<PhotonView>();
         manageNetwork = ManageNetwork.Instance;
         startPos = backCardPrefab.transform;       
@@ -196,9 +189,9 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         //{
         //    dicPosDefaul.Add(i, posDefaul[i]);
         //}
-        int autoID = 0;
+        
         foreach (var item in cards)
-        {
+        {           
             item.SetActive(true);
             item.GetComponent<Card>().ID = autoID++;
         }
@@ -272,14 +265,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
             }
 
             CheckStartGame();
-
-            //playerInroom different player playing(Fold)
-            //if (isStartGame && (playerInRoom < 2) && !isEndGame)
-            //{
-            //    CheckWinner(arrPlayer);
-            //    isEndGame = true;
-            //    isCheckCard = true;
-            //}
+          
         }
     }
     private void OnValidate()
@@ -435,17 +421,17 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     public void RPC_SetIsFullFiveCard(bool status)
     {
         photonViews.RPC("SetIsFullFiveCard", RpcTarget.All, status);
-    }
+    }//using
     [PunRPC]
     public void SetIsFullFiveCard(bool status)
     {
         isFullFiveCard = status;
-    }
+    }//using
     [PunRPC]
     public void SetIsFirstDeal(bool status)
     {
         isFirstDeal = status;
-    }
+    }//using
     [PunRPC]
     public void PushCardToStackCheck(int commonIndex)
     {
@@ -462,7 +448,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         int temp = cards[commonIndex].GetComponent<Card>().ID;
         listCardsRemoved.Add(temp);
         RemoveElement(ref cards, commonIndex);      
-    }
+    }//using
     
     [PunRPC]
     public void Deal()
@@ -1377,8 +1363,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     public void SetCommonIndex(int index)//using
     {
-        commonIndex = index;
-        //Debug.Log($"next card to Spaw is {commonIndex}");
+        commonIndex = index;       
     }
     public void RPC_SetCommonIndex()//using
     {
@@ -1391,7 +1376,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         isStartGame = status;
         //gameController2.isStartGame = status;
     }   //using
-    public void BtnPlayGame()
+    public void BtnPlayGame()//using
     {
         if (photonViews.IsMine)
         {
@@ -1432,7 +1417,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         UpdatePlayer();
         for (int i = 0; i < arrPlayer.Length; i++)
         {
-            if (arrPlayer[i].isFold || arrPlayer[i].isWaiting)
+            if (arrPlayer[i].isFold || (arrPlayer[i].isWaiting))
             {
                 RemoveElement<PlayerController>(ref arrPlayer, i);
             }
@@ -1500,7 +1485,6 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     public void RPC_IndexBigBlind(int index)//using
     {
         indexBigBlind = index;
-        //Debug.Log($"indexBigBlind is {index}");
         arrPlayer[indexBigBlind].timeCounter.gameObject.SetActive(true);
         arrPlayer[indexBigBlind].bigBlindIcon.SetActive(true);
     }
@@ -1514,7 +1498,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         }
 
     }
-    IEnumerator DelayUpdate()
+    IEnumerator DelayUpdate()//not used
     {
         bool isUpdate = true;
         while (isUpdate)
@@ -1536,7 +1520,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         }
     }//not used
     [PunRPC]
-    public void UpdatePlayerPlaying()
+    public void UpdatePlayerPlayingWithDelay()//not used
     {
         StartCoroutine(DelayUpdate());
     }//not used
@@ -1554,7 +1538,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     {
         Application.Quit();
         Debug.Log("quit");
-    }
+    }//using
     public void CheckStartGame()
     {
         //playerInRoom = (int)PhotonNetwork.CurrentRoom.PlayerCount;
@@ -1598,23 +1582,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     }//using
     public void BtnTest()//Button test
     {
-        Debug.Log($"StackCheck Count is {stackCheck.Count}");
-        //photonViews.RPC("SetIsStartGame", RpcTarget.All, !isStartGame);
-        //if (arrTest[0] == null)
-        //{
-        //    arrTest[0] = test;
-        //    Debug.Log("add");
-        //}          
-        //else
-        //{
-        //    Debug.Log(arrTest[0]);
-        //}
-        //foreach (var item in arrPlayer)
-        //{
-        //   // Debug.Log($"dicCount is {item.dicBufferedCard.Count}");
-        //}
-        
-
+        Debug.Log($"StackCheck Count is {stackCheck.Count}");     
     }
     
     [PunRPC]
@@ -1638,9 +1606,8 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         photonViews.RPC("Pause", RpcTarget.All, null);
     }
     [PunRPC]
-    public void InitBlind(long moneyVlue = 10000)
+    public void InitBlind(long moneyVlue = 10000)//using
     {
-        //UpdatePlayerPlayings();
         for (int i = 0; i < arrPlayer.Length; i++)
         {
             var player = arrPlayer[i];
@@ -1686,7 +1653,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     public void LoadScene()
     {
         SceneManager.LoadScene(0);
-    }
+    }//using
     public bool CheckEqualBlind()//using
     {
         UpdatePlayerPlayings();
@@ -1819,42 +1786,31 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
             }
         }
     }
-
+    #region SyncData
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
             stream.SendNext(isStartGame);
-            //stream.SendNext(arrTest);
-            //Debug.Log("SendNext");
         }
         else if (stream.IsReading)
-        {
-            //Debug.Log("ReceiveNext");
-            //commonIndex = (int)stream.ReceiveNext();
-            isStartGame = (bool)stream.ReceiveNext();
-            //arrTest = (object[])stream.ReceiveNext();
+        {               
+            isStartGame = (bool)stream.ReceiveNext();        
         }
     }
-    public void SyncCardLateJoin()
+    public void SyncPlayerDatasJoinLate()
     {
         if(photonViews.IsMine)
         {
             foreach (var item in arrPlayer)
-            {
-                //item.card1 = item.dicBufferedCard["card1"];
-                //item.card2 = item.dicBufferedCard["card2"];
-                //Debug.Log($"dicCount is {item.dicBufferedCard.Count}");
-                //Debug.Log(item.dicBufferedCard.Count);
-                //item.card1 = item.dicBufferedCard[1] as GameObject;
-                //item.card1 = item.dicBufferedCard[2] as GameObject;
+            {               
                 item.SyncPlayerJoinLate();
             }
             SyncGameControllerJoinLate();
-        }
-       
+        }    
     }
-   public void RemoveCards()
+    #endregion
+    public void RemoveCards()//using
     {
         for (int i = 0; i < arrCardsRemoved.Length; i++)
         {

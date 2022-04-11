@@ -32,17 +32,10 @@ public class TImeCounterStart : MonoBehaviour
     
     private void OnDisable()
     {
-        try
+        foreach (var item in objNumber)
         {
-            foreach (var item in objNumber)
-            {
-                item.SetActive(false);
-            }
-        }
-          catch
-        {
-            Debug.Log("Error in TimeCounterStart");
-        }
+            item.SetActive(false);
+        }    
     }
     
     private void Update()

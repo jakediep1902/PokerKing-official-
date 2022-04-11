@@ -8,7 +8,7 @@ using Photon.Pun;
 public class UIManager : MonoBehaviourPunCallbacks
 {
     public static UIManager Instance;
-    GameController gameController;
+    public GameController gameController;
     PhotonView PvUI;
     ManageNetwork manageNetwork;
 

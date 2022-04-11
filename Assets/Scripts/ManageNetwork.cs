@@ -47,7 +47,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         // Debug.Log($"isStartGame is {gameController.isStartGame}");
 
         //BtnReady();
-        gameController.playerInRoom = (int)PhotonNetwork.CurrentRoom.PlayerCount;
+        //gameController.playerInRoom = (int)PhotonNetwork.CurrentRoom.PlayerCount;
         Invoke(nameof(BtnReady), 4f);
                         
         //SceneManager.LoadScene(0);
@@ -55,6 +55,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public override void OnLeftRoom()
     {
+        
         //Debug.Log($"player ID {photonViews.ViewID} has left room");
         //gameController.CheckPlayerExit();
     }
@@ -64,10 +65,10 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         if (gameController.isStartGame)
         {
             gameController.SpawPlayer();
-            Debug.Log($"playerPlaying is {gameController.playerPlaying}");
+            //Debug.Log($"playerPlaying is {gameController.playerPlaying}");
             //isJoinedRoom = true;
             Invoke(nameof(SetIsJoinedRoom),10f);
-            Debug.Log($"isStartGame is true");
+            Debug.Log($"Game alrealy played and isStartGame was true");
         }
         else
         {

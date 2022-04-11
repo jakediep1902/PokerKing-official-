@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.Events;
-using System.Globalization;
+//using System.Globalization;
 using ExitGames.Client.Photon;
 
 public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
@@ -30,7 +30,6 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     public Transform[] arrPosDefaul = new Transform[6];
     public List<GameObject> listCard = new List<GameObject>();
     public List<GameObject> listCardWin = new List<GameObject>();
-    //public Dictionary<int,object> dicBufferedCard= new Dictionary<int,object>();
     public int[] arrCardWin = new int[5];
 
     public float score = 0f;
@@ -66,7 +65,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         gameController = GameController.Instance;
         gameController2 = GameController2.Instance;
         DontDestroyOnLoad(this.gameObject);
-        uIManager = FindObjectOfType<UIManager>();     
+        uIManager = FindObjectOfType<UIManager>();
+        gameObject.name = ID.ToString();
     }
     void Start()
     {
@@ -74,19 +74,15 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         {
             if(!PvPlayer.IsMine)
             {
-                Debug.Log($"Player waiting!!");
-                //Debug.Log(dicBufferedCard.Count);
-                gameController.SyncCardLateJoin();
-
-                
+                Debug.Log($"Player {this.ID} waiting!!");             
+                gameController.SyncPlayerDatasJoinLate();               
             }
             isWaiting = true;                     
         }
         else
         {
             gameController.UpdatePlayer();
-        }
-        //gameController.UpdatePlayer();       
+        }      
         cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 7;
         cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 7;      
         PvPlayer = GetComponent<PhotonView>();
@@ -98,7 +94,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
                 transform.position = arrPosDefaul[i].position;
             }
         }
-        gameObject.name = ID.ToString();
+        
         money = 10000000;
         moneyBlinding = 0;
 
@@ -159,24 +155,24 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     private void OnDisable()
     {
-        //PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
+        // Apply for All Player in this client when OnDisable
+        PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
+        try
+        {          
+            timeCounter.imageFill.fillAmount = 0;
+            gameController.UpdatePlayerPlayings();
+                    
+            if (card1 != null)
+            {
+                card1?.SetActive(false);
+                card2?.SetActive(false);
+            }
+        }
+        catch
+        {
+            Debug.Log($"Error in PlayerController ID {PvPlayer.ViewID} when Disabled !!!");
+        }
 
-        //try
-        //{
-        //    PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
-        //    //gameController.UpdatePlayer();          
-        //    //if (!PvPlayer.IsMine)
-        //    //{
-        //    //    timeCounter.imageFill.fillAmount = 0;
-        //    //    card1?.SetActive(false);
-        //    //    card2?.SetActive(false);             
-        //    //}
-        //}
-        //catch 
-        //{
-        //    Debug.Log("Error in PlayerController Disabled !!!");
-        //}
-        
     }
     private void NetworkingClient_EventReceived(EventData obj)
     {
@@ -193,39 +189,37 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
                     cardTemplate2.SetActive(true);
                     cardTemplate1.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
                     cardTemplate2.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
-                }
-
-
-                //cardTemplate1.transform.localScale = new Vector3(1f, 1f, 1f);
-                //cardTemplate2.transform.localScale = new Vector3(1f, 1f, 1f);
+                }              
 
                 foreach (var item in gameController.cards)
                 {
-                    if(item.GetComponent<Card>().ID == (int)datas[1])
+                    if(item.GetComponent<Card>().ID == (int)datas[1] && card1==null)
                     {
                         card1 = item;
-
+                        //card1.SetActive(true);
                         card1.GetComponent<SpriteRenderer>().sortingOrder = 4;                   
-                        Debug.Log($"card1 added");
+                       // Debug.Log($"card1 added");
                     }
-                    if (item.GetComponent<Card>().ID == (int)datas[2])
+                    if (item.GetComponent<Card>().ID == (int)datas[2] && card2 == null)
                     {
                         card2 = item;
-
+                        //card2.SetActive(true);
                         card2.GetComponent<SpriteRenderer>().sortingOrder = 5;
-                        Debug.Log($"card2 added");
+                        // Debug.Log($"card2 added");
+                        Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} added card1 and card2 to PlayerController ");
                     }
-                }       
-            }                   
+                }
+                 
+            }
         }
     }
     public void SyncPlayerJoinLate()
     {      
         object[] datas = new object[]
         {
-            PvPlayer.ViewID,
-            card1.GetComponent<Card>().ID,
-            card2.GetComponent<Card>().ID,
+            PvPlayer.ViewID,//1
+            card1.GetComponent<Card>().ID,//2
+            card2.GetComponent<Card>().ID,//3
             //card1.GetComponent<SpriteRenderer>().sortingOrder,
             //card2.GetComponent<SpriteRenderer>().sortingOrder
         };
@@ -235,9 +229,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             CachingOption = EventCaching.DoNotCache
         };
         //Debug.Log($"ID {PvPlayer.ViewID} Invoke RaiseEvent and sent card1");
-        Debug.Log($"ID {PvPlayer.ViewID} Send Datas");
-        PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncLateJoin, datas, option,
-            ExitGames.Client.Photon.SendOptions.SendUnreliable);
+        Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} Send Datas");
+        PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncLateJoin, datas, option,SendOptions.SendUnreliable);
 
     }
 
@@ -269,11 +262,11 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
                 }
                 
                 PvPlayer.RPC("RPC_SetCard1", RpcTarget.All, indexCard);
-                //PvPlayer.RPC("BuffererCard", RpcTarget.All,1,indexCard);
+               
                 //Debug.Log(indexCard);
                 indexCard = Random.Range((int)0, (int)gameController.cards.Length);
                 PvPlayer.RPC("RPC_SetCard2", RpcTarget.All, indexCard);
-                //PvPlayer.RPC("BuffererCard", RpcTarget.All,2, indexCard);
+                
                 //Debug.Log(indexCard);
                 PvPlayer.RPC("CoverCardOtherClient", RpcTarget.Others, null);
             }
@@ -304,11 +297,10 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     [PunRPC]
     public void RPC_SetCard2(int index)
     {
-        //RefreshListcard();
+        
         if (gameController.cards[index] == null)
         {
-            index--;
-            //gameController = GameController.Instance;
+            index--;          
             Debug.Log("gameController2 is null");
         }
         gameController.cards[index].SetActive(true);
@@ -433,6 +425,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     {
         uIManager.imageConnecting.gameObject.SetActive(false);
     }
+
     //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     //{
     //    int temp = card1.GetComponent<SpriteRenderer>().sortingOrder;
@@ -447,14 +440,6 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     //        Debug.Log($"Received Sorting");
     //    }
     //}
-    //[PunRPC]
-    //public void RefreshListcard()
-    //{
-    //    for (int j = 0; j < listCard.Count; j++)
-    //    {
-    //        if (listCard[j] == null)
-    //            listCard.RemoveAt(j);
-    //    }
-    //}
+    
 
 }

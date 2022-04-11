@@ -544,7 +544,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 101691423}
-  sceneViewId: 41
+  sceneViewId: 63
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!4 &108141544 stripped
@@ -700,9 +700,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents:
-  - {fileID: 147137825}
-  sceneViewId: 60
+  ObservedComponents: []
+  sceneViewId: 62
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &149557614
@@ -899,7 +898,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 59
+  sceneViewId: 61
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &161552107
@@ -1050,8 +1049,9 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 58
+  ObservedComponents:
+  - {fileID: 161552112}
+  sceneViewId: 60
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &165826405 stripped
@@ -1694,8 +1694,9 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 34
+  ObservedComponents:
+  - {fileID: 292269183}
+  sceneViewId: 59
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &321682554
@@ -2711,7 +2712,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 15
+  sceneViewId: 58
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &442685979
@@ -2938,7 +2939,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 14
+  sceneViewId: 57
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &463127703
@@ -3090,7 +3091,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 13
+  sceneViewId: 56
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &482968861
@@ -3375,7 +3376,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 12
+  sceneViewId: 55
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &490478279
@@ -3882,6 +3883,7 @@ Transform:
   - {fileID: 593511325}
   - {fileID: 1396604894}
   - {fileID: 108141544}
+  - {fileID: 1684952295}
   - {fileID: 1920415845}
   m_Father: {fileID: 0}
   m_RootOrder: 11
@@ -4035,7 +4037,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 43
+  sceneViewId: 54
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &593511324
@@ -4499,7 +4501,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 42
+  sceneViewId: 53
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &624586605
@@ -4994,7 +4996,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 57
+  sceneViewId: 52
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &685188512
@@ -5241,7 +5243,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 56
+  sceneViewId: 51
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &723678374
@@ -5393,7 +5395,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 63
+  sceneViewId: 50
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1001 &736892110
@@ -5634,7 +5636,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 62
+  sceneViewId: 49
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &772340314
@@ -5891,7 +5893,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 61
+  sceneViewId: 48
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &787338784
@@ -6255,7 +6257,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 40
+  sceneViewId: 47
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &812224669
@@ -6518,7 +6520,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 39
+  sceneViewId: 46
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &813267224
@@ -6669,8 +6671,9 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 38
+  ObservedComponents:
+  - {fileID: 813267229}
+  sceneViewId: 45
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &820006300
@@ -6822,7 +6825,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 37
+  sceneViewId: 44
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &822267616
@@ -6974,7 +6977,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 36
+  sceneViewId: 43
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &832385198
@@ -7342,8 +7345,9 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 35
+  ObservedComponents:
+  - {fileID: 876166048}
+  sceneViewId: 42
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &892326551
@@ -7574,7 +7578,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 46
+  sceneViewId: 41
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &971966159
@@ -7806,7 +7810,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 976018531}
-  sceneViewId: 45
+  sceneViewId: 40
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &979892926
@@ -8053,7 +8057,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 44
+  sceneViewId: 39
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &983480968
@@ -8205,7 +8209,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 49
+  sceneViewId: 38
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &986017648
@@ -8567,7 +8571,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 48
+  sceneViewId: 37
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &998410399
@@ -8814,7 +8818,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 47
+  sceneViewId: 36
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1029633580
@@ -10037,7 +10041,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 55
+  sceneViewId: 35
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!4 &1240155023 stripped
@@ -10332,7 +10336,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 54
+  sceneViewId: 34
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1278352977
@@ -10520,7 +10524,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 53
+  sceneViewId: 33
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1302211370
@@ -10751,7 +10755,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 52
+  sceneViewId: 32
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1324447039
@@ -10903,7 +10907,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 51
+  sceneViewId: 31
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1342127587
@@ -11098,8 +11102,9 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 50
+  ObservedComponents:
+  - {fileID: 1350914601}
+  sceneViewId: 30
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1389341880
@@ -11251,7 +11256,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 33
+  sceneViewId: 29
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1396604893
@@ -11578,6 +11583,7 @@ MonoBehaviour:
   amountPlayer: 0
   playerInRoom: 0
   playerPlaying: 0
+  amountCardInit: 0
   NoTemplate: 0
   NoCommonPos: 0
   arrSaveIDCardToSync: 
@@ -11845,7 +11851,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 27
+  sceneViewId: 28
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1472625968
@@ -12077,7 +12083,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 1503622192}
-  sceneViewId: 31
+  sceneViewId: 27
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1509302298
@@ -12463,7 +12469,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 20
+  sceneViewId: 26
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1565639110
@@ -12878,7 +12884,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 18
+  sceneViewId: 25
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1658346052
@@ -13057,6 +13063,81 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1660419606}
   m_CullTransparentMesh: 1
+--- !u!1001 &1684952294
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 553449466}
+    m_Modifications:
+    - target: {fileID: 8552103047691139619, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_Name
+      value: BackCard (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8552103047691139616, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+--- !u!4 &1684952295 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
+  m_PrefabInstance: {fileID: 1684952294}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1686860835 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2337641075595050590, guid: cc20ee36654e74f4dbcfd5af3e0f3cf7, type: 3}
@@ -13295,7 +13376,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 26
+  sceneViewId: 24
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1719592273
@@ -13622,7 +13703,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 1743475685}
-  sceneViewId: 32
+  sceneViewId: 23
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1755977279
@@ -14459,7 +14540,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 21
+  sceneViewId: 22
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!4 &1920415845 stripped
@@ -14484,7 +14565,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1920984389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14691,8 +14772,9 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 17
+  ObservedComponents:
+  - {fileID: 1936799915}
+  sceneViewId: 21
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1941097296
@@ -15053,8 +15135,9 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 29
+  ObservedComponents:
+  - {fileID: 1980119206}
+  sceneViewId: 20
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &1988645374
@@ -15205,8 +15288,7 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents:
-  - {fileID: 1988645379}
+  ObservedComponents: []
   sceneViewId: 19
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -15480,7 +15562,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 24
+  sceneViewId: 18
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &2013785179
@@ -15631,9 +15713,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents:
-  - {fileID: 2013785184}
-  sceneViewId: 25
+  ObservedComponents: []
+  sceneViewId: 17
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &2038807900
@@ -16104,7 +16185,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 30
+  sceneViewId: 15
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &2077415754
@@ -16364,7 +16445,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 23
+  sceneViewId: 14
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &2100051807
@@ -16595,7 +16676,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 22
+  sceneViewId: 13
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1 &2111466931
@@ -16822,7 +16903,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
-  sceneViewId: 28
+  sceneViewId: 12
   InstantiationId: 0
   isRuntimeInstantiated: 0
 --- !u!1001 &239792573527455597
@@ -17212,7 +17293,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6549677786593789779, guid: 9655e7082fa2d51479e70339a66eb030, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6549677786593789779, guid: 9655e7082fa2d51479e70339a66eb030, type: 3}
       propertyPath: m_LocalPosition.x
@@ -17334,35 +17415,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.8
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.05
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.72
+      value: 2.05
       objectReference: {fileID: 0}
     - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.52
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.89721984
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.44158414
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
       propertyPath: m_LocalRotation.y
@@ -17374,7 +17455,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 52.41
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8552103047691139630, guid: 148942b98d1fa0f48b52870f26b9dee5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
