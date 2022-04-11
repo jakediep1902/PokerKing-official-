@@ -44,9 +44,10 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
-       // Debug.Log($"isStartGame is {gameController.isStartGame}");
-        
+        // Debug.Log($"isStartGame is {gameController.isStartGame}");
+
         //BtnReady();
+        gameController.playerInRoom = (int)PhotonNetwork.CurrentRoom.PlayerCount;
         Invoke(nameof(BtnReady), 4f);
                         
         //SceneManager.LoadScene(0);
@@ -59,18 +60,23 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public void BtnReady()
     {
+        //gameController.SpawPlayer();
         if (gameController.isStartGame)
         {
             gameController.SpawPlayer();
-            //Debug.Log($"isStartGame is true");
+            Debug.Log($"playerPlaying is {gameController.playerPlaying}");
+            //isJoinedRoom = true;
+            Invoke(nameof(SetIsJoinedRoom),10f);
+            Debug.Log($"isStartGame is true");
         }
         else
         {
             isJoinedRoom = true;
             gameController.BtnReady();
-            //Debug.Log($"isStartGame is fasle");
-        }
-       
-              
+        }      
+    }
+    public void SetIsJoinedRoom()
+    {
+        isJoinedRoom = true;
     }
 }

@@ -31,11 +31,18 @@ public class TImeCounterStart : MonoBehaviour
     }
     
     private void OnDisable()
-    {      
-        foreach (var item in objNumber)
+    {
+        try
         {
-            item.SetActive(false);
-        }    
+            foreach (var item in objNumber)
+            {
+                item.SetActive(false);
+            }
+        }
+          catch
+        {
+            Debug.Log("Error in TimeCounterStart");
+        }
     }
     
     private void Update()
@@ -45,7 +52,7 @@ public class TImeCounterStart : MonoBehaviour
             this.gameObject.SetActive(false);         
         }
     }
-    IEnumerator CoStartCount(int seconds = 10)
+    IEnumerator CoStartCount(int seconds = 4)//10
     {
         if (seconds >= objNumber.Length)
         {

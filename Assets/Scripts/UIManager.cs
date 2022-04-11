@@ -26,6 +26,8 @@ public class UIManager : MonoBehaviourPunCallbacks
     public Text txtSetBlindVlue;
 
     public Slider sliderVlue;
+
+    public Image imageConnecting;
    
     public float blindVlue = 0;
 
@@ -44,11 +46,12 @@ public class UIManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         gameController = GameController.Instance;
-        btnTheoCuoc.gameObject.SetActive(false);     
+        btnTheoCuoc.gameObject.SetActive(false);
+        
     }
     private void Update()
     {
         txtIndex.text = gameController.commonIndex.ToString();
         txtBarTotalMoney.text = gameController.FormatVlueToString(gameController.barTotalMoney);
-    }
+    }   
 }
