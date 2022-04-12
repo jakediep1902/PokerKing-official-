@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     public long money = 1000000;
     public long moneyBlinding = 0;
     public long moneyBlinded = 0;
+    
 
     public int ID = 0;
     
@@ -153,7 +154,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     {
         PhotonNetwork.NetworkingClient.EventReceived += NetworkingClient_EventReceived;
     }
-    private void OnDisable()
+    public override void OnDisable()
     {
         // Apply for All Player in this client when OnDisable
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
@@ -209,7 +210,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
                         Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} added card1 and card2 to PlayerController ");
                     }
                 }
-                 
+                moneyBlinded = (long)datas[3];
+                money = (long)datas[4];
+                moneyBlinding = (long)datas[5];
             }
         }
     }
@@ -217,9 +220,14 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     {      
         object[] datas = new object[]
         {
-            PvPlayer.ViewID,//1
-            card1.GetComponent<Card>().ID,//2
-            card2.GetComponent<Card>().ID,//3
+            PvPlayer.ViewID,//0
+            card1.GetComponent<Card>().ID,//1
+            card2.GetComponent<Card>().ID,//2
+            moneyBlinded,//3
+            money,//4
+            moneyBlinding,//5
+
+
             //card1.GetComponent<SpriteRenderer>().sortingOrder,
             //card2.GetComponent<SpriteRenderer>().sortingOrder
         };
@@ -428,18 +436,16 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
 
     //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     //{
-    //    int temp = card1.GetComponent<SpriteRenderer>().sortingOrder;
+    //    // there is a crazy bug in this class "specifyed cast is not valid" because you click on the player owner first !!!
     //    if (stream.IsWriting)
     //    {
-    //        stream.SendNext(card1.GetComponent<SpriteRenderer>().sortingOrder);
-    //        Debug.Log($"Send Sorting");
+    //        Debug.Log($"Player {PvPlayer.ViewID} sends datas to Sync");
+    //        stream.SendNext(moneyBlinded);            
     //    }
     //    else if (stream.IsReading)
     //    {
-    //        card1.GetComponent<SpriteRenderer>().sortingOrder = (int)stream.ReceiveNext();
-    //        Debug.Log($"Received Sorting");
+    //        Debug.Log($"Player {PvPlayer.ViewID} received datas to Sync");
+    //        moneyBlinded = (long)stream.ReceiveNext();        
     //    }
     //}
-    
-
 }

@@ -105,7 +105,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         //var clone = cards.Clone();
         //cardsClone = clone as GameObject[];
     }
-    private void OnEnable()
+    public override void OnEnable()
     {
         PhotonNetwork.NetworkingClient.EventReceived += NetworkingClient_EventReceived;
     }
@@ -505,7 +505,12 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         }
         if (!isShowDown)
         {
+            if(arrPlayer[indexBigBlind]!=null)
             arrPlayer[indexBigBlind]?.timeCounter.gameObject.SetActive(true);
+            else
+            {
+                Debug.Log($"arrPlayer[indexBigBlind] is null with indexBigBlind {indexBigBlind}");
+            }
         }
 
     }//using
@@ -1810,7 +1815,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         }    
     }
     #endregion
-    public void RemoveCards()//using
+    public void RemoveCards()//used for Sync datas (remove cards in GameController join late
     {
         for (int i = 0; i < arrCardsRemoved.Length; i++)
         {
