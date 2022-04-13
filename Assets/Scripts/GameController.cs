@@ -1422,11 +1422,13 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         UpdatePlayer();
         for (int i = 0; i < arrPlayer.Length; i++)
         {
-            if (arrPlayer[i].isFold || (arrPlayer[i].isWaiting))
+            if ((arrPlayer[i].isFold) || (arrPlayer[i].isWaiting))
             {
-                RemoveElement<PlayerController>(ref arrPlayer, i);
+                //Debug.Log($"index i  =  {i} and Player {arrPlayer[i].ID} isFold is {arrPlayer[i].isFold}");
+                RemoveElement(ref arrPlayer, i);
+                i--;
             }
-        }
+        }       
         playerPlaying = arrPlayer.Length;
     }
     public void BtnReady()//using 

@@ -118,9 +118,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     
     private void Update()
     {
-        if (isFold && !PvPlayer.IsMine)
+        if (isFold && card1!=null)
         {
-            if (card1.transform.position != Vector3.zero)//Fold card
+            if (card1?.transform.position != Vector3.zero)//Fold card
             {
                 card1.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
                 card2.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
@@ -351,14 +351,14 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     [PunRPC]
     public void BoBai()
     {
+        isFold = true;
         timeCounter.imageFill.fillAmount = 0f;
         Color tempColor = Color.white;
         tempColor.a = 0.3f;
         GetComponent<SpriteRenderer>().color = tempColor;
         Invoke("HandleBoBai", 0.4f);
         cardTemplate1.SetActive(false);
-        cardTemplate2.SetActive(false);
-        isFold = true;
+        cardTemplate2.SetActive(false);       
         gameController.UpdatePlayerPlayings();
     }
     public void BtnBoBai()
@@ -366,10 +366,10 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         if (PvPlayer.IsMine && gameController.isStartGame)
         {
             PvPlayer.RPC("BoBai", RpcTarget.All, null);
-            Color tempColor = Color.white;
-            tempColor.a = 0.4f;
-            card1.GetComponent<SpriteRenderer>().color = tempColor;
-            card2.GetComponent<SpriteRenderer>().color = tempColor;
+            //Color tempColor = Color.white;
+            //tempColor.a = 0.4f;
+            //card1.GetComponent<SpriteRenderer>().color = tempColor;
+            //card2.GetComponent<SpriteRenderer>().color = tempColor;
         }
     }
     public void BtnThemCuoc()
@@ -382,11 +382,15 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void HandleBoBai()
     {
-        if (!PvPlayer.IsMine)
+        //if (!PvPlayer.IsMine)
+        //{
+        if(card1!=null)
         {
             card1.SetActive(false);
             card2.SetActive(false);
         }
+       
+        //}
     }
     [PunRPC]
     public void SetValueBlind(long vlue)
