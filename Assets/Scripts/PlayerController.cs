@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             }
         }
         
-        money = 10000000;
+        //money = 10000000;
         moneyBlinding = 0;
 
         if(PvPlayer.IsMine)

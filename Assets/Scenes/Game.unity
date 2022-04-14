@@ -2257,6 +2257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80f5d4c59be19bb419df19bd62022c12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameController: {fileID: 0}
   pnlThemCuoc: {fileID: 1510318762}
   pnlGame: {fileID: 1764015618}
   btnOKBlind: {fileID: 986017650}
@@ -14240,7 +14241,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1849241739}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9077595af5335fa459a4a89fc14ee4ab, type: 3}
   m_Name: 

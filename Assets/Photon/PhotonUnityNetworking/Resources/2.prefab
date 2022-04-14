@@ -175,7 +175,7 @@ MonoBehaviour:
   listCardWin: []
   arrCardWin: 0000000000000000000000000000000000000000
   score: 0
-  money: 100000000
+  money: 30000
   moneyBlinding: 0
   moneyBlinded: 0
   ID: 2

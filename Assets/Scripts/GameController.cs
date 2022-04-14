@@ -32,7 +32,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
 
     public Vector3 playerStartPos;
 
-    UnityAction<PlayerController> setOptionWinner;
+    //UnityAction<PlayerController> setOptionWinner;
 
     //public Sprite[] arrCards = new Sprite[52];
     public PlayerController[] arrPlayer;
@@ -182,8 +182,8 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         //ClearConsole();
         //Debug.Log(arrTest.Length);
 
-        setOptionWinner += ReturnBlindedToWinner;
-        setOptionWinner += PayMoneyWonToWinner;
+        //setOptionWinner += ReturnBlindedToWinner;
+        //setOptionWinner += PayMoneyWonToWinner;
 
         //for (int i = 0; i < posDefaul.Length; i++)
         //{
@@ -569,22 +569,36 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
                 //    Debug.Log($"Card {item}");
                 //}          
             }
+            ReturnBlindedToWinner(player);
         }
+
+        StartCoroutine(RewardWinner());
+
         foreach (PlayerController winner in listWinner)
         {
             //AddMoneyToWiner(winner);
-            setOptionWinner(winner);
-            HighLightCardWin(winner);
-            ScaleCardWin(winner, 1.1f);
-            Debug.Log($"Winner is Player {winner.gameObject.name} with Score : {winner.score}" +
-                $" and Card ({winner.arrCardWin[0]} {winner.arrCardWin[1]} {winner.arrCardWin[2]} " +
-                $"{winner.arrCardWin[3]} {winner.arrCardWin[4]})");
-            //congratulation.SetActive(true);
-            //congratulation.transform.position = winner.gameObject.transform.position;
+            //setOptionWinner?.Invoke(winner);
+            //ReturnBlindedToWinner(winner);
+             
+            // devloping
+            //RewardWinner(listWinner.ToArray());
+           
+
+
+            //HighLightCardWin(winner);
+            //ScaleCardWin(winner, 1.1f);
+
+            //Debug.Log($"Winner is Player {winner.gameObject.name} with Score : {winner.score}" +
+            //    $" and Card ({winner.arrCardWin[0]} {winner.arrCardWin[1]} {winner.arrCardWin[2]} " +
+            //    $"{winner.arrCardWin[3]} {winner.arrCardWin[4]})");
+
+            ////congratulation.SetActive(true);
+            ////congratulation.transform.position = winner.gameObject.transform.position;
+
             winner.timeCounter.imageFill.fillAmount = 0f;
-            Instantiate(congratulation, winner.gameObject.transform.position, Quaternion.identity);
+            //Instantiate(congratulation, winner.gameObject.transform.position, Quaternion.identity);
             if (photonViews.IsMine)
-                Invoke(nameof(BtnPlayAgain), 10f);
+                Invoke(nameof(BtnPlayAgain), 20f);
         }
     }//using
     public void CheckStraightFlush(PlayerController player)
@@ -1338,8 +1352,12 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         }
         if (player.listCardWin.Count < 5)
         {
-            player.card1.GetComponent<SpriteRenderer>().color = spriteColor;
-            player.card2.GetComponent<SpriteRenderer>().color = spriteColor;
+            if(player.card1!=null)
+            {
+                player.card1.GetComponent<SpriteRenderer>().color = spriteColor;
+                player.card2.GetComponent<SpriteRenderer>().color = spriteColor;
+            }
+           
         }
     }//using
     public void ScaleCardWin(PlayerController player, float value = 1.5f)
@@ -1613,7 +1631,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         photonViews.RPC("Pause", RpcTarget.All, null);
     }
     [PunRPC]
-    public void InitBlind(long moneyVlue = 10000)//using
+    public void InitBlind(long moneyVlue = 5000)//using
     {
         for (int i = 0; i < arrPlayer.Length; i++)
         {
@@ -1673,6 +1691,21 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
                 temp.Add(item);
             }
         }
+
+
+        //test
+       // var qr = arrPlayer.Where(p => p.money > 0);
+       // if(qr!=null)
+       // {
+       //    //qr.Where(p => p.moneyBlinded < bigestBlinded);
+       //     return !qr.Any(p => p.moneyBlinded < bigestBlinded);
+       // }
+       //else
+       // {
+
+       // }
+        //test
+
         if (temp.Count > 1)
         {
             foreach (var item1 in temp)
@@ -1741,6 +1774,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         isShowDown = true;
         if(photonViews.IsMine)
         {
+            Debug.Log("Warning 2 !!!");
             switch (NoCommonPos)
             {
                 case 0:
@@ -1768,7 +1802,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     }
     public void PayMoneyWonToWinner(PlayerController winner)
     {
-        UpdatePlayerPlayings();
+        //UpdatePlayerPlayings();
         if (barTotalMoney <= winner.moneyBlinding)
         {
             winner.money += barTotalMoney;
@@ -1780,18 +1814,94 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
             barTotalMoney -= winner.moneyBlinded;
         }
     }
+    IEnumerator RewardWinner()
+    {
+        
+        var query = arrPlayer.ToList();
+        query.Sort((p1, p2) =>
+        {
+            if (p1.score == p2.score) return 0;
+            if (p1.score < p2.score) return 1;
+            return -1;
+        });
+
+        arrPlayer = query.ToArray();//sort arrPlayer by score 9 -> 0
+      
+
+        for (int i = 0; i < arrPlayer.Length; i++)
+        {
+            long totalWon = 0;           
+            for (int j = i+1; j < arrPlayer.Length; j++)
+            {
+                long moneyWon = 0;
+                if (arrPlayer[i].score>arrPlayer[j].score)
+                {
+                    if(arrPlayer[i].moneyBlinded>arrPlayer[j].moneyBlinded)
+                    {
+                        moneyWon = arrPlayer[j].moneyBlinded;
+                    }
+                    else
+                    {
+                        moneyWon = arrPlayer[i].moneyBlinded;
+                    }
+
+                    arrPlayer[i].money += moneyWon;
+                    arrPlayer[j].money -= moneyWon;
+                    arrPlayer[j].moneyBlinded -= moneyWon;
+                    totalWon += moneyWon;                                    
+                }
+                else //handle when it hapen
+                {
+                    //how to share money between 2 winer[0] and winer[1]
+                }
+                //else if(arrPlayer[i].score < arrPlayer[j].score)//never happen
+                //{
+                //    Debug.Log("Warning!!!");
+                //    if (arrPlayer[i].moneyBlinded > arrPlayer[j].moneyBlinded)
+                //    {
+                //        moneyWon = arrPlayer[j].moneyBlinded;
+                //    }
+                //    else
+                //    {
+                //        moneyWon = arrPlayer[i].moneyBlinded;
+                //    }
+                //    arrPlayer[j].money += moneyWon;
+                //    arrPlayer[i].money -= moneyWon;
+                //    arrPlayer[i].moneyBlinded -= moneyWon;
+                //    totalWon += moneyWon;
+                //}
+            }
+
+            if(totalWon>0)
+            {
+                HighLightCardWin(arrPlayer[i]);
+                ScaleCardWin(arrPlayer[i], 1.15f);
+                var temp = Instantiate(congratulation, arrPlayer[i].gameObject.transform.position, Quaternion.identity) as GameObject;
+                Destroy(temp, 5);
+                Debug.Log($"player {arrPlayer[i].name} win total {totalWon} $");
+            }
+          
+            yield return new WaitForSeconds(5);
+            
+            //should be add money total won of player in this line
+        }
+
+    }
     [PunRPC]
     public void CheckMoneyPlayer()
     {
-        UpdatePlayerPlayings();
+        //UpdatePlayerPlayings();
         foreach (var item in arrPlayer)
         {
-            if(item.money<=0)
+            if (item.money <= 0)
             {
                 item.isBroke = true;
-                item.gameObject.SetActive(false);
+                //item.gameObject.SetActive(false);
+                item.money = 200000;
             }
         }
+        //alternative method
+        //arrPlayer.Where(p => p.money < 0).ToList().ForEach(p => { p.isBroke = true; p.gameObject.SetActive(false); });
     }
     #region SyncData
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
