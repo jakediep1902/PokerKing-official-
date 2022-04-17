@@ -2265,6 +2265,8 @@ MonoBehaviour:
   btnXemBai: {fileID: 43375998}
   btnBoBai: {fileID: 1031048995}
   btnThemCuoc: {fileID: 396555511}
+  btnPause: {fileID: 832385200}
+  btnTest: {fileID: 637020607}
   txtIndex: {fileID: 1731854394}
   txtBarTotalMoney: {fileID: 1071853251}
   txtSetBlindVlue: {fileID: 2077415756}

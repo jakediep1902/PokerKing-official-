@@ -137,7 +137,9 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
                 if (gameController.CheckEqualBlind())
                 {
+                    //Debug.Log("Call deal");
                     Invoke(nameof(BtnDeal), 2f);
+                    //BtnDeal();
                 }
                 else
                 {
@@ -158,7 +160,9 @@ public class TimeCounter : MonoBehaviourPunCallbacks
             {
                 if (gameController.CheckEqualBlind())
                 {
-                    Invoke(nameof(BtnDeal), 2f);
+                    //Debug.Log("Call deal");
+                    Invoke(nameof(BtnDeal), 2f);                  
+                    //BtnDeal();
                 }
                 else
                 {
