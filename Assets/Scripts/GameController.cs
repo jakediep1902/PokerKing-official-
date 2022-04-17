@@ -1822,6 +1822,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     IEnumerator RewardWinner()
     {
         bool isGroupWon = false;
+        List<PlayerController> listTemp = new List<PlayerController>();
         //float timeDelay = 5f;
         var query = arrPlayer.ToList();
         query.Sort((p1, p2) =>
@@ -1907,6 +1908,9 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
                         return -1;
                     });
 
+                    if (groupLose.Count == 0) break;
+
+
                     long maxLose = groupWin.Max(p=>p.moneyBlinded);
                     Debug.Log($"maxLose is {maxLose}");
                     long totalReward = 0;
@@ -1943,8 +1947,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
                         var temp = Instantiate(congratulation, arrPlayer[i].gameObject.transform.position, Quaternion.identity) as GameObject;
                         Destroy(temp, 5);
                     }
-
-                    arrPlayer = groupLose.ToArray();
+                    listTemp = groupLose;
                     i = 0;                    
                 }
                 
@@ -1972,6 +1975,10 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
                 arrPlayer = query.ToArray();//sort arrPlayer by score 9 -> 0 (due to somewhere sort arrPlayer after waited 5s)
                                             //should be add money total won of player in this line
                 isGroupWon = false;
+            }
+            else
+            {
+                arrPlayer = listTemp.ToArray();
             }
             Debug.Log($"arrPlayer count is {arrPlayer.Length}");
           
