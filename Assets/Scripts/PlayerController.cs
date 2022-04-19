@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
 
     public GameObject card1, card2, cardTemplate1, cardTemplate2;
     public GameObject bigBlindIcon;
+    public GameObject rewardTopup;
     
     public Text txtMoney;
     public Text txtMoneyBlind;
@@ -71,6 +72,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     void Start()
     {
+        //if(rewardTopup!=null)
+        //rewardTopup.SetActive(true);
         if (gameController.isStartGame)
         {
             if(!PvPlayer.IsMine)

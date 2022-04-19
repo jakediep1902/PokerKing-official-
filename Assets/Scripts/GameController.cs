@@ -179,8 +179,10 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         photonViews = GetComponent<PhotonView>();
         manageNetwork = ManageNetwork.Instance;
         startPos = backCardPrefab.transform;       
+
         ClearConsole();
-        //Debug.Log(arrTest.Length);
+
+        
 
         //setOptionWinner += ReturnBlindedToWinner;
         //setOptionWinner += PayMoneyWonToWinner;
@@ -1407,7 +1409,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
             photonViews.RPC("SetIsStartGame", RpcTarget.All, true);       
             photonViews.RPC("UpdatePlayer", RpcTarget.All, null);
             photonViews.RPC("CheckMoneyPlayer", RpcTarget.All, null);
-            photonViews.RPC("InitBlind", RpcTarget.All,(long)0000);
+            photonViews.RPC("InitBlind", RpcTarget.All,(long)10000);
             StartCoroutine(nameof(RunTimeCounter), 3f);
             //playerInRoom *= 2;
             amountCardInit = playerPlaying * 2;
@@ -1822,8 +1824,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
     IEnumerator RewardWinner()
     {
         bool isGroupWon = false;
-        List<PlayerController> listTemp = new List<PlayerController>();
-        //float timeDelay = 5f;
+        List<PlayerController> listTemp = new List<PlayerController>();       
         var query = arrPlayer.ToList();
         query.Sort((p1, p2) =>
         {
@@ -1843,7 +1844,32 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
         {
             Debug.Log($"player {item.name} score : {item.score}, moneyBlinded : {item.moneyBlinded}");
         }
+      
+        if(arrPlayer.Length==1)
+        {
+            long moneyWon = barTotalMoney;
+            arrPlayer[0].money += barTotalMoney;
+            barTotalMoney -= barTotalMoney;
 
+            Card[] arrCardBlur = FindObjectsOfType<Card>();
+            Color spriteColor = Color.white;
+            spriteColor.a = 0.4f;
+            foreach (var item in arrCardBlur) item.gameObject.transform.GetComponent<SpriteRenderer>().color = spriteColor;
+
+            if (arrPlayer[0].rewardTopup != null)
+            {
+                arrPlayer[0].rewardTopup.SetActive(true);
+                arrPlayer[0].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = moneyWon.ToString();
+            }
+                
+
+            HighLightCardWin(arrPlayer[0]);
+            ScaleCardWin(arrPlayer[0], 1.15f);
+            var temp = Instantiate(congratulation, arrPlayer[0].gameObject.transform.position, Quaternion.identity) as GameObject;
+            Destroy(temp, 5);
+            Debug.Log($"player {arrPlayer[0].name} win total {moneyWon} $");
+
+        }
 
         for (int i = 0; i < arrPlayer.Length; i++)
         {
@@ -1915,7 +1941,8 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
                     Debug.Log($"maxLose is {maxLose}");
                     long totalReward = 0;
                     int divide = groupWin.Count();
-                    long average = totalReward / divide;
+                    //long average = totalReward / divide;
+                   
 
                     foreach (var loser in groupLose)
                     {
@@ -1923,6 +1950,7 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
                         {
                             loser.money -= maxLose;
                             totalReward += maxLose;
+
                         }
                         else
                         {
@@ -1930,17 +1958,22 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
                             totalReward += loser.moneyBlinded;
                         }
                     }
-
+                    long average = totalReward / divide;
                     foreach (var winner in groupWin)
                     {
                         if(winner.moneyBlinded<=average)
                         {
                             winner.money += winner.moneyBlinded;
+                            totalWon += winner.moneyBlinded;
                         }
                         else
                         {
                             winner.money += average;
+                            totalWon += winner.moneyBlinded;
                         }
+
+                        winner.rewardTopup.SetActive(true);
+                        winner.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = totalWon.ToString();
 
                         HighLightCardWin(winner);
                         ScaleCardWin(winner, 1.15f);
@@ -1960,6 +1993,12 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
                 spriteColor.a = 0.4f;             
                 foreach (var item in arrCardBlur) item.gameObject.transform.GetComponent<SpriteRenderer>().color = spriteColor;
 
+                if (arrPlayer[i].rewardTopup != null)
+                {
+                    arrPlayer[i].rewardTopup.SetActive(true);
+                    arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = totalWon.ToString();
+                }
+                    
                 HighLightCardWin(arrPlayer[i]);
                 ScaleCardWin(arrPlayer[i], 1.15f);
                 var temp = Instantiate(congratulation, arrPlayer[i].gameObject.transform.position, Quaternion.identity) as GameObject;
@@ -1975,12 +2014,14 @@ public class GameController : MonoBehaviourPunCallbacks,IPunObservable
                 arrPlayer = query.ToArray();//sort arrPlayer by score 9 -> 0 (due to somewhere sort arrPlayer after waited 5s)
                                             //should be add money total won of player in this line
                 isGroupWon = false;
+                Debug.Log($"arrPlayer Length when there is 1 Winner : {arrPlayer.Length}");
             }
             else
             {
                 arrPlayer = listTemp.ToArray();
+                Debug.Log($"arrPlayer Length when have group Winner : {arrPlayer.Length}");
             }
-            Debug.Log($"arrPlayer count is {arrPlayer.Length}");
+            
           
 
         }
