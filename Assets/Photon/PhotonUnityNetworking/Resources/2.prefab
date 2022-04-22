@@ -264,6 +264,7 @@ GameObject:
   - component: {fileID: 1571751992779649390}
   - component: {fileID: 5123213913982935552}
   - component: {fileID: 3617212330317581857}
+  - component: {fileID: 6450284994176672637}
   m_Layer: 0
   m_Name: 2
   m_TagString: Untagged
@@ -317,6 +318,7 @@ MonoBehaviour:
   eAddBackCard:
     m_PersistentCalls:
       m_Calls: []
+  bot: {fileID: 0}
   posCard1: {x: 0, y: 0, z: 0}
   posCard2: {x: 0, y: 0, z: 0}
   arrPosDefaul:
@@ -349,6 +351,7 @@ MonoBehaviour:
   isFold: 0
   isBroke: 0
   isWaiting: 0
+  isBot: 0
 --- !u!212 &1215529185613645756
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -388,7 +391,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 6
+  m_SortingOrder: 7
   m_Sprite: {fileID: 21300000, guid: d13b8253f4b22754b8bd5852b71d165b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -464,6 +467,18 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &6450284994176672637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215529185613645755}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1e6ea485332b9c4f9a626991f21800f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1215529185874064464
 GameObject:
   m_ObjectHideFlags: 0
@@ -1282,6 +1297,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TimeCounter (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 570602838920239028, guid: 870c27549c8bb8046b6b514317e4a71c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 570602838920239029, guid: 870c27549c8bb8046b6b514317e4a71c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1380,11 +1399,6 @@ PrefabInstance:
       objectReference: {fileID: 6845796327871194201}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 870c27549c8bb8046b6b514317e4a71c, type: 3}
---- !u!224 &8645215039425994054 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 570602838920239029, guid: 870c27549c8bb8046b6b514317e4a71c, type: 3}
-  m_PrefabInstance: {fileID: 8075738102564539123}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6845796327871194201 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3392317148622614186, guid: 870c27549c8bb8046b6b514317e4a71c, type: 3}
@@ -1396,3 +1410,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d02a73813a9e5d04b8b45dc7c1e63c3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &8645215039425994054 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 570602838920239029, guid: 870c27549c8bb8046b6b514317e4a71c, type: 3}
+  m_PrefabInstance: {fileID: 8075738102564539123}
+  m_PrefabAsset: {fileID: 0}

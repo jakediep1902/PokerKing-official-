@@ -2360,54 +2360,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1e6ea485332b9c4f9a626991f21800f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameController: {fileID: 0}
-  gameController2: {fileID: 0}
-  card1: {fileID: 0}
-  card2: {fileID: 0}
-  cardTemplate1: {fileID: 0}
-  cardTemplate2: {fileID: 0}
-  bigBlindIcon: {fileID: 0}
-  rewardTopup: {fileID: 0}
-  txtMoney: {fileID: 0}
-  txtMoneyBlind: {fileID: 0}
-  uIManager: {fileID: 0}
-  timeCounter: {fileID: 0}
-  PvPlayer: {fileID: 0}
-  eAddBackCard:
-    m_PersistentCalls:
-      m_Calls: []
-  posCard1: {x: 0, y: 0, z: 0}
-  posCard2: {x: 0, y: 0, z: 0}
-  arrPosDefaul:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  listCard: []
-  listCardWin: []
-  arrCardWin: 0000000000000000000000000000000000000000
-  score: 0
-  money: 1000000
-  moneyBlinding: 0
-  moneyBlinded: 0
-  ID: 0
-  isInvoke: 0
-  isStraightFlush: 0
-  isQuad: 0
-  isBoat: 0
-  isFlush: 0
-  isStraight: 0
-  isTrip: 0
-  isTwoPair: 0
-  isOnePair: 0
-  isHighCard: 0
-  isWinner: 0
-  isTurn: 0
-  isFold: 0
-  isBroke: 0
-  isWaiting: 0
 --- !u!212 &415213441
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -27,8 +27,8 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
 
         playerController.isTurn = true;
-        if(playerController.PvPlayer.IsMine)
-        uIManager.pnlGame.SetActive(true);
+        //if(playerController.PvPlayer.IsMine && playerController.GetComponent<Bot>().enabled==false)
+        //uIManager.pnlGame.SetActive(true);
 
         if(gameController.isShowDown)
         {
@@ -41,7 +41,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         }
         else
         {
-            if (playerController.PvPlayer.IsMine)
+            if (playerController.PvPlayer.IsMine && playerController.GetComponent<Bot>().enabled == false)
             {
                 uIManager.pnlGame.SetActive(true);
             }
@@ -89,7 +89,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         {
             if (imageFill.fillAmount > 0)
             {
-                imageFill.fillAmount -= 0.0005f;
+                imageFill.fillAmount -= 0.005f;
                 //Debug.Log(test++);
             }
             else
@@ -98,6 +98,19 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                 playerChecking = gameController.indexBigBlind;
                 //Debug.Log(playerChecking);
                 uIManager.pnlGame.SetActive(false);
+
+                //check equal blind
+                if((playerController.moneyBlinded < gameController.bigestBlinded) && playerController.money>0)
+                {
+                    playerController.GetComponent<Bot>().enabled = false;
+                    playerController.BtnBoBai();
+                }
+                else
+                {
+                    
+                }
+                
+
                 NextPlayer(playerChecking);              
                 this.gameObject.SetActive(false);
             }
