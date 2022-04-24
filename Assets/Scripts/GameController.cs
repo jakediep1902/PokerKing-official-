@@ -124,6 +124,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
           arrCardsRemoved,     //4
           playerPlaying,       //5
           barTotalMoney,       //6
+          isCheckCard,         //7
         };
         RaiseEventOptions option = new RaiseEventOptions()
         {
@@ -160,6 +161,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                 RemoveCards();
                 playerPlaying   = (int)datas[5];
                 barTotalMoney   = (long)datas[6];
+                isCheckCard     = (bool)datas[7];
             }
         }
     }
@@ -257,6 +259,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
             if (isStartGame && (playerPlaying < 2 || playerInRoom < 2) && !isEndGame)
             {
+                Debug.Log($"playerPlaying : {playerPlaying} ,playerInRoom : {playerInRoom}");
                 //BtnCheckCard(); //can't use because stackCheck = 0 (there is no Card to check)
                 //Debug.Log($"arrPlayer Count is {arrPlayer.Length}");
                 CheckWinner(arrPlayer);
@@ -1455,7 +1458,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (arrPlayer.Length <= 1)
         {
-            SpawBot();
+            Invoke(nameof(SpawBot),6f);         
         }
         SpawPlayer();
         if (!isStartGame)
@@ -1764,7 +1767,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {
         Debug.Log("Show Down!!!");
         isShowDown = true;
-        if (photonViews.IsMine)
+        if (photonViews.IsMine && playerPlaying>1)
         {
 
             //Debug.Log("Warning 2 !!!");
@@ -2082,34 +2085,38 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }
     public void SpawBot()
     {
-        int random = Random.Range(1, 4);
-        for (int j = 0; j < random; j++)
+        if (playerPlaying == 1)
         {
-            int safeCount = 0;
-            UpdatePosDefaul();
-            for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length; i++)
+            int random = Random.Range(1, 4);
+            for (int j = 0; j < random; j++)
             {
-                if (posDefaul[i].isEmpty)
+                int safeCount = 0;
+                UpdatePosDefaul();
+                for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length; i++)
                 {
-                    GameObject tempObj = PhotonNetwork.Instantiate(i.ToString(),
-                        posDefaul[i].transform.position, Quaternion.identity) as GameObject;
-                    photonViews.RPC("InactivePos", RpcTarget.AllBuffered, i);
-                    tempObj.GetComponent<Bot>().enabled = true;
-                    //tempObj.GetComponent<PlayerController>().isBot = true;
-                    break;
-                }
-                else
-                {
-                    safeCount++;
-                    if (i == (posDefaul.Length - 1))
-                        i = Random.Range((int)0, (int)posDefaul.Length);
-                }
-                if (safeCount > 500)
-                {
-                    Debug.Log("All position is not empty");
-                    break;
+                    if (posDefaul[i].isEmpty)
+                    {
+                        GameObject tempObj = PhotonNetwork.Instantiate(i.ToString(),
+                            posDefaul[i].transform.position, Quaternion.identity) as GameObject;
+                        photonViews.RPC("InactivePos", RpcTarget.AllBuffered, i);
+                        tempObj.GetComponent<Bot>().enabled = true;
+                        //tempObj.GetComponent<PlayerController>().isBot = true;
+                        break;
+                    }
+                    else
+                    {
+                        safeCount++;
+                        if (i == (posDefaul.Length - 1))
+                            i = Random.Range((int)0, (int)posDefaul.Length);
+                    }
+                    if (safeCount > 500)
+                    {
+                        Debug.Log("All position is not empty");
+                        break;
+                    }
                 }
             }
-        }
+            photonViews.RPC("UpdatePlayerPlayings", RpcTarget.All, null);
+        }       
     }  
 }

@@ -85,7 +85,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     }  
     private void FixedUpdate()
     {     
-        if (playerController.isTurn)
+        if (playerController.isTurn && gameController.isCheckCard!=true)
         {
             if (imageFill.fillAmount > 0)
             {

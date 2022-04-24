@@ -25,7 +25,15 @@ public class BackCard : MonoBehaviour
         //    arrPlayer[i].backCard = this;
         //}
         noTemplate = gameController.NoTemplate;
-        targetPos = gameController.arrPlayer[gameController.NoTemplate].transform.position;
+        if(targetPos==null)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            targetPos = gameController.arrPlayer[gameController.NoTemplate].transform.position;
+        }
+        
         //if (gameController.arrPlayer[gameController.NoTemplate].backCard1 == null)
         //{
         //    gameController.arrPlayer[gameController.NoTemplate].backCard1 = this.gameObject;
@@ -86,8 +94,15 @@ public class BackCard : MonoBehaviour
     {
         //Debug.Log("alarm");
         //eArrange.Invoke();
-        //transform.GetComponentInParent<PlayerController>().eAddBackCard.Invoke();      
-        gameController.arrPlayer[noTemplate].eAddBackCard.Invoke();
+        //transform.GetComponentInParent<PlayerController>().eAddBackCard.Invoke();
+        try
+        {
+            gameController.arrPlayer[noTemplate].eAddBackCard.Invoke();
+        }
+        catch
+        {
+            Debug.Log("Error on Exit");         
+        }
         //gameController.ChangeSpriteRenderer(this.gameObject);       
     }
     

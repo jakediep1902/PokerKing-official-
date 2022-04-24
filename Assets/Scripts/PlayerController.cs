@@ -34,6 +34,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     public List<GameObject> listCardWin = new List<GameObject>();
     public int[] arrCardWin = new int[5];
 
+    public int card1ID;
+    public int card2ID;
+
     public float score = 0f;
     public long money = 1000000;
     public long moneyBlinding = 0;
@@ -230,11 +233,22 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void SyncPlayerJoinLate()
     {      
+        if(card1!=null)
+        {
+            card1ID = card1.GetComponent<Card>().ID;
+            card2ID = card2.GetComponent<Card>().ID;
+        }
+        else
+        {
+            Debug.Log($"player {ID} disconnected !!");
+        }
+
+
         object[] datas = new object[]
         {
             PvPlayer.ViewID,              //0
-            card1.GetComponent<Card>().ID,//1
-            card2.GetComponent<Card>().ID,//2
+            card1ID,//1
+            card2ID,//2
             moneyBlinded,                 //3
             money,                        //4
             moneyBlinding,                //5
