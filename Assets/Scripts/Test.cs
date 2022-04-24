@@ -18,26 +18,21 @@ public class Test : MonoBehaviourPunCallbacks
     //    else if (stream.IsReading)
     //        image.fillAmount = (float)stream.ReceiveNext();
 
-    private void Start()
-    {
-        
+    //private void Start()
+    //{
+    //    if(GetComponent<ITest>()!=null)
+    //    {
+    //        GetComponent<ITest>().Test();
+    //    }
 
-        //for (int i = 0; i < test.Length; i++)
-        //{
-        //    for (int j = i; j < test.Length; j++)
-        //    {
-        //        if (test[i] > test[j])
-        //        {
-        //            var temp = test[i];
-        //            test[i] = test[j];
-        //            test[j] = temp;
-        //        }
-        //        Debug.Log($"{test[0]} {test[1]} {test[2]} {test[3]} {test[4]} {test[5]} {test[6]} {test[7]} {test[8]}");
-        //    }
-        //}
-        //Debug.Log($"length is {test.Length}");
-        //Debug.Log($"{test[0]} {test[1]} {test[2]} {test[3]} {test[4]} {test[5]} {test[6]} {test[7]} {test[8]}");
-        //Debug.Log(test[0]);
-    }
+       
+    //}
+
+    //void ITest.Test()
+    //{
+    //    Debug.Log("hello");
+    //}
+
+
     //Delete all in test  
 }

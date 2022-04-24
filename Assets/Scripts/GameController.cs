@@ -1837,7 +1837,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             Debug.Log($"player {item.name} score : {item.score}, moneyBlinded : {item.moneyBlinded}");
         }
 
-        if (arrPlayer.Length == 1)
+        if (arrPlayer.Length == 1)// there is only 1 player hold card
         {
             long moneyWon = barTotalMoney + arrPlayer[0].moneyBlinded;
             arrPlayer[0].money += barTotalMoney;
@@ -1930,7 +1930,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                             return -1;
                         });
 
-                        if (groupLose.Count == 0) break;
+                        if (groupLose.Count == 0 && (arrPlayer.Length>groupWin.Count)) break;
 
 
                         long maxLose = groupWin.Max(p => p.moneyBlinded);
@@ -2118,5 +2118,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             }
             photonViews.RPC("UpdatePlayerPlayings", RpcTarget.All, null);
         }       
-    }  
+    }
+
+   
 }

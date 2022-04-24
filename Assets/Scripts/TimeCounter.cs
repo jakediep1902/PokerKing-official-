@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using UnityEngine.Events;
 
 public class TimeCounter : MonoBehaviourPunCallbacks
 {
     public Image imageFill;
     public PlayerController playerController;
+    public UnityEvent eEnable;
     //public PhotonView PvTimeCounter;
     GameController gameController;
     UIManager uIManager;
@@ -27,6 +29,8 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
 
         playerController.isTurn = true;
+        eEnable.Invoke();
+
         //if(playerController.PvPlayer.IsMine && playerController.GetComponent<Bot>().enabled==false)
         //uIManager.pnlGame.SetActive(true);
 

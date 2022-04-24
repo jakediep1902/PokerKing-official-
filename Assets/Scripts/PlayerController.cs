@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
 {
     public GameController gameController;
     public GameController2 gameController2;
+    
 
     public GameObject card1, card2, cardTemplate1, cardTemplate2;
     public GameObject bigBlindIcon;
@@ -370,11 +371,11 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
 
     [PunRPC]
-    public void XemBai()
+    public virtual void XemBai()
     {
         timeCounter.imageFill.fillAmount = 0f;
     }
-    public void BtnXemBai()
+    public virtual void BtnXemBai()
     {
         if (PvPlayer.IsMine && gameController.isStartGame)
         {
@@ -382,8 +383,15 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             PvPlayer.RPC("XemBai", RpcTarget.All, null);
         }
     }
+    public virtual void BtnXemBaiBot()
+    {
+        if (PvPlayer.IsMine && gameController.isStartGame)
+        {
+            PvPlayer.RPC("XemBai", RpcTarget.All, null);
+        }
+    }
     [PunRPC]
-    public void BoBai()
+    public virtual void BoBai()
     {
         isFold = true;
         timeCounter.imageFill.fillAmount = 0f;
@@ -405,6 +413,13 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             //tempColor.a = 0.4f;
             //card1.GetComponent<SpriteRenderer>().color = tempColor;
             //card2.GetComponent<SpriteRenderer>().color = tempColor;
+        }
+    }
+    public virtual void BtnBoBaiBot()
+    {
+        if (PvPlayer.IsMine && gameController.isStartGame)
+        {          
+            PvPlayer.RPC("BoBai", RpcTarget.All, null);        
         }
     }
     public void BtnThemCuoc()
@@ -462,7 +477,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             uIManager.pnlGame.SetActive(false);
         }
     }
-    public void BtnTheoCuoc()
+    public virtual void BtnTheoCuoc()
     {
         if (PvPlayer.IsMine && (bot.enabled == false))
         {
@@ -470,6 +485,15 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             moneyBlinding = gameController.bigestBlinded - moneyBlinded;
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
             BtnXemBai();
+        }
+    }
+    public void BtnTheoCuocBot()
+    {
+        if (PvPlayer.IsMine)
+        {            
+            moneyBlinding = gameController.bigestBlinded - moneyBlinded;
+            PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
+            BtnXemBaiBot();
         }
     }
     public void SetImageConnecting()

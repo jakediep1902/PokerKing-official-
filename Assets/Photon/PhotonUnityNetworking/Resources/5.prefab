@@ -1009,6 +1009,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1e6ea485332b9c4f9a626991f21800f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  thinkingTime: 3
+  randomOption: 0
+  isTurns: 0
 --- !u!1 &6123758907036957138
 GameObject:
   m_ObjectHideFlags: 0
