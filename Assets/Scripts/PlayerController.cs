@@ -122,7 +122,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         uIManager.btnTheoCuoc.onClick.AddListener(() => BtnTheoCuoc());
         uIManager.btnXemBai.onClick.AddListener(() => BtnXemBai());
         uIManager.btnBoBai.onClick.AddListener(() => BtnBoBai());
-        uIManager.btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
+        uIManager.btnThemCuoc.onClick.AddListener(() => BtnAllIn());
+        uIManager.btnAllIn.onClick.AddListener(() => BtnAllIn());
 
         if (bot.enabled) isBot = true;
 
@@ -422,16 +423,17 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             PvPlayer.RPC("BoBai", RpcTarget.All, null);        
         }
     }
-    public void BtnThemCuoc()
+    public void BtnAllIn()
     {
-        if (PvPlayer.IsMine && gameController.isStartGame )
+        if (PvPlayer.IsMine && (bot.enabled == false))
         {
-            if (bot.enabled == false)
-            {
-                bool temp = !uIManager.pnlThemCuoc.activeSelf;
-                uIManager.pnlThemCuoc.SetActive(temp);
-            }
-                
+            moneyBlinding = money;//Theo cuoc
+            PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
+           
+            BtnXemBai();
+
+            uIManager.pnlThemCuoc.SetActive(false);
+            uIManager.pnlGame.SetActive(false);
         }
     }
     public void HandleBoBai()

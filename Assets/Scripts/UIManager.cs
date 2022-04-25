@@ -20,6 +20,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     public Button btnXemBai;
     public Button btnBoBai;
     public Button btnThemCuoc;
+    public Button btnAllIn;
 
     public Button btnPause;
     public Button btnTest;
@@ -50,7 +51,9 @@ public class UIManager : MonoBehaviourPunCallbacks
     {
         gameController = GameController.Instance;
         btnTheoCuoc.gameObject.SetActive(false);
-        
+
+        btnTest.onClick.AddListener(gameController.BtnTest);
+        btnPause.onClick.AddListener(gameController.BtnPause);
     }
     private void Update()
     {

@@ -31,7 +31,15 @@ public class BackCard : MonoBehaviour
         }
         else
         {
-            targetPos = gameController.arrPlayer[gameController.NoTemplate].transform.position;
+            try
+            {
+                targetPos = gameController.arrPlayer[gameController.NoTemplate].transform.position;
+            }
+            catch
+            {
+                Destroy(this.gameObject);
+            }
+            
         }
         
         //if (gameController.arrPlayer[gameController.NoTemplate].backCard1 == null)
