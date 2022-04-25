@@ -36,7 +36,7 @@ public class Bot : MonoBehaviourPunCallbacks
     }
    public void GamePlay()
     {
-        randomOption = Random.Range(0, 3);
+        randomOption = Random.Range(1, 3);
         switch (randomOption)
         {
             case 0:
