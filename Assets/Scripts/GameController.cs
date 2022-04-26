@@ -571,7 +571,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                     listWinner.Add(player);
                 }                   
             }
-            ReturnBlindedToWinner(player);
+            //ReturnBlindedToWinner(player);
         }
 
         RewardWinners();
@@ -1875,12 +1875,19 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {
         List<PlayerController> listTemp = new List<PlayerController>();
         bool isGroupWon = false;
+        long residual = 0;
         for (int i = 0; i < arrPlayer.Length; i++)
         {
-            long totalWon = 0;
+            long totalWon = residual;
+            
             totalWon += arrPlayer[i].moneyBlinded;
             float timeDelay = 5f;
-
+            if (i == (arrPlayer.Length-1) && totalWon>0)
+            {
+                arrPlayer[i].rewardTopup.SetActive(true);
+                arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = totalWon.ToString();
+                break;
+            }
             for (int j = i + 1; j < arrPlayer.Length; j++)
             {
                 long moneyWon = 0;
@@ -1915,9 +1922,10 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                                   
                     if (groupLose.Length == 0 && (arrPlayer.Length > groupWin.Length)) break;             
                     long maxLose = groupWin.Max(p => p.moneyBlinded);
-                    Debug.Log($"maxLose is {maxLose}");
+                    Debug.Log($"maxLose in players lose is {maxLose}");
                     if (maxLose == 0) break;
-                    long totalReward = 0;
+                    long totalReward = MoneyFromFolder();
+                    barTotalMoney -= totalReward;                   
                     int divide = groupWin.Count();
                     //long average = totalReward / divide;
                     foreach (var loser in groupLose)
@@ -1934,6 +1942,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                         }
                     }
                     long average = totalReward / divide;
+
+                    //if(totalReward<totalWon in group win =>??
+
                     foreach (var winner in groupWin)
                     {
                         totalWon = 0;
@@ -1943,6 +1954,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                         {
                             winner.money += winner.moneyBlinded;
                             totalWon += winner.moneyBlinded;
+                            
                         }
                         else
                         {
@@ -1967,10 +1979,24 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
             if (totalWon > 0 && !isGroupWon)
             {
-                long plus = MoneyFromFolder();            
-                arrPlayer[i].money += plus;
-                barTotalMoney -= plus;
-                totalWon += plus;
+                long plus = MoneyFromFolder(); 
+                if(plus>arrPlayer[i].moneyBlinded)
+                {
+                    arrPlayer[i].money += arrPlayer[i].moneyBlinded;
+                    plus-= arrPlayer[i].moneyBlinded;
+                    residual = plus;
+                    barTotalMoney -= arrPlayer[i].moneyBlinded;
+                    totalWon += arrPlayer[i].moneyBlinded;
+                }
+                else
+                {
+                    arrPlayer[i].money += plus;
+                    barTotalMoney -= plus;
+                    totalWon += plus;
+                    plus = 0;
+                    residual = plus;
+                }              
+                
                 if (arrPlayer[i].rewardTopup != null)
                 {
                     arrPlayer[i].rewardTopup.SetActive(true);

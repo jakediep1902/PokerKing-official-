@@ -436,6 +436,15 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             uIManager.pnlGame.SetActive(false);
         }
     }
+    public void BtnAllInBot()
+    {
+        if (PvPlayer.IsMine)
+        {
+            moneyBlinding = money;//Theo cuoc
+            PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
+            BtnXemBaiBot();       
+        }
+    }
     public void HandleBoBai()
     {
         //if (!PvPlayer.IsMine)

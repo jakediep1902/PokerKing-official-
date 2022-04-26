@@ -34,9 +34,9 @@ public class Bot : MonoBehaviourPunCallbacks
         //    isTurns = true;
         //}
     }
-   public void GamePlay()
+   public void BotAI()
     {
-        randomOption = Random.Range(1, 3);
+        randomOption = Random.Range(1, 4);
         switch (randomOption)
         {
             case 0:
@@ -53,13 +53,18 @@ public class Bot : MonoBehaviourPunCallbacks
                 playerController.BtnTheoCuocBot();              
                
                 Debug.Log($"player {playerController.ID} follow");
-                break;        
+                break;
+            case 3:
+                playerController.BtnAllInBot();
+
+                Debug.Log($"player {playerController.ID} All In");
+                break;
         }
         
     }
     public void DelayGamePlay()
     {
         float delay = Random.Range(1f, 3f);
-        Invoke(nameof(GamePlay),delay);
+        Invoke(nameof(BotAI),delay);
     }
 }
