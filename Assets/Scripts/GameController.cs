@@ -1832,23 +1832,20 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public void RewardOneHoldCard()//using
     {
         long moneyWon = barTotalMoney + arrPlayer[0].moneyBlinded;
-        arrPlayer[0].money += barTotalMoney;
-        barTotalMoney -= barTotalMoney;
-
-        BlurAllCard();
-
+        arrPlayer[0].money += moneyWon;
+        barTotalMoney -= barTotalMoney;     
         if (arrPlayer[0].rewardTopup != null)
         {
             arrPlayer[0].rewardTopup.SetActive(true);
             arrPlayer[0].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = moneyWon.ToString();
-            barTotalMoney = 0;
+            //barTotalMoney = 0;
         }
-
+        BlurAllCard();
         HighLightCardWin(arrPlayer[0]);
         ScaleCardWin(arrPlayer[0], 1.15f);
         var temp = Instantiate(congratulation, arrPlayer[0].gameObject.transform.position, Quaternion.identity) as GameObject;
         Destroy(temp, 5);
-        Debug.Log($"player {arrPlayer[0].name} win total {moneyWon} $");
+        Debug.Log($"only player {arrPlayer[0].name} hold card and win total {moneyWon} $");
     }  
     public void BlurAllCard()//using
     {
@@ -1871,43 +1868,48 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log($"money from folder is {qr}");
         return qr;
     }
+
     IEnumerator RewardCrowHoldCard()
     {
+        //long moneyWonFromFolder = 0;
+        //moneyWonFromFolder = MoneyFromFolder();
+        var players = FindObjectsOfType<PlayerController>();
+        var groupFold = players.Where(p => p.isFold == true).ToArray();
         List<PlayerController> listTemp = new List<PlayerController>();
-        bool isGroupWon = false;
-        long residual = 0;
+        bool isGroupWon = false;  
         for (int i = 0; i < arrPlayer.Length; i++)
         {
-            long totalWon = residual;
-            
-            totalWon += arrPlayer[i].moneyBlinded;
+            long totalWon = 0;                     
+            totalWon += arrPlayer[i].moneyBlinded;         
             float timeDelay = 5f;
-            if (i == (arrPlayer.Length-1) && totalWon>0)
+            foreach (var folder in groupFold)//handle with Folder
+            {
+                long moneyWon = 0;
+                if (arrPlayer[i].moneyBlinded > folder.moneyBlinded) moneyWon = folder.moneyBlinded;
+
+                else moneyWon = arrPlayer[i].moneyBlinded;              
+
+                totalWon += moneyWon;
+                //folder.moneyBlinded -= moneyWon;
+                
+            }
+            if (i == (arrPlayer.Length-1) && totalWon>0)//check index if it is end
             {
                 arrPlayer[i].rewardTopup.SetActive(true);
                 arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = totalWon.ToString();
                 break;
             }
-            for (int j = i + 1; j < arrPlayer.Length; j++)
+            for (int j = i + 1; j < arrPlayer.Length; j++)//handle with other players
             {
                 long moneyWon = 0;
-
                 if (arrPlayer[i].score > arrPlayer[j].score)//one winner
                 {
-                    if (arrPlayer[i].moneyBlinded > arrPlayer[j].moneyBlinded)
-                    {
-                        moneyWon = arrPlayer[j].moneyBlinded;
-                    }
-                    else
-                    {
-                        moneyWon = arrPlayer[i].moneyBlinded;
-                    }
+                    if (arrPlayer[i].moneyBlinded > arrPlayer[j].moneyBlinded)  moneyWon = arrPlayer[j].moneyBlinded;
 
-                    arrPlayer[i].money += moneyWon;
-                    arrPlayer[j].money -= moneyWon;
+                    else  moneyWon = arrPlayer[i].moneyBlinded;                  
+                                    
                     arrPlayer[j].moneyBlinded -= moneyWon;
-                    totalWon += moneyWon;
-                    
+                    totalWon += moneyWon;                   
                 }
                 else //handle group win
                 {
@@ -1920,48 +1922,61 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                     var groupLose = arrPlayer.Where(p => p.score < arrPlayer[i].score || p.isFold).ToArray();
                     if (groupLose.Length > 1) SortScoreMoney(ref groupLose);
                                   
-                    if (groupLose.Length == 0 && (arrPlayer.Length > groupWin.Length)) break;             
-                    long maxLose = groupWin.Max(p => p.moneyBlinded);
-                    Debug.Log($"maxLose in players lose is {maxLose}");
-                    if (maxLose == 0) break;
-                    long totalReward = MoneyFromFolder();
-                    barTotalMoney -= totalReward;                   
-                    int divide = groupWin.Count();
-                    //long average = totalReward / divide;
-                    foreach (var loser in groupLose)
+                    if (groupLose.Length == 0 && (arrPlayer.Length > groupWin.Length)) break;
+                    long maxWin = groupWin.Max(p => p.moneyBlinded);
+                    Debug.Log($"maxWin in players Winner is {maxWin}");
+                    //if (maxLose == 0) break;
+                    long totalLoseInFolder = 0;                   
+                    // handle with groupFolder 
+                    foreach (var folder in groupFold)
                     {
-                        if (loser.moneyBlinded > maxLose)
-                        {
-                            loser.money -= maxLose;
-                            totalReward += maxLose;
+                        long moneyLose3 = 0;                       
+                        if (maxWin >= folder.moneyBlinded) moneyLose3 = folder.moneyBlinded;
+
+                        else moneyLose3 = maxWin;
+
+                        totalLoseInFolder += moneyLose3;
+                    }
+                    Debug.Log($"totalLoseInFolder is {totalLoseInFolder}");
+                    
+                  
+                    //  handle with groupLose
+
+                    long totalLoseInGroupLose = 0;
+                    foreach (var loser in groupLose) 
+                    {                       
+                        if (loser.moneyBlinded > maxWin)
+                        {                           
+                            loser.moneyBlinded -= maxWin;
+                            totalLoseInGroupLose += maxWin;
                         }
                         else
-                        {
-                            loser.money -= loser.moneyBlinded;
-                            totalReward += loser.moneyBlinded;
+                        {                            
+                            loser.moneyBlinded -= loser.moneyBlinded;
+                            totalLoseInGroupLose += loser.moneyBlinded;
                         }
                     }
-                    long average = totalReward / divide;
 
+                    // handle with groupWin
+                    long totalLose = totalLoseInFolder + totalLoseInGroupLose;
+                    long totalRequired = groupWin.Sum(p => p.moneyBlinded);
+                    float rate = totalLose / totalRequired;
+                    Debug.Log($"rate is {rate}");
+                                      
+                    //long maxWon = groupLose.Max(p => p.moneyBlinded);
+                    //long totalRequired1 = groupWin.Sum(p => p.moneyBlinded);
+                    //float rate1 = (float)totalLoseInFolder / totalRequired;
+                  
                     //if(totalReward<totalWon in group win =>??
 
                     foreach (var winner in groupWin)
                     {
-                        totalWon = 0;
-                        //totalWon += winner.moneyBlinded;
-
-                        if (winner.moneyBlinded <= average)
-                        {
-                            winner.money += winner.moneyBlinded;
-                            totalWon += winner.moneyBlinded;
-                            
-                        }
-                        else
-                        {
-                            winner.money += average;
-                            totalWon += winner.moneyBlinded;
-                        }
-
+                        totalWon = ((long)rate * winner.moneyBlinded);
+                        totalWon += winner.moneyBlinded;
+                        winner.money += totalWon;
+                        barTotalMoney -= totalWon;
+                        Debug.Log($"player {winner.ID} win total {totalWon}");
+                          
                         winner.rewardTopup.SetActive(true);
                         winner.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = totalWon.ToString();
 
@@ -1972,43 +1987,38 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
                     }
                     listTemp = groupLose.ToList();
+                    listTemp.AddRange(groupFold);
+                    Debug.Log($"length of listTemp is {listTemp.Count}");
                     i = 0;
                     break;                  
                 }
             }
 
             if (totalWon > 0 && !isGroupWon)
-            {
-                long plus = MoneyFromFolder(); 
-                if(plus>arrPlayer[i].moneyBlinded)
-                {
-                    arrPlayer[i].money += arrPlayer[i].moneyBlinded;
-                    plus-= arrPlayer[i].moneyBlinded;
-                    residual = plus;
-                    barTotalMoney -= arrPlayer[i].moneyBlinded;
-                    totalWon += arrPlayer[i].moneyBlinded;
-                }
-                else
-                {
-                    arrPlayer[i].money += plus;
-                    barTotalMoney -= plus;
-                    totalWon += plus;
-                    plus = 0;
-                    residual = plus;
-                }              
-                
+            {                                                          
                 if (arrPlayer[i].rewardTopup != null)
                 {
                     arrPlayer[i].rewardTopup.SetActive(true);
                     arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = totalWon.ToString();
-                    //barTotalMoney -= totalWon;
+                    if (barTotalMoney >= totalWon)
+                    {
+                        arrPlayer[i].money += totalWon;
+                        barTotalMoney -= totalWon;
+                        Debug.Log($"player {arrPlayer[i].name} win total {totalWon} $");
+                    }
+                    else
+                    {
+                        arrPlayer[i].money += barTotalMoney;
+                        barTotalMoney -= barTotalMoney;
+                        Debug.Log($"player {arrPlayer[i].name} win total {totalWon} but received {barTotalMoney}$");
+                    }
                 }
                 BlurAllCard();
                 HighLightCardWin(arrPlayer[i]);
                 ScaleCardWin(arrPlayer[i], 1.15f);
                 var temp = Instantiate(congratulation, arrPlayer[i].gameObject.transform.position, Quaternion.identity) as GameObject;
                 Destroy(temp, 5);               
-                Debug.Log($"player {arrPlayer[i].name} win total {totalWon} $");
+                
             }
 
             yield return new WaitForSeconds(timeDelay);
@@ -2016,18 +2026,26 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             {
                 //sort arrPlayer by score 9 -> 0 (due to somewhere sort arrPlayer after waited 5s)
                 SortScoreMoney(ref arrPlayer);
-                isGroupWon = false;
+                
                 //Debug.Log($"arrPlayer Length when there is 1 Winner : {arrPlayer.Length}");
             }
             else
             {
+                isGroupWon = false;
                 arrPlayer = listTemp.ToArray();
                 //Debug.Log($"arrPlayer Length when have group Winner : {arrPlayer.Length}");
             }
         }
     }
+    public int CountPlayerBlinded()
+    {
+        var players = FindObjectsOfType<PlayerController>();
+        var query = players.Where(p => (p.moneyBlinded > 0) && p.isFold).ToArray();
+        return query.Length;
+    }
     public void RewardWinners()
-    {        
+    {
+        Debug.Log($"barTotalMoney is {barTotalMoney}");
         SortScoreMoney(ref arrPlayer);
         foreach (var item in arrPlayer)
         {
