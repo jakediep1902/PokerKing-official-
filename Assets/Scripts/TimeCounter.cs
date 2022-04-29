@@ -29,15 +29,19 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
 
         playerController.isTurn = true;
-        eEnable.Invoke();
+        
+        
 
         //if(playerController.PvPlayer.IsMine && playerController.GetComponent<Bot>().enabled==false)
         //uIManager.pnlGame.SetActive(true);
 
-        if(gameController.isShowDown)
-        {
-            playerController.isTurn = false;
-        }
+        if (gameController.isShowDown) playerController.isTurn = false;
+
+        else eEnable.Invoke();
+
+
+        if (playerController.money == 0 && playerController.GetComponent<Bot>().enabled==true) playerController.BtnXemBaiBot();
+      
 
         if (playerController.money == 0)
         {
@@ -88,8 +92,8 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         
     }  
     private void FixedUpdate()
-    {     
-        if (playerController.isTurn && gameController.isCheckCard!=true)
+    {
+        if (playerController.isTurn && (gameController.isCheckCard == false) && (gameController.isShowDown == false))
         {
             if (imageFill.fillAmount > 0)
             {
@@ -154,7 +158,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
                 if (gameController.CheckEqualBlind())
                 {
-                    //Debug.Log("Call deal");
+                    Debug.Log("Call deal");
                     Invoke(nameof(BtnDeal), 2f);
                     //BtnDeal();
                 }
@@ -177,7 +181,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
             {
                 if (gameController.CheckEqualBlind())
                 {
-                    //Debug.Log("Call deal");
+                    Debug.Log("Call deal");
                     Invoke(nameof(BtnDeal), 2f);                  
                     //BtnDeal();
                 }
