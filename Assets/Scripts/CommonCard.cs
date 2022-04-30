@@ -9,13 +9,22 @@ public class CommonCard : MonoBehaviour
     void Start()
     {      
         gameController = GameController.Instance;
-        //Debug.Log($"NoCommonPos in CommonCard : {gameController.NoCommonPos}");
-        targetPos = gameController.commonPos[gameController.NoCommonPos].position;       
-        if(gameController.NoCommonPos>=gameController.commonPos.Length)
+        Debug.Log($"NoCommonPos in CommonCard : {gameController.NoCommonPos}");
+        
+        if (gameController.NoCommonPos >= gameController.commonPos.Length)
         {
-            gameController.RPC_SetIsFullFiveCard(true);          
+            gameController.RPC_SetIsFullFiveCard(true);
+            this.gameObject.SetActive(false);
+            Debug.Log($"NoCommonPos in CommonCard : {gameController.NoCommonPos}");
+
         }
-        else gameController.NoCommonPos++;
+        else
+        {
+            targetPos = gameController.commonPos[gameController.NoCommonPos].position;
+            gameController.NoCommonPos++;
+        }
+
+       
 
         //gameController.SetRandomCard(this.gameObject);
         // int indexCard = Random.Range((int)0, (int)gameController.cards.Length);

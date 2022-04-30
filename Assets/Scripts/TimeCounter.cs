@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using UnityEngine.Events;
-
+using System.Threading;
 public class TimeCounter : MonoBehaviourPunCallbacks
 {
     public Image imageFill;
@@ -26,53 +26,71 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     {
         gameController = GameController.Instance;
       
-
-
         playerController.isTurn = true;
-        
-        
-
-        //if(playerController.PvPlayer.IsMine && playerController.GetComponent<Bot>().enabled==false)
-        //uIManager.pnlGame.SetActive(true);
-
-        if (gameController.isShowDown) playerController.isTurn = false;
-
-        else eEnable.Invoke();
-
-
-        if (playerController.money == 0 && playerController.GetComponent<Bot>().enabled==true) playerController.BtnXemBaiBot();
-      
 
         if (playerController.money == 0)
         {
-            playerController.BtnXemBai();
-        }
-        else
-        {
-            if (playerController.PvPlayer.IsMine && playerController.GetComponent<Bot>().enabled == false)
-            {
-                uIManager.pnlGame.SetActive(true);
-            }
+            //playerController.isTurn = false;
+            if (playerController.GetComponent<Bot>().enabled == true) playerController.BtnXemBaiBot();
+            else playerController.BtnXemBai();
+            return;
+        } 
+        else if(playerController.GetComponent<Bot>().enabled == true)  eEnable.Invoke();//Bot action
 
-            //Debug.Log($"bigest Blinded is {gameController.bigestBlinded} money Blinded is {playerController.moneyBlinded}");
+        else //player action
+        {
+            uIManager.pnlGame.SetActive(true);
             if (gameController.bigestBlinded > playerController.moneyBlinded)
             {
                 playerController.uIManager.btnTheoCuoc.gameObject.SetActive(true);
-
             }
             else
             {
-                if (isFirstGround)
-                {
-                    playerController.uIManager.btnTheoCuoc.gameObject.SetActive(false);
-                }
-                else
-                {
-                    playerController.BtnXemBai();
-                }
+                if (isFirstGround) playerController.uIManager.btnTheoCuoc.gameObject.SetActive(false);
+               
+                else playerController.BtnXemBai();                              
             }
             isFirstGround = false;
         }
+
+        //if (gameController.isShowDown)
+        //{
+        //    playerController.isTurn = false;
+        //    if (playerController.money == 0 && playerController.GetComponent<Bot>().enabled == true)//apply to Bot
+        //        playerController.BtnXemBaiBot();
+        //}
+        //else eEnable.Invoke();
+
+        //if (playerController.money == 0 && playerController.GetComponent<Bot>().enabled == false)//apply to player
+        //{
+        //    playerController.BtnXemBai();
+        //}
+        //else
+        //{
+        //    if (playerController.PvPlayer.IsMine && playerController.GetComponent<Bot>().enabled == false)
+        //    {
+        //        uIManager.pnlGame.SetActive(true);
+        //    }
+
+        //    //Debug.Log($"bigest Blinded is {gameController.bigestBlinded} money Blinded is {playerController.moneyBlinded}");
+        //    if (gameController.bigestBlinded > playerController.moneyBlinded)
+        //    {
+        //        playerController.uIManager.btnTheoCuoc.gameObject.SetActive(true);
+
+        //    }
+        //    else
+        //    {
+        //        if (isFirstGround)
+        //        {
+        //            playerController.uIManager.btnTheoCuoc.gameObject.SetActive(false);
+        //        }
+        //        else
+        //        {
+        //            playerController.BtnXemBai();
+        //        }
+        //    }
+        //    isFirstGround = false;
+        //}
      
     }
     public override void OnDisable()
@@ -158,6 +176,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
                 if (gameController.CheckEqualBlind())
                 {
+                    
                     Debug.Log("Call deal");
                     Invoke(nameof(BtnDeal), 2f);
                     //BtnDeal();
@@ -181,6 +200,8 @@ public class TimeCounter : MonoBehaviourPunCallbacks
             {
                 if (gameController.CheckEqualBlind())
                 {
+                    
+                    //Thread.Sleep(10000);
                     Debug.Log("Call deal");
                     Invoke(nameof(BtnDeal), 2f);                  
                     //BtnDeal();
@@ -190,9 +211,8 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                     gameController.RefreshTimeCounter();
                     //Debug.Log(2);
                 }
-                //Invoke(nameof(BtnDeal), 2f);                
+                //Invoke(nameof(BtnDeal), 2f);               
             }
-
         }
     }
     public void BtnDeal()//to delay
