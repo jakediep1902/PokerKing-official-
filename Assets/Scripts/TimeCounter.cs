@@ -39,7 +39,9 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
         else //player action
         {
-            uIManager.pnlGame.SetActive(true);
+
+            if (playerController.PvPlayer.IsMine) uIManager.pnlGame.SetActive(true);        
+
             if (gameController.bigestBlinded > playerController.moneyBlinded)
             {
                 playerController.uIManager.btnTheoCuoc.gameObject.SetActive(true);
@@ -91,7 +93,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         //    }
         //    isFirstGround = false;
         //}
-     
+
     }
     public override void OnDisable()
     {
@@ -131,12 +133,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                     playerController.GetComponent<Bot>().enabled = false;
                     playerController.BtnBoBai();
                 }
-                else
-                {
-                    
-                }
-                
-
+              
                 NextPlayer(playerChecking);              
                 this.gameObject.SetActive(false);
             }
@@ -177,7 +174,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                 if (gameController.CheckEqualBlind())
                 {
                     
-                    Debug.Log("Call deal");
+                    //Debug.Log("Call deal");
                     Invoke(nameof(BtnDeal), 2f);
                     //BtnDeal();
                 }
@@ -202,10 +199,10 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                 {
                     
                     //Thread.Sleep(10000);
-                    Debug.Log("Call deal");
+                    //Debug.Log("Call deal");
                     Invoke(nameof(BtnDeal), 2f);                  
                     //BtnDeal();
-                }
+                }  
                 else
                 {
                     gameController.RefreshTimeCounter();

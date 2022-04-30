@@ -11,6 +11,8 @@ using UnityEngine.Events;
 using ExitGames.Client.Photon;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+
 
 public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -20,6 +22,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     ManageNetwork manageNetwork;
     GameController2 gameController2;
     public PhotonView photonViews;
+
+    
 
     public GameObject backCardPrefab;
     public GameObject commonCard;
@@ -73,6 +77,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     int conStraightFlush = 5;//edit with value 5 when finish
 
     public long bigestBlinded;
+    
 
     public bool isFullFiveCard = false;
 
@@ -96,8 +101,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public bool isShowDown = false;
 
     private void Awake()
-    {
-
+    {       
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
@@ -220,7 +224,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             item.cardTemplate1.SetActive(false);
             item.cardTemplate2.SetActive(false);
             item.timeCounter.imageFill.fillAmount = 1;
-            //item.isTurn = true;
+            item.isTurn = false;
+            item.timeCounter.gameObject.SetActive(false);
             item.bigBlindIcon.SetActive(false);
             item.listCard.Clear();
             //item.listCard.RemoveAll(GameObject => GameObject == null);
@@ -310,42 +315,42 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                 tempCard.GetComponent<BackCard>().enabled = true;
                 listBackCard.Add(tempCard.GetComponent<BackCard>());
             }
-            else
-            {
-                Debug.Log("hello................................");
-                if (tempCard.activeSelf == false)
-                {                  
-                    tempCard.SetActive(true);
-                }                                  
-                tempCard.layer = cards[commonIndex].layer;
-                int noLayer = tempCard.layer;
-                switch (noLayer)
-                {
-                    case 7:
-                        tempCard.AddComponent<Spades>();
-                        break;
-                    case 8:
-                        tempCard.AddComponent<Hearts>();
-                        break;
-                    case 9:
-                        tempCard.AddComponent<Clubs>();
-                        break;
-                    case 10:
-                        tempCard.AddComponent<Diamonds>();
-                        break;
-                }
+            //else
+            //{
+            //    Debug.Log("hello................................");
+            //    if (tempCard.activeSelf == false)
+            //    {                  
+            //        tempCard.SetActive(true);
+            //    }                                  
+            //    tempCard.layer = cards[commonIndex].layer;
+            //    int noLayer = tempCard.layer;
+            //    switch (noLayer)
+            //    {
+            //        case 7:
+            //            tempCard.AddComponent<Spades>();
+            //            break;
+            //        case 8:
+            //            tempCard.AddComponent<Hearts>();
+            //            break;
+            //        case 9:
+            //            tempCard.AddComponent<Clubs>();
+            //            break;
+            //        case 10:
+            //            tempCard.AddComponent<Diamonds>();
+            //            break;
+            //    }
 
-                tempCard.name = cards[commonIndex].name;
-                tempCard.GetComponent<SpriteRenderer>().sprite = cards[commonIndex].GetComponent<SpriteRenderer>().sprite;
-                RemoveElement(ref cards, commonIndex);
-                tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;
+            //    tempCard.name = cards[commonIndex].name;
+            //    tempCard.GetComponent<SpriteRenderer>().sprite = cards[commonIndex].GetComponent<SpriteRenderer>().sprite;
+            //    RemoveElement(ref cards, commonIndex);
+            //    tempCard.GetComponent<SpriteRenderer>().sortingOrder = 7;
 
-                //countIndexSave++;
-                //Debug.Log($"countIndexSave is {countIndexSave}");
-                //arrSaveIDCardToSync[countIndexSave] = tempCard.GetComponent<Card>().ID;
+            //    //countIndexSave++;
+            //    //Debug.Log($"countIndexSave is {countIndexSave}");
+            //    //arrSaveIDCardToSync[countIndexSave] = tempCard.GetComponent<Card>().ID;
                 
-                stackCheck.Push(tempCard);
-            }
+            //    stackCheck.Push(tempCard);
+            //}
 
             yield return new WaitForSeconds(0.2f);
         }
@@ -414,11 +419,12 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }//using
     public void BtnDeal()//using
     {
+        
         if (photonViews.IsMine && !isCheckCard)
         {
             if (isFirstDeal)
-            {
-                RPC_Deal(5, 0.5f);
+            {           
+                RPC_Deal(5, 0.8f);
                 RPC_SetNewGround(4f);
                 photonViews.RPC("SetIsFirstDeal", RpcTarget.All, false);
             }
@@ -448,14 +454,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }//using
     [PunRPC]
     public void PushCardToStackCheck(int commonIndex)
-    {
-        //countIndexSave++; // save ID card
-        //Debug.Log($"countIndexSave is {countIndexSave}");
-        //for (int i = countIndexSave; i < arrSaveIDCardToSync.Length; i++)
-        //{
-        //    arrSaveIDCardToSync[i] = cards[commonIndex].GetComponent<Card>().ID;
-        //    break;
-        //}
+    {        
         listSaveIDCardToSync.Add(cards[commonIndex].GetComponent<Card>().ID);
         if(NoCommonPos<5)
         stackCheck.Push(cards[commonIndex]);
@@ -473,7 +472,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         {           
             cards[commonIndex].SetActive(true);
             cards[commonIndex].transform.position = startPos.position;
-            cards[commonIndex].AddComponent<CommonCard>();
+            cards[commonIndex].AddComponent<CommonCard>();           
             photonViews.RPC("PushCardToStackCheck", RpcTarget.All, commonIndex);
             //stackCheck.Push(cards[commonIndex]);
             //RemoveElement(ref cards, commonIndex);
@@ -492,15 +491,15 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }//using
     IEnumerator DelayDeal(int DealTimes = 1, float delay = 1f)//using
     {
-        yield return new WaitForSeconds(3*delay);
+       // yield return new WaitForSeconds(3*delay);
         for (int i = 0; i < DealTimes; i++)
         {
             RPC_SetCommonIndex();
             yield return new WaitForSeconds(delay);
-            Deal();
+            //yield return new WaitForSecondsRealtime(delay);
+            Deal();                      
             // photonViews.RPC("Deal", RpcTarget.AllBuffered, null);
         }
-
     }//using
     public IEnumerator ResetTimeCounter(float timeDelay)
     {
@@ -540,7 +539,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         foreach (var item in arrPlayer)
         {
             item.isFold = false;
-            item.isWaiting = false;
+            item.isWaiting = false;           
         }
 
         SceneManager.LoadScene(0);
@@ -584,7 +583,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             }
             //ReturnBlindedToWinner(player);
         }
-
+        if(arrPlayer.Length>2)
+        arrPlayer[1].score = arrPlayer[0].score;
         RewardWinners();
 
         foreach (PlayerController winner in listWinner)
@@ -1632,11 +1632,15 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public void BtnTest()//Button test
     {
         // Debug.Log($"StackCheck Count is {stackCheck.Count}");
-        foreach (var item in arrPlayer)
-        {
-            item.score = 10;
-        }
-        CheckWinner(arrPlayer);
+        //isCheckCard = true;
+        //foreach (var item in arrPlayer)
+        //{
+        //    item.score = 10;
+        //}
+        //CheckWinner(arrPlayer);
+        var player = FindObjectOfType<PlayerController>();
+        player.card1 = arrPlayer[0].card1;
+        player.card2 = arrPlayer[0].card2;
     }
 
     [PunRPC]
@@ -1715,48 +1719,30 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         List<PlayerController> temp = new List<PlayerController>();
         foreach (var item in arrPlayer)
         {
-            if (item.money > 0)
-            {
-                temp.Add(item);
-            }
+            if (item.money > 0) temp.Add(item);         
         }
 
         if (temp.Count > 1)
         {
             foreach (var item1 in temp)
-            {
-                if (item1.moneyBlinded < bigestBlinded)
-                {
-                    return false;
-                }
+            { 
+                if (item1.moneyBlinded < bigestBlinded) return false;          
             }
         }
         else
         {
-            if (temp.Count > 0 && (temp[0].moneyBlinded < bigestBlinded))
-            {
-                return false;
-            }
+            if (temp.Count > 0 && (temp[0].moneyBlinded < bigestBlinded)) return false;
+          
             else
             {
                 //show card
                 Debug.Log($"Let Show Down now !!!");
-                //photonViews.RPC("SetTurnToAllPlayer", RpcTarget.All, false);
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(500);
                 BtnShowDown();
             }
         }
         return true;
-    }
-    //[PunRPC]
-    //public void SetTurnToAllPlayer(bool bul = false)
-    //{
-    //    var players = FindObjectsOfType<PlayerController>();
-    //    foreach (var item in players)
-    //    {
-    //        item.isTurn = bul;
-    //    }       
-    //}
+    }   
     public void UpdateBlind()
     {
         foreach (var item in arrPlayer)
@@ -1862,7 +1848,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }
     public void RewardOneHoldCard()//using
     {
-        long moneyWon = barTotalMoney + arrPlayer[0].moneyBlinded;
+        long moneyWon = barTotalMoney;
         arrPlayer[0].money += moneyWon;
         barTotalMoney -= barTotalMoney;     
         if (arrPlayer[0].rewardTopup != null)
@@ -1902,9 +1888,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     IEnumerator RewardCrowHoldCard()
-    {
-        //long moneyWonFromFolder = 0;
-        //moneyWonFromFolder = MoneyFromFolder();
+    {          
         var players = FindObjectsOfType<PlayerController>();
         var groupFold = players.Where(p => p.isFold == true).ToArray();
         List<PlayerController> listTemp = new List<PlayerController>();
@@ -1914,56 +1898,31 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             long totalWon = 0;                     
             totalWon += arrPlayer[i].moneyBlinded;           
             float timeDelay = 5f;
-            foreach (var folder in groupFold)//handle with Folder
+            if(barTotalMoney<3)
             {
-                long moneyWon = 0;
-                if (arrPlayer[i].moneyBlinded > folder.moneyBlinded) moneyWon = folder.moneyBlinded;
-
-                else moneyWon = arrPlayer[i].moneyBlinded;              
-
-                totalWon += moneyWon;
-                folder.moneyBlinded -= moneyWon;
-                
-            }
-            if (i == (arrPlayer.Length-1) && totalWon>0)//check index if it is end
-            {
-                totalWon = arrPlayer[i].moneyBlinded;
-                barTotalMoney -= totalWon;
-                arrPlayer[i].money += totalWon;
-                arrPlayer[i].moneyBlinded -= totalWon;
-                arrPlayer[i].rewardTopup.SetActive(true);
-                arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = totalWon.ToString();
-                Debug.Log($"player {arrPlayer[i].name} win total {totalWon} $");
-
-
-                if(barTotalMoney>0)
-                {
-                    Thread.Sleep(5000);
-                    foreach (var folder in groupFold)
-                    {
-                        long moneyReturn = 0;
-                        if (folder.moneyBlinded > 0 && barTotalMoney > 0)
-                        {
-                            moneyReturn = folder.moneyBlinded;
-                            folder.money += moneyReturn;
-                            barTotalMoney -= moneyReturn;
-                            Debug.Log($"player {folder.name} has been returned {moneyReturn} $");
-                            folder.rewardTopup.SetActive(true);
-                            folder.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = moneyReturn.ToString();
-                        }
-                    }
-                }
-
                 Debug.Log("End");
                 if (photonViews.IsMine) Invoke(nameof(BtnPlayAgain), timeDelayLoadScene);
 
                 break;
             }
+           
             for (int j = i + 1; j < arrPlayer.Length; j++)//handle with other players
             {
                 long moneyWon = 0;
                 if (arrPlayer[i].score > arrPlayer[j].score)//one winner
                 {
+                    foreach (var folder in groupFold)//handle with Folder
+                    {
+                        moneyWon = 0;
+                        if (arrPlayer[i].moneyBlinded > folder.moneyBlinded) moneyWon = folder.moneyBlinded;
+
+                        else moneyWon = arrPlayer[i].moneyBlinded;
+
+                        totalWon += moneyWon;
+                        folder.moneyBlinded -= moneyWon;
+
+                    }
+                    
                     if (arrPlayer[i].moneyBlinded > arrPlayer[j].moneyBlinded)  moneyWon = arrPlayer[j].moneyBlinded;
 
                     else  moneyWon = arrPlayer[i].moneyBlinded;                  
@@ -1981,8 +1940,27 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                     if (groupWin.Length > 1) SortScoreMoney(ref groupWin);                  
                     var groupLose = arrPlayer.Where(p => p.score < arrPlayer[i].score || p.isFold).ToArray();
                     if (groupLose.Length > 1) SortScoreMoney(ref groupLose);
-                                  
-                    if (groupLose.Length == 0 && (arrPlayer.Length > groupWin.Length)) break;
+
+                    if (groupLose.Length == 0 && (arrPlayer.Length > groupWin.Length))
+                    {
+                        foreach (var loser in groupWin)
+                        {
+                            long moneyReturn = 0;
+                            if (loser.moneyBlinded > 0 && barTotalMoney > 0)
+                            {
+                                moneyReturn = loser.moneyBlinded;
+                                loser.money += moneyReturn;
+                                barTotalMoney -= moneyReturn;
+                                Debug.Log($"player {loser.name} has been returned {moneyReturn} $");
+                                loser.rewardTopup.SetActive(true);
+                                loser.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = moneyReturn.ToString();
+                            }
+                        }
+                        Debug.Log("End");
+                        if (photonViews.IsMine) Invoke(nameof(BtnPlayAgain), timeDelayLoadScene);
+                        break;
+                    }
+                  
                     long maxWin = groupWin.Max(p => p.moneyBlinded);
                     Debug.Log($"maxWin in players Winner is {maxWin}");
                     //if (maxLose == 0) break;
@@ -1998,8 +1976,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                         totalLoseInFolder += moneyLose3;
                     }
                     Debug.Log($"totalLoseInFolder is {totalLoseInFolder}");
-                    
-                  
+                                    
                     //  handle with groupLose
 
                     long totalLoseInGroupLose = 0;
@@ -2011,27 +1988,26 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                             totalLoseInGroupLose += maxWin;
                         }
                         else
-                        {                            
-                            loser.moneyBlinded -= loser.moneyBlinded;
+                        {
                             totalLoseInGroupLose += loser.moneyBlinded;
+                            loser.moneyBlinded -= loser.moneyBlinded;                           
                         }
                     }
+                    Debug.Log($"totalLoseGroupLose is {totalLoseInGroupLose}");
 
                     // handle with groupWin
                     long totalLose = totalLoseInFolder + totalLoseInGroupLose;
                     long totalRequired = groupWin.Sum(p => p.moneyBlinded);
-                    float rate = totalLose / totalRequired;
-                    Debug.Log($"totalLose/totalRequire : {totalLose}/{totalRequired} => rate is {rate}");
-                                      
-                    //long maxWon = groupLose.Max(p => p.moneyBlinded);
-                    //long totalRequired1 = groupWin.Sum(p => p.moneyBlinded);
-                    //float rate1 = (float)totalLoseInFolder / totalRequired;
-                  
-                    //if(totalReward<totalWon in group win =>??
+                    float rate =0f;
+                    if (totalRequired!=0)
+                    {
+                        rate = (float)(totalLose * 1.0f / (float)totalRequired);
+                        Debug.Log($"totalLose/totalRequire : {totalLose}/{totalRequired} => rate is {rate}");
+                    }                                                        
 
                     foreach (var winner in groupWin)
                     {
-                        totalWon = ((long)rate * winner.moneyBlinded);
+                        totalWon = ((long)(rate * winner.moneyBlinded));
                         totalWon += winner.moneyBlinded;
                         winner.money += totalWon;
                         barTotalMoney -= totalWon;
@@ -2047,13 +2023,13 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
                     }
                     listTemp = groupLose.ToList();
-                    listTemp.AddRange(groupFold);
+                    listTemp.AddRange(groupFold);                                       
                     Debug.Log($"length of listTemp is {listTemp.Count}");
                     i = 0;
                     break;                  
                 }
             }
-
+            
             if (totalWon > 0 && !isGroupWon)
             {                                                          
                 if (arrPlayer[i].rewardTopup != null)
@@ -2087,23 +2063,80 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                     yield break;
                 }
             }
-           
 
+            if (i == (arrPlayer.Length - 1) && totalWon > 0)//check index if it is end
+            {
+                totalWon = arrPlayer[i].moneyBlinded;
+                barTotalMoney -= totalWon;
+                arrPlayer[i].money += totalWon;
+                arrPlayer[i].moneyBlinded -= totalWon;
+                arrPlayer[i].rewardTopup.SetActive(true);
+                arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = totalWon.ToString();
+                Debug.Log($"player {arrPlayer[i].name} win total {totalWon} $");
+
+
+                if (barTotalMoney > 0)
+                {
+                    Thread.Sleep(5000);
+                    foreach (var folder in groupFold)
+                    {
+                        long moneyReturn = 0;
+                        if (folder.moneyBlinded > 0 && barTotalMoney > 0)
+                        {
+                            moneyReturn = folder.moneyBlinded;
+                            folder.money += moneyReturn;
+                            barTotalMoney -= moneyReturn;
+                            Debug.Log($"player {folder.name} has been returned {moneyReturn} $");
+                            folder.rewardTopup.SetActive(true);
+                            folder.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = moneyReturn.ToString();
+                        }
+                    }
+                }
+
+                Debug.Log("End");
+                if (photonViews.IsMine) Invoke(nameof(BtnPlayAgain), timeDelayLoadScene);
+
+                break;
+            }
+            else if (i == (arrPlayer.Length - 1) && totalWon == 0)
+            {
+                Debug.Log("End");
+                if (photonViews.IsMine) Invoke(nameof(BtnPlayAgain), timeDelayLoadScene);
+
+                break;
+            }
+         
             yield return new WaitForSeconds(timeDelay);
             if (!isGroupWon)
             {
                 //sort arrPlayer by score 9 -> 0 (due to somewhere sort arrPlayer after waited 5s)
-                SortScoreMoney(ref arrPlayer);
-                
+                if(arrPlayer.Length>1) SortScoreMoney(ref arrPlayer);
                 //Debug.Log($"arrPlayer Length when there is 1 Winner : {arrPlayer.Length}");
             }
             else
             {
                 isGroupWon = false;
-                arrPlayer = listTemp.ToArray();
-                //Debug.Log($"arrPlayer Length when have group Winner : {arrPlayer.Length}");
+                arrPlayer = listTemp.ToArray();                
+                listTemp.Clear();
+                if (arrPlayer.Length > 1)
+                {
+                    SortScoreMoney(ref arrPlayer);
+                    foreach (var item in arrPlayer)
+                    {
+                        Debug.Log($"player {item.ID} score is {item.score}");
+                    }
+                } 
+                else
+                {
+                    arrPlayer[0].money += barTotalMoney;
+                    barTotalMoney = 0;
+                    Debug.Log("End");
+                    if (photonViews.IsMine) Invoke(nameof(BtnPlayAgain), timeDelayLoadScene);
+                }
+
+                Debug.Log($"arrPlayer Length when have group Winner : {arrPlayer.Length}");
             }
-        }
+        }      
     }
     public int CountPlayerBlinded()
     {
