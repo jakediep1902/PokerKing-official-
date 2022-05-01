@@ -432,7 +432,7 @@ MonoBehaviour:
   card1ID: 0
   card2ID: 0
   score: 0
-  money: 20000
+  money: 2000000
   moneyBlinding: 0
   moneyBlinded: 0
   ID: 1
@@ -919,7 +919,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6849888554151444454}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.2, y: -0.03, z: 0}
+  m_LocalPosition: {x: -1.49, y: 0.18, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 879985052699882741}
@@ -1091,7 +1091,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.7145, y: 0.67}
+  m_AnchoredPosition: {x: -2.2, y: 2.31}
   m_SizeDelta: {x: 2.239, y: 0.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7830192320840024069
@@ -1166,7 +1166,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.19, y: 0.61}
+  m_AnchoredPosition: {x: -0.19, y: -0.77}
   m_SizeDelta: {x: 9.86, y: 17.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1657038946198015280
