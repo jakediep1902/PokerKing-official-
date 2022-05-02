@@ -424,15 +424,14 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (isFirstDeal)
             {           
-                RPC_Deal(5, 0.8f);
-                RPC_SetNewGround(4f);
+                RPC_Deal(3, 0.8f);
+                //RPC_SetNewGround(4f);
                 photonViews.RPC("SetIsFirstDeal", RpcTarget.All, false);
             }
             else
             {
                 RPC_SetCommonIndex();
                 Deal();
-
                 //photonViews.RPC("Deal", RpcTarget.AllBuffered, null);
                 if (!isFullFiveCard) RPC_SetNewGround();
             }
@@ -491,7 +490,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }//using
     IEnumerator DelayDeal(int DealTimes = 1, float delay = 1f)//using
     {
+        
         yield return new WaitForSeconds(3*delay);
+        RPC_SetNewGround(1.2f * DealTimes * delay);
         for (int i = 0; i < DealTimes; i++)
         {
             RPC_SetCommonIndex();
@@ -500,6 +501,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             Deal();                      
             // photonViews.RPC("Deal", RpcTarget.AllBuffered, null);
         }
+        
     }//using
     public IEnumerator ResetTimeCounter(float timeDelay)
     {
@@ -1737,7 +1739,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             {
                 //show card
                 Debug.Log($"Let Show Down now !!!");
-                System.Threading.Thread.Sleep(200);
+                //System.Threading.Thread.Sleep(200);
                 BtnShowDown();
             }
         }
@@ -1782,34 +1784,45 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void RPC_ShowDown()//using
     {
-        Debug.Log("Show Down!!!");
-        isShowDown = true;
+        Debug.Log("Show Down!!!");                  
+       isShowDown = true;
         if (photonViews.IsMine && playerPlaying>1)
-        {
-            //Debug.Log("Warning 2 !!!");
-            //Invoke(nameof(HandleShowDown),2f);
+        {            
             switch (NoCommonPos)
             {
                 case 0:
                     RPC_Deal(5, 0.5f);
-                    RPC_SetNewGround(7);
+                    //Task T1 = DealCard();
+                    Debug.Log("Continue thread");
+                    //RPC_SetNewGround(7);
                     break;
                 case 3:
                     RPC_Deal(2, 0.5f);
-                    RPC_SetNewGround(4);
+                    //RPC_SetNewGround(4);
                     break;
                 case 4:
                     RPC_Deal(1);
-                    RPC_SetNewGround(3);
+                    //RPC_SetNewGround(3);
                     break;
                 case 5:
                     break;
             }
         }
-        Invoke(nameof(BtnCheckCard), 9f);
+        Invoke(nameof(BtnCheckCard),9f);
 
         //Time.timeScale = 0.01f;
-    }   
+    }  
+    public async Task DealCard()//do not work ??????
+    {
+        Task T1 = new Task(() => {
+            RPC_Deal(5, 0.5f);
+            Debug.LogWarning("Tast T1 starting");
+        });
+        T1.Start();
+        await T1;
+        Debug.LogWarning("Finish task T1");
+        
+    }
     public void ReturnBlindedToWinner(PlayerController winer)
     {
         winer.money += winer.moneyBlinded;
@@ -1906,24 +1919,32 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
                 break;
             }
-           
+
+            long totalWonInGroupFold = 0;
             for (int j = i + 1; j < arrPlayer.Length; j++)//handle with other players
             {
                 long moneyWon = 0;
+                
                 if (arrPlayer[i].score > arrPlayer[j].score)//one winner
                 {
-                    foreach (var folder in groupFold)//handle with Folder
+                    if(totalWonInGroupFold==0)
                     {
-                        moneyWon = 0;
-                        if (arrPlayer[i].moneyBlinded > folder.moneyBlinded) moneyWon = folder.moneyBlinded;
+                        foreach (var folder in groupFold)//handle with Folder
+                        {
+                            moneyWon = 0;
 
-                        else moneyWon = arrPlayer[i].moneyBlinded;
+                            if (arrPlayer[i].moneyBlinded > folder.moneyBlinded) moneyWon = folder.moneyBlinded;
 
-                        totalWon += moneyWon;
-                        folder.moneyBlinded -= moneyWon;
-                        Debug.Log($"player {arrPlayer[i].name} win total in groupFold is {totalWon-arrPlayer[i].moneyBlinded} $");
+                            else moneyWon = arrPlayer[i].moneyBlinded;
+
+                            totalWon += moneyWon;
+                            folder.moneyBlinded -= moneyWon;
+                            totalWonInGroupFold += moneyWon;
+                        }
+                        Debug.Log($"player {arrPlayer[i].name} win total in groupFold is {totalWonInGroupFold} $");
+                        totalWonInGroupFold = 1;//to stop check with next jb
                     }
-                    
+                   
                     if (arrPlayer[i].moneyBlinded > arrPlayer[j].moneyBlinded)  moneyWon = arrPlayer[j].moneyBlinded;
 
                     else  moneyWon = arrPlayer[i].moneyBlinded;                  
@@ -2137,7 +2158,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             {
                 //sort arrPlayer by score 9 -> 0 (due to somewhere sort arrPlayer after waited 5s)
                 if(arrPlayer.Length>1) SortScoreMoney(ref arrPlayer);
-                //Debug.Log($"arrPlayer Length when there is 1 Winner : {arrPlayer.Length}");
+                Debug.Log($"arrPlayer Length when there is 1 Winner : {arrPlayer.Length}");
             }
             else
             {
@@ -2153,10 +2174,20 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                     }
                     i = 0;
                 } 
-                else if(arrPlayer.Length==1)
+                else if(arrPlayer.Length==1 && barTotalMoney>0)
                 {
                     arrPlayer[0].money += barTotalMoney;
+
+                    arrPlayer[0].rewardTopup.SetActive(true);
+                    arrPlayer[0].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = barTotalMoney.ToString();
+
                     barTotalMoney = 0;
+
+                    Debug.Log("End");
+                    if (photonViews.IsMine) Invoke(nameof(BtnPlayAgain), timeDelayLoadScene);
+                }
+                else
+                {
                     Debug.Log("End");
                     if (photonViews.IsMine) Invoke(nameof(BtnPlayAgain), timeDelayLoadScene);
                 }

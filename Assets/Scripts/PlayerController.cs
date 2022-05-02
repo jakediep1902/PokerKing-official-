@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         uIManager.btnTheoCuoc.onClick.AddListener(() => BtnTheoCuoc());
         uIManager.btnXemBai.onClick.AddListener(() => BtnXemBai());
         uIManager.btnBoBai.onClick.AddListener(() => BtnBoBai());
-        uIManager.btnThemCuoc.onClick.AddListener(() => BtnAllIn());
+        uIManager.btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
         uIManager.btnAllIn.onClick.AddListener(() => BtnAllIn());
 
         if (bot.enabled) isBot = true;
@@ -321,11 +321,10 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     [PunRPC]
     public void RPC_SetCard1(int index)
     {
-       // RefreshListcard();
+       
         if (gameController.cards[index] == null)
         {
             index--;
-            //gameController = GameController.Instance;
             Debug.Log("gameController is null");
         }
         gameController.cards[index].SetActive(true);
@@ -366,16 +365,11 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         cardTemplate2.transform.localScale = new Vector3(1f,1f,1f);
 
     }
-    public void SetIsInvoke()
-    {
-        isInvoke = false;
-    }
+    public void SetIsInvoke() => isInvoke = false;  
 
     [PunRPC]
-    public virtual void XemBai()
-    {
-        timeCounter.imageFill.fillAmount = 0f;
-    }
+    public virtual void XemBai() => timeCounter.imageFill.fillAmount = 0f;
+   
     public virtual void BtnXemBai()
     {
         if (PvPlayer.IsMine && gameController.isStartGame)
@@ -421,6 +415,18 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         if (PvPlayer.IsMine && gameController.isStartGame)
         {          
             PvPlayer.RPC("BoBai", RpcTarget.All, null);        
+        }
+    }
+    public void BtnThemCuoc()
+    {
+        if (PvPlayer.IsMine && !isBot)
+        {
+            //moneyBlinding = money;//Theo cuoc
+            //PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
+
+            //BtnXemBai();
+           // Debug.Log("Pressed");
+            uIManager.pnlThemCuoc.SetActive(!uIManager.pnlThemCuoc.activeSelf);          
         }
     }
     public void BtnAllIn()

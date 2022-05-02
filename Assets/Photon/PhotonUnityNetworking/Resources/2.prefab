@@ -334,7 +334,7 @@ MonoBehaviour:
   card1ID: 0
   card2ID: 0
   score: 0
-  money: 30000
+  money: 3000000
   moneyBlinding: 0
   moneyBlinded: 0
   ID: 2

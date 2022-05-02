@@ -117,7 +117,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         {
             if (imageFill.fillAmount > 0)
             {
-                imageFill.fillAmount -= 0.005f;
+                imageFill.fillAmount -= 0.0005f;
                 //Debug.Log(test++);
             }
             else
@@ -173,12 +173,12 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
                 if (gameController.CheckEqualBlind())
                 {
-                    
+                    if(!gameController.isShowDown) Invoke(nameof(BtnDeal), 2f);
                     //Debug.Log("Call deal");
-                    Invoke(nameof(BtnDeal), 2f);
+
                     //BtnDeal();
                 }
-                else
+                else 
                 {
                     gameController.RefreshTimeCounter();
                     //Debug.Log(1);
@@ -197,13 +197,13 @@ public class TimeCounter : MonoBehaviourPunCallbacks
             {
                 if (gameController.CheckEqualBlind())
                 {
-                    
+
                     //Thread.Sleep(10000);
                     //Debug.Log("Call deal");
-                    Invoke(nameof(BtnDeal), 2f);                  
+                    if (!gameController.isShowDown) Invoke(nameof(BtnDeal), 2f);                  
                     //BtnDeal();
                 }  
-                else
+                else 
                 {
                     gameController.RefreshTimeCounter();
                     //Debug.Log(2);
