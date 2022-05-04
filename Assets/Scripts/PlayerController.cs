@@ -13,7 +13,6 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     public GameController gameController;
     public GameController2 gameController2;
     
-
     public GameObject card1, card2, cardTemplate1, cardTemplate2;
     public GameObject bigBlindIcon;
     public GameObject rewardTopup;
@@ -33,18 +32,17 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     public Transform[] arrPosDefaul = new Transform[6];
     public List<GameObject> listCard = new List<GameObject>();
     public List<GameObject> listCardWin = new List<GameObject>();
+
     public int[] arrCardWin = new int[5];
 
     public int card1ID;
     public int card2ID;
+    public int ID = 0;
 
     public float score = 0f;
     public long money = 1000000;
     public long moneyBlinding = 0;
     public long moneyBlinded = 0;
-    
-
-    public int ID = 0;
     
     public bool isInvoke = false;
     public bool isStraightFlush = false;
@@ -78,10 +76,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         bot = GetComponent<Bot>();
     }
     void Start()
-    {
-       
-        //if(rewardTopup!=null)
-        //rewardTopup.SetActive(true);
+    {             
         if (gameController.isStartGame)
         {
             if(!PvPlayer.IsMine)
@@ -91,10 +86,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             }
             isWaiting = true;                     
         }
-        else
-        {
-            gameController.UpdatePlayer();
-        }    
+        else gameController.UpdatePlayer();          
         
         cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 5;
         cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 6;      
@@ -102,12 +94,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         eAddBackCard.AddListener(() => ArrangeCard());
         for (int i = 0; i < arrPosDefaul.Length; i++)
         {
-            if (ID == i)
-            {
-                transform.position = arrPosDefaul[i].position;
-            }
-        }
-        
+            if (ID == i) transform.position = arrPosDefaul[i].position;         
+        }    
         //money = 10000000;
         moneyBlinding = 0;
 
@@ -117,7 +105,6 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             Invoke(nameof(SetImageConnecting), 2f);
         }
 
-
         uIManager.btnOKBlind.onClick.AddListener(() => BtnOkBlind());
         uIManager.btnTheoCuoc.onClick.AddListener(() => BtnTheoCuoc());
         uIManager.btnXemBai.onClick.AddListener(() => BtnXemBai());
@@ -126,44 +113,20 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         uIManager.btnAllIn.onClick.AddListener(() => BtnAllIn());
 
         if (bot.enabled) isBot = true;
-
-    }
-
-
-    
+    } 
     private void Update()
     {
-        if (isFold && card1!=null)
-        {
-            if (card1?.transform.position != Vector3.zero)//Fold card
-            {
-                card1.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
-                card2.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
-                card1.transform.Rotate(1, 2, 1);
-                card2.transform.Rotate(2, 1, 2);
-            }
-        }
+        if (isFold && card1 != null) FoldCard();
+               
         txtMoney.text = gameController.FormatVlueToString(money);
         txtMoneyBlind.text = gameController.FormatVlueToString(moneyBlinding);
 
-        if (uIManager.pnlThemCuoc.activeSelf && PvPlayer.IsMine && (GetComponent<Bot>().enabled == false))
+        if (uIManager.pnlThemCuoc.activeSelf && PvPlayer.IsMine && (isBot == false))
         {
             float temp = uIManager.sliderVlue.value;
             moneyBlinding = (long)(temp * money);
             uIManager.txtSetBlindVlue.text = gameController.FormatVlueToString(moneyBlinding);
-        }
-
-        //if (timeCounter.gameObject.activeSelf)
-        //{
-        //    if (PvPlayer.IsMine)
-        //        uIManager.pnlGame.SetActive(true);
-        //}
-        //else
-        //{
-        //    if (PvPlayer.IsMine)
-        //        uIManager.pnlGame.SetActive(false);
-        //}
-
+        }      
     }
     public override void OnEnable()
     {
@@ -193,8 +156,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     private void NetworkingClient_EventReceived(EventData obj)
     {
         if(obj.Code == (byte)PhotonEventCodes.SyncLateJoin)
-        {
-            
+        {           
             object[] datas = obj.CustomData as object[];
             int viewID = (int)datas[0];
             if(PvPlayer.ViewID == viewID)
@@ -240,23 +202,18 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             card1ID = card1.GetComponent<Card>().ID;
             card2ID = card2.GetComponent<Card>().ID;
         }
-        else
-        {
-            Debug.Log($"player {ID} disconnected !!");
-        }
-
+        else Debug.Log($"player {ID} disconnected !!");
 
         object[] datas = new object[]
         {
             PvPlayer.ViewID,              //0
-            card1ID,//1
-            card2ID,//2
+            card1ID,                      //1
+            card2ID,                      //2
             moneyBlinded,                 //3
             money,                        //4
             moneyBlinding,                //5
             bot.enabled,                  //6
             isBot,                        //7
-
 
             //card1.GetComponent<SpriteRenderer>().sortingOrder,
             //card2.GetComponent<SpriteRenderer>().sortingOrder
@@ -271,9 +228,16 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncLateJoin, datas, option,SendOptions.SendUnreliable);
 
     }
-
-   
-
+    public void FoldCard()
+    {
+        if (card1?.transform.position != Vector3.zero)//Fold card
+        {
+            card1.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
+            card2.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
+            card1.transform.Rotate(1, 2, 1);
+            card2.transform.Rotate(2, 1, 2);
+        }
+    }
     public void ArrangeCard()
     {
         if (gameController == null) gameController = GameController.Instance;
@@ -306,11 +270,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
                 PvPlayer.RPC("RPC_SetCard2", RpcTarget.All, indexCard);
 
                 //Debug.Log(indexCard);
-                if (GetComponent<Bot>().enabled == true)
-                {
-                    PvPlayer.RPC("CoverCardOtherClient", RpcTarget.All, null);
-                   
-                }
+                if (isBot) PvPlayer.RPC("CoverCardOtherClient", RpcTarget.All, null);
+              
                 PvPlayer.RPC("CoverCardOtherClient", RpcTarget.Others, null);
             }
             // gameController.SetSmallBigBlind(gameController.listPlayer);        
@@ -320,8 +281,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }   
     [PunRPC]
     public void RPC_SetCard1(int index)
-    {
-       
+    {     
         if (gameController.cards[index] == null)
         {
             index--;
@@ -332,14 +292,12 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 4;
         card1 = gameController.cards[index];
         listCard.Add(card1);//add card to list to check
-        //gameController.cards[index].transform.SetParent(this.transform);
         gameController.listCardsRemoved.Add(card1.GetComponent<Card>().ID);
         gameController.RemoveElement(ref gameController.cards, index);
     }
     [PunRPC]
     public void RPC_SetCard2(int index)
-    {
-        
+    {   
         if (gameController.cards[index] == null)
         {
             index--;          
@@ -363,7 +321,6 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         card2.transform.position = cardTemplate2.transform.position;
         cardTemplate1.transform.localScale = new Vector3(1f,1f,1f);
         cardTemplate2.transform.localScale = new Vector3(1f,1f,1f);
-
     }
     public void SetIsInvoke() => isInvoke = false;  
 
@@ -372,18 +329,11 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
    
     public virtual void BtnXemBai()
     {
-        if (PvPlayer.IsMine && gameController.isStartGame)
-        {
-            if (GetComponent<Bot>().enabled == false)
-            PvPlayer.RPC("XemBai", RpcTarget.All, null);
-        }
+        if (PvPlayer.IsMine && gameController.isStartGame && !isBot) PvPlayer.RPC("XemBai", RpcTarget.All, null);     
     }
     public virtual void BtnXemBaiBot()
     {
-        if (PvPlayer.IsMine && gameController.isStartGame)
-        {
-            PvPlayer.RPC("XemBai", RpcTarget.All, null);
-        }
+        if (PvPlayer.IsMine && gameController.isStartGame && isBot) PvPlayer.RPC("XemBai", RpcTarget.All, null);      
     }
     [PunRPC]
     public virtual void BoBai()
@@ -402,8 +352,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     {
         if (PvPlayer.IsMine && gameController.isStartGame)
         {
-            if (bot.enabled == false)
-                PvPlayer.RPC("BoBai", RpcTarget.All, null);
+            if (isBot == false) PvPlayer.RPC("BoBai", RpcTarget.All, null);
             //Color tempColor = Color.white;
             //tempColor.a = 0.4f;
             //card1.GetComponent<SpriteRenderer>().color = tempColor;
@@ -412,18 +361,14 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public virtual void BtnBoBaiBot()
     {
-        if (PvPlayer.IsMine && gameController.isStartGame)
-        {          
-            PvPlayer.RPC("BoBai", RpcTarget.All, null);        
-        }
+        if (PvPlayer.IsMine && gameController.isStartGame && isBot) PvPlayer.RPC("BoBai", RpcTarget.All, null);       
     }
-    public void BtnThemCuoc()
+    public void BtnThemCuoc()//player only
     {
         if (PvPlayer.IsMine && !isBot)
         {
             //moneyBlinding = money;//Theo cuoc
             //PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
-
             //BtnXemBai();
            // Debug.Log("Pressed");
             uIManager.pnlThemCuoc.SetActive(!uIManager.pnlThemCuoc.activeSelf);          
@@ -431,7 +376,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void BtnAllIn()
     {
-        if (PvPlayer.IsMine && (bot.enabled == false))
+        if (PvPlayer.IsMine && !isBot)
         {
             moneyBlinding = money;//Theo cuoc
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
@@ -444,7 +389,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void BtnAllInBot()
     {
-        if (PvPlayer.IsMine)
+        if (PvPlayer.IsMine && isBot)
         {
             moneyBlinding = money;//Theo cuoc
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
@@ -460,7 +405,6 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             card1.SetActive(false);
             card2.SetActive(false);
         }
-       
         //}
     }
     [PunRPC]
@@ -480,7 +424,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void BtnOkBlind()
     {
-        if (PvPlayer.IsMine && (bot.enabled == false))
+        if (PvPlayer.IsMine && !isBot)
         {
             moneyBlinding = gameController.bigestBlinded - moneyBlinded;//Theo cuoc
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
@@ -496,7 +440,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public virtual void BtnTheoCuoc()
     {
-        if (PvPlayer.IsMine && (bot.enabled == false))
+        if (PvPlayer.IsMine && !isBot)
         {
             uIManager.pnlGame.SetActive(false);
             moneyBlinding = gameController.bigestBlinded - moneyBlinded;
@@ -506,17 +450,15 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void BtnTheoCuocBot()
     {
-        if (PvPlayer.IsMine)
+        if (PvPlayer.IsMine && isBot)
         {            
             moneyBlinding = gameController.bigestBlinded - moneyBlinded;
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
             BtnXemBaiBot();
         }
     }
-    public void SetImageConnecting()
-    {
-        uIManager.imageConnecting.gameObject.SetActive(false);
-    }
+    public void SetImageConnecting()=> uIManager.imageConnecting.gameObject.SetActive(false);
+    
 
     //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     //{

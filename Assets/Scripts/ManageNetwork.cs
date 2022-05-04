@@ -13,10 +13,8 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     public bool isJoinedRoom = false;
     private void Awake()
     {
-        if(Instance==null)
-        {
-            Instance = this;
-        }
+        if(Instance==null) Instance = this;
+       
         else
         {
             //Destroy(Instance.gameObject);//Destroy old instance
@@ -25,14 +23,12 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         }
         DontDestroyOnLoad(this.gameObject);
     }
-    // Start is called before the first frame update
     void Start()
     {
         gameController = GameController.Instance;
         gameController2 = GameController2.Instance;
         if(!PhotonNetwork.IsConnected)
-        PhotonNetwork.ConnectUsingSettings();
-        
+        PhotonNetwork.ConnectUsingSettings();        
     }
     public override void OnConnectedToMaster()
     {
@@ -45,17 +41,12 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         // Debug.Log($"isStartGame is {gameController.isStartGame}");
-
         //BtnReady();
         //gameController.playerInRoom = (int)PhotonNetwork.CurrentRoom.PlayerCount;
-        Invoke(nameof(BtnReady), 4f);
-                        
-        //SceneManager.LoadScene(0);
-        
+        Invoke(nameof(BtnReady), 4f);                          
     }
     public override void OnLeftRoom()
-    {
-        
+    {      
         //Debug.Log($"player ID {photonViews.ViewID} has left room");
         //gameController.CheckPlayerExit();
     }
@@ -64,9 +55,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         //gameController.SpawPlayer();
         if (gameController.isStartGame)
         {
-            gameController.SpawPlayer();
-            //Debug.Log($"playerPlaying is {gameController.playerPlaying}");
-            //isJoinedRoom = true;
+            gameController.SpawPlayer();                 
             Invoke(nameof(SetIsJoinedRoom),10f);
             Debug.Log($"Game alrealy played and isStartGame was true");
         }
@@ -76,8 +65,5 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
             gameController.BtnReady();
         }      
     }
-    public void SetIsJoinedRoom()
-    {
-        isJoinedRoom = true;
-    }
+    public void SetIsJoinedRoom() => isJoinedRoom = true; 
 }

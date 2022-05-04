@@ -45,9 +45,8 @@ public class Bot : MonoBehaviourPunCallbacks
                 Debug.Log($"player {playerController.ID} Fold");
                 break;
             case 1:
-                playerController.BtnXemBaiBot();              
-              
-                Debug.Log($"player {playerController.ID} stand");
+                playerController.BtnXemBaiBot();                            
+                Debug.Log($"player {playerController.ID} check");
                 break;
             case 2:
                 playerController.BtnTheoCuocBot();              

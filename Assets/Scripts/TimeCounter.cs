@@ -102,8 +102,6 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         //gameController.pnlGame.SetActive(false);
         //}      
         //CheckNextPlayer();
-
-
     }
 
     void Start()
@@ -115,11 +113,8 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     {
         if (playerController.isTurn && (gameController.isCheckCard == false) && (gameController.isShowDown == false))
         {
-            if (imageFill.fillAmount > 0)
-            {
-                imageFill.fillAmount -= 0.0009f;
-                //Debug.Log(test++);
-            }
+            if (imageFill.fillAmount > 0) imageFill.fillAmount -= 0.0009f;
+           
             else
             {         
                 playerController.isTurn = false;
@@ -130,8 +125,9 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                 //check equal blind
                 if((playerController.moneyBlinded < gameController.bigestBlinded) && playerController.money>0)
                 {
-                    playerController.GetComponent<Bot>().enabled = false;
-                    playerController.BtnBoBai();
+                    playerController.GetComponent<Bot>().enabled = false;                    
+                    if (playerController.isBot) playerController.BtnBoBaiBot();
+                    else playerController.BtnBoBai();
                 }
               
                 NextPlayer(playerChecking);              
@@ -144,18 +140,11 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         CurrentPlayer--;
         for (int i = 0; i < gameController.arrPlayer.Length; i++)
         {
-            if (CurrentPlayer < 0)
-            {
-                CurrentPlayer = gameController.arrPlayer.Length - 1;             
-            }
-            if (gameController.arrPlayer[CurrentPlayer] == null)
-            {
-                CurrentPlayer--;           
-            } 
-            else
-            {
-                break;
-            }
+            if (CurrentPlayer < 0) CurrentPlayer = gameController.arrPlayer.Length - 1;
+           
+            if (gameController.arrPlayer[CurrentPlayer] == null) CurrentPlayer--;
+
+            else break;           
         }
         
         if (CurrentPlayer < 0)
@@ -170,26 +159,20 @@ public class TimeCounter : MonoBehaviourPunCallbacks
             {
                 //gameController.BtnDeal();
                 //Invoke(nameof(BtnDeal), 2f);
-
                 if (gameController.CheckEqualBlind())
                 {
                     if(!gameController.isShowDown) Invoke(nameof(BtnDeal), 2f);
                     //Debug.Log("Call deal");
-
                     //BtnDeal();
                 }
-                else 
-                {
-                    gameController.RefreshTimeCounter();
-                    //Debug.Log(1);
-                }
+                else gameController.RefreshTimeCounter();             
             }
 
         }
         else
         {
             gameController.indexBigBlind = CurrentPlayer;
-            if (gameController.arrPlayer[CurrentPlayer]?.timeCounter.GetComponent<Image>().fillAmount > 0) //!gameController.arrPlayer[CurrentPlayer].isTurn &&
+            if (gameController.arrPlayer[CurrentPlayer]?.timeCounter.GetComponent<Image>().fillAmount > 0)
             {
                 gameController.arrPlayer[CurrentPlayer]?.timeCounter.gameObject.SetActive(true);
             }
@@ -197,25 +180,16 @@ public class TimeCounter : MonoBehaviourPunCallbacks
             {
                 if (gameController.CheckEqualBlind())
                 {
-
                     //Thread.Sleep(10000);
                     //Debug.Log("Call deal");
                     if (!gameController.isShowDown) Invoke(nameof(BtnDeal), 2f);                  
                     //BtnDeal();
                 }  
-                else 
-                {
-                    gameController.RefreshTimeCounter();
-                    //Debug.Log(2);
-                }
-                //Invoke(nameof(BtnDeal), 2f);               
+                else gameController.RefreshTimeCounter();                                           
             }
         }
     }
-    public void BtnDeal()//to delay
-    {
-        gameController.BtnDeal();      
-    }    
+    public void BtnDeal() => gameController.BtnDeal(); //to delay       
     public void CheckNextPlayer()
     {
         playerChecking = gameController.indexBigBlind;       

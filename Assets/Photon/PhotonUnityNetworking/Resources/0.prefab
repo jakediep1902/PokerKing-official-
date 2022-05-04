@@ -762,11 +762,11 @@ MonoBehaviour:
   arrCardWin: 0000000000000000000000000000000000000000
   card1ID: 0
   card2ID: 0
+  ID: 0
   score: 0
   money: 1000000
   moneyBlinding: 0
   moneyBlinded: 0
-  ID: 0
   isInvoke: 0
   isStraightFlush: 0
   isQuad: 0
