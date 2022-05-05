@@ -7,6 +7,7 @@ public class Bot : MonoBehaviourPunCallbacks
 {
     GameController gameController;
     PlayerController playerController;
+    PhotonView PvBot;
     TimeCounter timeCounter;
     public float thinkingTime = 3f;
     public int randomOption;
@@ -16,6 +17,7 @@ public class Bot : MonoBehaviourPunCallbacks
         gameController = GameController.Instance;
         playerController = GetComponent<PlayerController>();
         timeCounter = playerController.timeCounter;
+        PvBot = GetComponent<PhotonView>();
     }
    
     private void Start()
@@ -34,10 +36,11 @@ public class Bot : MonoBehaviourPunCallbacks
         //    isTurns = true;
         //}
     }
-   public void BotAI()
+    [PunRPC]
+   public void BotAI(int option)
     {
-        randomOption = Random.Range(1, 4);
-        switch (randomOption)
+        
+        switch (option)
         {
             case 0:
                 playerController.BtnBoBaiBot();              
@@ -63,7 +66,16 @@ public class Bot : MonoBehaviourPunCallbacks
     }
     public void DelayGamePlay()
     {
-        float delay = Random.Range(1f, 3f);
-        Invoke(nameof(BotAI),delay);
+        float delay = Random.Range(3f, 6f);
+        Invoke(nameof(RPC_BotAI),delay);
+        
+    }
+    public void RPC_BotAI()
+    {
+        if(PvBot.IsMine)
+        {
+            randomOption = Random.Range(1, 4);
+            PvBot.RPC("BotAI", RpcTarget.All, randomOption);
+        }        
     }
 }

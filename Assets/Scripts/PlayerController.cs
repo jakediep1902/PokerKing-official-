@@ -82,7 +82,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             if(!PvPlayer.IsMine)
             {
                 Debug.Log($"Player {this.ID} waiting!!");             
-                gameController.SyncPlayerDatasJoinLate();               
+                gameController.SyncPlayersDatasJoinLate();               
             }
             isWaiting = true;                     
         }
@@ -137,7 +137,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         // Apply for All Player in this client when OnDisable
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
         try
-        {          
+        {
+            BtnBoBai();
             timeCounter.imageFill.fillAmount = 0;
             gameController.UpdatePlayerPlayings();
                     

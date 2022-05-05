@@ -40,7 +40,9 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
-        // Debug.Log($"isStartGame is {gameController.isStartGame}");
+        //gameController.GetComponent<GameController>().enabled = true;
+        //gameController.SyncPlayerDatasJoinLate();
+        //Debug.Log($"isStartGame is {gameController.isStartGame}  && isCheckCard is {gameController.isCheckCard}");
         //BtnReady();
         //gameController.playerInRoom = (int)PhotonNetwork.CurrentRoom.PlayerCount;
         Invoke(nameof(BtnReady), 4f);                          

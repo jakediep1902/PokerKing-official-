@@ -31,11 +31,11 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         if (playerController.money == 0)
         {
             //playerController.isTurn = false;
-            if (playerController.GetComponent<Bot>().enabled == true) playerController.BtnXemBaiBot();
+            if (playerController.isBot) playerController.BtnXemBaiBot();
             else playerController.BtnXemBai();
             return;
         } 
-        else if(playerController.GetComponent<Bot>().enabled == true)  eEnable.Invoke();//Bot action
+        else if(playerController.isBot)  eEnable.Invoke();//Bot action
 
         else //player action
         {
@@ -151,6 +151,9 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         {
             CurrentPlayer = gameController.arrPlayer.Length - 1;
             gameController.indexBigBlind = CurrentPlayer;
+            //Debug.Log($"CurrentPlayer is {CurrentPlayer}");
+            ////if (gameController.photonViews.IsMine)
+            //    gameController.photonViews.RPC("RPC_OnlyIndexBigBlind", RpcTarget.All, CurrentPlayer); 
             if (gameController.arrPlayer[CurrentPlayer]?.timeCounter.GetComponent<Image>().fillAmount > 0)
             {
                 gameController.arrPlayer[CurrentPlayer]?.timeCounter.gameObject.SetActive(true);
@@ -161,17 +164,25 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                 //Invoke(nameof(BtnDeal), 2f);
                 if (gameController.CheckEqualBlind())
                 {
-                    if(!gameController.isShowDown) Invoke(nameof(BtnDeal), 2f);
-                    //Debug.Log("Call deal");
-                    //BtnDeal();
+                    //Debug.Log(2);
+                    if (!gameController.isShowDown) //Invoke(nameof(BtnDeal), 2f);                
+                    BtnDeal();
                 }
-                else gameController.RefreshTimeCounter();             
+                else
+                {
+                    gameController.RefreshTimeCounter();
+                    //Debug.Log(5);
+                }
             }
 
         }
         else
         {
             gameController.indexBigBlind = CurrentPlayer;
+           // Debug.Log($"CurrentPlayer is {CurrentPlayer}");
+            ////if (gameController.photonViews.IsMine)
+            //    gameController.photonViews.RPC("RPC_OnlyIndexBigBlind",RpcTarget.All,CurrentPlayer);
+
             if (gameController.arrPlayer[CurrentPlayer]?.timeCounter.GetComponent<Image>().fillAmount > 0)
             {
                 gameController.arrPlayer[CurrentPlayer]?.timeCounter.gameObject.SetActive(true);
@@ -182,12 +193,20 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                 {
                     //Thread.Sleep(10000);
                     //Debug.Log("Call deal");
-                    if (!gameController.isShowDown) Invoke(nameof(BtnDeal), 2f);                  
-                    //BtnDeal();
-                }  
-                else gameController.RefreshTimeCounter();                                           
+                    //Debug.Log(3);
+                    if (!gameController.isShowDown) //Invoke(nameof(BtnDeal), 2f);
+                        BtnDeal();
+
+                }
+                else
+                {
+                    gameController.RefreshTimeCounter();
+                   // Debug.Log(5);
+                }
+                
             }
         }
+        Debug.Log($"currentPlayer is {CurrentPlayer}");
     }
     public void BtnDeal() => gameController.BtnDeal(); //to delay       
     public void CheckNextPlayer()
