@@ -100,6 +100,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
+        
+        //Debug.Log($"gameController enabled awake");
         //DontDestroyOnLoad(this.gameObject);
         // cards = GameObject.FindGameObjectsWithTag("Card");//this method not sync when builded (differen index)
         //-> differen object spaw
@@ -109,6 +111,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public override void OnEnable()
     {
         PhotonNetwork.NetworkingClient.EventReceived += NetworkingClient_EventReceived;
+        //Debug.Log($"gameController enabled OnEnabled");
     }
 
     public enum RaiseEventCode { SyncGameController = 1 }
@@ -172,9 +175,11 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public override void OnDisable()
     {
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
+
     }
     public void Start()
-    {      
+    {
+        Debug.Log($"gameController enabled Start");
         //if (isCheckCard) this.gameObject.SetActive(false);
         gameController2 = GameController2.Instance;
         uIManager = UIManager.Instance;
@@ -183,7 +188,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         manageNetwork = ManageNetwork.Instance;
         startPos = backCardPrefab.transform;
 
-        ClearConsole();
+        //ClearConsole();
         //btn for test
         uIManager.btnTest.onClick.AddListener(BtnTest);
         uIManager.btnPause.onClick.AddListener(BtnPause);
@@ -313,9 +318,11 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonViews.IsMine && !isCheckCard)
         {
+            //manageNetwork.RPC_SetIsJoinAble(false);
             photonViews.RPC("StartCheckCard", RpcTarget.All, null);
             photonViews.RPC("InactiveTempCard", RpcTarget.All, null);
         }
+        Debug.Log(manageNetwork.isJoinAble);
     }//using
     [PunRPC]
     public void StartCheckCard()
@@ -364,7 +371,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }//using
     public void BtnDeal()//using
     {       
-        if (photonViews.IsMine && !isCheckCard)
+        if (photonViews.IsMine && !isCheckCard &&NoCommonPos<5)
         {
             Debug.Log("BtnDeal");
             if (isFirstDeal)
@@ -2159,10 +2166,12 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(isStartGame);
+            stream.SendNext(indexBigBlind);
         }
         else if (stream.IsReading)
         {
             isStartGame = (bool)stream.ReceiveNext();
+            indexBigBlind = (int)stream.ReceiveNext();
         }
     }//using
     public void SyncPlayersDatasJoinLate()

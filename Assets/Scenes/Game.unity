@@ -15906,6 +15906,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isJoinedRoom: 0
+  isJoinAble: 1
 --- !u!4 &1944814635
 Transform:
   m_ObjectHideFlags: 0

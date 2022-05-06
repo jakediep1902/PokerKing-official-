@@ -105,6 +105,10 @@ MonoBehaviour:
   - StopForSeconds
   - RPC_OnlyIndexBigBlind
   - BotAI
+  - SetIsJoinAble
+  - RequestMastersClientCheckJoin
+  - RequestSync
+  - RequestToMasterJoinAble
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
