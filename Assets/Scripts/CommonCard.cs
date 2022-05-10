@@ -21,6 +21,7 @@ public class CommonCard : MonoBehaviour
     }
     void Update()
     {
+        if(gameController.photonViews.IsMine)
         transform.position = Vector3.Lerp(transform.position, targetPos, 0.1f);       
     }
 }

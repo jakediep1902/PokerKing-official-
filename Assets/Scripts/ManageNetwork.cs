@@ -27,6 +27,12 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
             Destroy(gameObject);//Destroy new instance
         }
         DontDestroyOnLoad(this.gameObject);
+
+        PvNetWork = GetComponent<PhotonView>();
+        gameController = GameController.Instance;
+        gameController2 = GameController2.Instance;
+        if (!PhotonNetwork.IsConnected)
+            PhotonNetwork.ConnectUsingSettings();
     }
     //private void OnEnable()
     //{
@@ -48,11 +54,11 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     //}
     void Start()
     {
-        PvNetWork = GetComponent<PhotonView>();
-        gameController = GameController.Instance;
-        gameController2 = GameController2.Instance;
-        if (!PhotonNetwork.IsConnected)
-            PhotonNetwork.ConnectUsingSettings();
+        //PvNetWork = GetComponent<PhotonView>();
+        //gameController = GameController.Instance;
+        //gameController2 = GameController2.Instance;
+        //if (!PhotonNetwork.IsConnected)
+        //    PhotonNetwork.ConnectUsingSettings();
     }
     private void Update()
     {

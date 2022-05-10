@@ -179,7 +179,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }
     public void Start()
     {
-        Debug.Log($"gameController enabled Start");
+       //Debug.Log($"gameController enabled Start");
         //if (isCheckCard) this.gameObject.SetActive(false);
         gameController2 = GameController2.Instance;
         uIManager = UIManager.Instance;
@@ -318,11 +318,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonViews.IsMine && !isCheckCard)
         {
-            //manageNetwork.RPC_SetIsJoinAble(false);
             photonViews.RPC("StartCheckCard", RpcTarget.All, null);
             photonViews.RPC("InactiveTempCard", RpcTarget.All, null);
-        }
-        Debug.Log(manageNetwork.isJoinAble);
+        }     
     }//using
     [PunRPC]
     public void StartCheckCard()
@@ -330,6 +328,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         isCheckCard = true;
         foreach (PlayerController player in arrPlayer)
         {
+            if (player.card1 == null || player.card2 == null) return;
+
             CheckCard(player);
             player.timeCounter.imageFill.fillAmount = 0;
         }
@@ -373,7 +373,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {       
         if (photonViews.IsMine && !isCheckCard &&NoCommonPos<5)
         {
-            Debug.Log("BtnDeal");
+            //Debug.Log("BtnDeal");
             if (isFirstDeal)
             {           
                 RPC_Deal(3, 0.8f);
@@ -431,48 +431,24 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public void RPC_Deal(int times = 1, float delay = 1f) => StartCoroutine(DelayDeal(times, delay));//using
     IEnumerator DelayDeal(int DealTimes = 1, float delay = 1f)//using
     {      
-        yield return new WaitForSeconds(3*delay);
-        RPC_SetNewGround(1.2f * DealTimes * delay);
+        yield return new WaitForSeconds(2);
+
+        foreach (var item in arrPlayer)
+        {                     
+            item.moneyBlinding = 0;
+        }
+        yield return new WaitForSeconds(2);
+        //RPC_SetNewGround(2f * DealTimes * delay);
         for (int i = 0; i < DealTimes; i++)
         {
             RPC_SetCommonIndex();
             yield return new WaitForSeconds(delay);           
             Deal();                                 
-        }      
-    }//using
-    public IEnumerator ResetTimeCounter(float timeDelay)
-    {
-        yield return new WaitForSeconds(timeDelay);
-        //UpdatePlayerPlayings();
-        foreach (var item in arrPlayer)
-        {
-            if (item.timeCounter.imageFill == null)
-            {
-                item.timeCounter.imageFill = item.timeCounter.GetComponent<Image>();
-                item.timeCounter.imageFill.fillAmount = 1f;
-            }
-            else
-            {
-                if(item.money>0) item.timeCounter.imageFill.fillAmount = 1f;
-                else item.timeCounter.imageFill.fillAmount = 0f;
-
-            }              
         }
-        if (!isShowDown)
-        {
-            try
-            {
-                if(photonViews.IsMine) photonViews.RPC("RPC_OnlyIndexBigBlind", RpcTarget.AllViaServer, indexBigBlind);
-
-                arrPlayer[indexBigBlind].timeCounter.gameObject.SetActive(true);
-            }              
-            catch
-            {
-                Debug.Log($"arrPlayer[indexBigBlind] is null with indexBigBlind {indexBigBlind}");
-            }
-        }
-
+        yield return new WaitForSeconds(1);
+        RPC_SetNewGround(0);
     }//using
+   
     [PunRPC]
     public void PlayAgain()
     {
@@ -1416,33 +1392,35 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         else Debug.Log("game is started please wait");
     }
     [PunRPC]
-    public void InactivePos(int index)  => posDefaul[index].isEmpty = false;//using  
-    [PunRPC]
-    public void SpawPlayer()
+    public void InactivePos(int ID)
     {
-        int safeCount = 0;
-        //for (int i = Random.Range((int)0, (int)dicPosDefaul.Count); i < dicPosDefaul.Count; i++)
-        UpdatePosDefaul();
+        foreach (var item in posDefaul)
+        {
+            if (item.ID == ID) item.isEmpty = false;
+        }
+        //posDefaul[index].isEmpty = false;//using      
+    }
+            
+    
+    public void SpawPlayer()
+    {       
+        //UpdatePosDefaul();
+        UpdatePlayer();
+        UpdatePosDefaulEmpty();    
         for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length; i++)
         {
             if (posDefaul[i].isEmpty)
             {
-                GameObject tempObj = PhotonNetwork.Instantiate(i.ToString(),
+                GameObject tempObj = PhotonNetwork.Instantiate(posDefaul[i].ID.ToString(),
                     posDefaul[i].transform.position, Quaternion.identity) as GameObject;
-                photonViews.RPC("InactivePos", RpcTarget.AllBuffered, i);
-                break;
+              
+                photonViews.RPC("InactivePos", RpcTarget.All, posDefaul[i].ID);
             }
             else
             {
-                safeCount++;
-                if (i == (posDefaul.Length - 1))
-                    i = Random.Range((int)0, (int)posDefaul.Length);
+                Debug.Log("all position is Full");             
             }
-            if (safeCount > 500)
-            {
-                Debug.Log("All position is not empty");
-                break;
-            }
+            break;
         }
     } //using
     public void SetSmallBigBlind(PlayerController[] arrPlayer)//using
@@ -1513,6 +1491,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public void UpdatePosDefaul()
     {
         posDefaul = FindObjectsOfType<PositionDefaul>();
+     
         foreach (var item in posDefaul)
         {
             for (int i = 0; i < posDefaul.Length; i++)
@@ -1537,8 +1516,20 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                 }
             }
         }
+        
+        //var posEmpty = posDefaul.Where(p => p.isEmpty).ToArray();
+        //posDefaul = posEmpty;
 
     }//using
+    public void UpdatePosDefaulEmpty()
+    {      
+        posDefaul = FindObjectsOfType<PositionDefaul>();
+        foreach (var p in arrPlayer)
+        {
+            var posEmpty = posDefaul.Where(pos => pos.ID != p.ID).ToArray();
+            posDefaul = posEmpty;
+        }                 
+    }
     public void BtnTest()//Button test
     {
         // Debug.Log($"StackCheck Count is {stackCheck.Count}");
@@ -1658,6 +1649,39 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             if (item.moneyBlinded > bigestBlinded) bigestBlinded = item.moneyBlinded;           
         }
     }//using
+    public IEnumerator ResetTimeCounter(float timeDelay)
+    {
+       // Debug.Log("refresh timeCounter");
+        if (photonViews.IsMine) photonViews.RPC("RPC_OnlyIndexBigBlind", RpcTarget.All, indexBigBlind);
+        yield return new WaitForSeconds(timeDelay);
+        UpdatePlayerPlayings();
+        foreach (var item in arrPlayer)
+        {
+            if (item.timeCounter.imageFill == null)
+            {
+                item.timeCounter.imageFill = item.timeCounter.GetComponent<Image>();
+                item.timeCounter.imageFill.fillAmount = 1f;
+            }
+            else
+            {
+                if (item.money > 0) item.timeCounter.imageFill.fillAmount = 1f;
+                else item.timeCounter.imageFill.fillAmount = 0f;
+
+            }
+        }
+        if (!isShowDown)
+        {
+            try
+            {
+                arrPlayer[indexBigBlind].timeCounter.gameObject.SetActive(true);
+            }
+            catch
+            {
+                Debug.Log($"arrPlayer[indexBigBlind] is null with indexBigBlind {indexBigBlind}");
+            }
+        }
+
+    }//using
 
     public void RefreshTimeCounter(float delay = 0.5f) => StartCoroutine(ResetTimeCounter(delay));//using
     [PunRPC]
@@ -1667,8 +1691,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         foreach (var item in arrPlayer)
         {
             if (item.money == 0) item.timeCounter.imageFill.fillAmount = 0;
+
             item.timeCounter.isFirstGround = true;
-            item.moneyBlinding = 0;
+            //item.moneyBlinding = 0;
         }
         RefreshTimeCounter(delay);
     }
@@ -2202,35 +2227,42 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }
     public void SpawBot()
     {             
-        if (playerPlaying == 1)
+        if (playerInRoom == 1)
         {
             int random = Random.Range(3,5);
             Debug.Log($"Spawn {random} bot");
             for (int j = 0; j < random; j++)
             {
-                int safeCount = 0;
-                UpdatePosDefaul();
+                //int safeCount = 0;
+                // UpdatePosDefaul();
+                UpdatePlayer();
+                UpdatePosDefaulEmpty();
+                //var posEmpty = posDefaul.Where(p => p.isEmpty).ToArray();
+
                 for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length; i++)
                 {
                     if (posDefaul[i].isEmpty)
                     {
-                        GameObject tempObj = PhotonNetwork.Instantiate(i.ToString(),
+                        GameObject tempObj = PhotonNetwork.Instantiate(posDefaul[i].ID.ToString(),
                             posDefaul[i].transform.position, Quaternion.identity) as GameObject;
-                        photonViews.RPC("InactivePos", RpcTarget.AllBuffered, i);
+
+                        photonViews.RPC("InactivePos", RpcTarget.All, posDefaul[i].ID);
                         tempObj.GetComponent<Bot>().enabled = true;
                         //tempObj.GetComponent<PlayerController>().isBot = true;
                         break;
                     }
                     else
                     {
-                        safeCount++;
-                        if (i == (posDefaul.Length - 1)) i = Random.Range((int)0, (int)posDefaul.Length);
-                    }
-                    if (safeCount > 500)
-                    {
+                        //safeCount++;
+                       // if (i == (posDefaul.Length - 1)) i = Random.Range((int)0, (int)posDefaul.Length);
                         Debug.Log("All position is not empty");
                         break;
                     }
+                    //if (safeCount > 500)
+                    //{
+                    //    Debug.Log("All position is not empty");
+                    //    break;
+                    //}
                 }
             }
             photonViews.RPC("UpdatePlayerPlayings", RpcTarget.All, null);

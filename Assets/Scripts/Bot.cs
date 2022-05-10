@@ -43,8 +43,7 @@ public class Bot : MonoBehaviourPunCallbacks
         switch (option)
         {
             case 0:
-                playerController.BtnBoBaiBot();              
-              
+                playerController.BtnBoBaiBot();                           
                 Debug.Log($"player {playerController.ID} Fold");
                 break;
             case 1:
@@ -52,13 +51,11 @@ public class Bot : MonoBehaviourPunCallbacks
                 Debug.Log($"player {playerController.ID} check");
                 break;
             case 2:
-                playerController.BtnTheoCuocBot();              
-               
+                playerController.BtnTheoCuocBot();                            
                 Debug.Log($"player {playerController.ID} follow");
                 break;
             case 3:
                 playerController.BtnAllInBot();
-
                 Debug.Log($"player {playerController.ID} All In");
                 break;
         }
@@ -67,14 +64,13 @@ public class Bot : MonoBehaviourPunCallbacks
     public void DelayGamePlay()
     {
         float delay = Random.Range(3f, 6f);
-        Invoke(nameof(RPC_BotAI),delay);
-        
+        Invoke(nameof(RPC_BotAI),delay);       
     }
     public void RPC_BotAI()
     {
         if(PvBot.IsMine)
         {
-            randomOption = Random.Range(1, 4);
+            randomOption = Random.Range(0, 4);
             PvBot.RPC("BotAI", RpcTarget.All, randomOption);
         }        
     }

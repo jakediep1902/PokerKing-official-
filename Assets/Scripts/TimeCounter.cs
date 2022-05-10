@@ -125,8 +125,10 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                 //check equal blind
                 if((playerController.moneyBlinded < gameController.bigestBlinded) && playerController.money>0)
                 {
-                    playerController.GetComponent<Bot>().enabled = false;                    
+                    playerController.GetComponent<Bot>().enabled = false; 
+                    
                     if (playerController.isBot) playerController.BtnBoBaiBot();
+
                     else playerController.BtnBoBai();
                 }
               
@@ -142,7 +144,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         {
             if (CurrentPlayer < 0) CurrentPlayer = gameController.arrPlayer.Length - 1;
            
-            if (gameController.arrPlayer[CurrentPlayer] == null) CurrentPlayer--;
+            if (gameController.arrPlayer[CurrentPlayer] == null || CurrentPlayer==gameController.arrPlayer.Length) CurrentPlayer--;
 
             else break;           
         }
@@ -165,8 +167,12 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                 if (gameController.CheckEqualBlind())
                 {
                     //Debug.Log(2);
-                    if (!gameController.isShowDown) //Invoke(nameof(BtnDeal), 2f);                
-                    BtnDeal();
+                    if (!gameController.isShowDown)
+                    {
+                        BtnDeal();
+                        Thread.Sleep(3000);
+                    }
+                    //Invoke(nameof(BtnDeal), 2f);
                 }
                 else
                 {
@@ -194,8 +200,13 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                     //Thread.Sleep(10000);
                     //Debug.Log("Call deal");
                     //Debug.Log(3);
-                    if (!gameController.isShowDown) //Invoke(nameof(BtnDeal), 2f);
+                    if (!gameController.isShowDown)
+                    {
                         BtnDeal();
+                        Thread.Sleep(3000);
+                    }
+                    //Invoke(nameof(BtnDeal), 2f);
+                        
 
                 }
                 else
@@ -206,7 +217,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                 
             }
         }
-        Debug.Log($"currentPlayer is {CurrentPlayer}");
+       // Debug.Log($"currentPlayer is {CurrentPlayer}");
     }
     public void BtnDeal() => gameController.BtnDeal(); //to delay       
     public void CheckNextPlayer()
