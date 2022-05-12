@@ -177,6 +177,13 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
 
     }
+    //public static void ClearConsole()
+    //{
+    //    var assembly = Assembly.GetAssembly(typeof(SceneView));
+    //    var type = assembly.GetType("UnityEditor.LogEntries");
+    //    var method = type.GetMethod("Clear");
+    //    method.Invoke(new object(), null);
+    //}//using
     public void Start()
     {
        //Debug.Log($"gameController enabled Start");
@@ -1305,13 +1312,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         }
         player.gameObject.GetComponent<SpriteRenderer>().size = new Vector2(1.5f, 1.5f);
     }//using
-    public static void ClearConsole()
-    {
-        var assembly = Assembly.GetAssembly(typeof(SceneView));
-        var type = assembly.GetType("UnityEditor.LogEntries");
-        var method = type.GetMethod("Clear");
-        method.Invoke(new object(), null);
-    }//using
+  
 
     IEnumerator RunTimeCounter(float timeDelay = 3f)//using
     {
@@ -1399,9 +1400,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             if (item.ID == ID) item.isEmpty = false;
         }
         //posDefaul[index].isEmpty = false;//using      
-    }
-            
-    
+    }              
     public void SpawPlayer()
     {       
         //UpdatePosDefaul();
