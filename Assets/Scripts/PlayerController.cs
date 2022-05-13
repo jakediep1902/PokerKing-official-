@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
 {
     public GameController gameController;
     public GameController2 gameController2;
+    public PlayFabManager playFabManager;
     
     public GameObject card1, card2, cardTemplate1, cardTemplate2;
     public GameObject bigBlindIcon;
@@ -19,12 +20,14 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     
     public Text txtMoney;
     public Text txtMoneyBlind;
+    public Text txtDisplayName;
 
     public UIManager uIManager;
     public TimeCounter timeCounter;
     public PhotonView PvPlayer;
     public UnityEvent eAddBackCard;
     public Bot bot;
+    public UserData userData = new UserData();
 
     public Vector3 posCard1;
     public Vector3 posCard2;
@@ -70,36 +73,37 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     {
         gameController = GameController.Instance;
         gameController2 = GameController2.Instance;
+        playFabManager = PlayFabManager.Instance;
         DontDestroyOnLoad(this.gameObject);
         uIManager = FindObjectOfType<UIManager>();
         gameObject.name = ID.ToString();
         bot = GetComponent<Bot>();
     }
     void Start()
-    {             
+    {
         if (gameController.isStartGame)
         {
-            if(!PvPlayer.IsMine)
+            if (!PvPlayer.IsMine)
             {
-                Debug.Log($"Player {this.ID} waiting!!");             
-                gameController.SyncPlayersDatasJoinLate();               
+                Debug.Log($"Player {this.ID} waiting!!");
+                gameController.SyncPlayersDatasJoinLate();
             }
-            isWaiting = true;                     
+            isWaiting = true;
         }
-        else gameController.UpdatePlayer();          
-        
+        else gameController.UpdatePlayer();
+
         cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 5;
-        cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 6;      
+        cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 6;
         PvPlayer = GetComponent<PhotonView>();
         eAddBackCard.AddListener(() => ArrangeCard());
         for (int i = 0; i < arrPosDefaul.Length; i++)
         {
-            if (ID == i) transform.position = arrPosDefaul[i].position;         
-        }    
+            if (ID == i) transform.position = arrPosDefaul[i].position;
+        }
         //money = 10000000;
         moneyBlinding = 0;
 
-        if(PvPlayer.IsMine)
+        if (PvPlayer.IsMine)
         {
             uIManager.pnlGame.SetActive(false);
             Invoke(nameof(SetImageConnecting), 2f);
@@ -112,8 +116,16 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         uIManager.btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
         uIManager.btnAllIn.onClick.AddListener(() => BtnAllIn());
 
-        if (bot.enabled) isBot = true;
-    } 
+        if (bot.enabled)
+        {
+            isBot = true;
+            money = userData.money;
+            int random = Random.Range((int)0, (int)9);
+            txtDisplayName.text = userData.namesTemplate[random];
+        } 
+        else UpdateDataPlayerFromServer();
+
+    }
     private void Update()
     {
         if (isFold && card1 != null) FoldCard();
@@ -136,6 +148,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     {
         // Apply for All Player in this client when OnDisable
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
+        if(!isBot) RequestSaveData();
         try
         {
             BtnBoBai();
@@ -228,6 +241,13 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} Send Datas");
         PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncLateJoin, datas, option,SendOptions.SendUnreliable);
 
+    }
+    public void UpdateDataPlayerFromServer()
+    {
+        userData = playFabManager.userData;
+        money = userData.money;
+        //int random = Random.Range((int)0, (int)9);
+        txtDisplayName.text = userData.userName;
     }
     public void FoldCard()
     {
@@ -475,4 +495,11 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     //        moneyBlinded = (long)stream.ReceiveNext();        
     //    }
     //}
+   public void RequestSaveData()
+    {
+        userData.money = money;
+        userData.userName = txtDisplayName.text;
+        playFabManager.userData = userData;
+        playFabManager.SaveDatasUser();
+    }
 }
