@@ -32,7 +32,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         gameController = GameController.Instance;
         gameController2 = GameController2.Instance;
         if (!PhotonNetwork.IsConnected)
-            PhotonNetwork.ConnectUsingSettings();
+            PhotonNetwork.ConnectUsingSettings();      
     }
     //private void OnEnable()
     //{
@@ -59,6 +59,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         //gameController2 = GameController2.Instance;
         //if (!PhotonNetwork.IsConnected)
         //    PhotonNetwork.ConnectUsingSettings();
+      
     }
     private void Update()
     {
@@ -77,7 +78,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
-       // Debug.Log("Joined Room");
+        Debug.Log("Joined Room");
               
       //  if (PvNetWork.IsMine) gameController.GetComponent<GameController>().enabled = true;
 

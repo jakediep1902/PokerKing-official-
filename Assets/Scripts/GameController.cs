@@ -185,8 +185,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     //    method.Invoke(new object(), null);
     //}//using
     public void Start()
-    {
-       //Debug.Log($"gameController enabled Start");
+    {      
+
+        //Debug.Log($"gameController enabled Start");
         //if (isCheckCard) this.gameObject.SetActive(false);
         gameController2 = GameController2.Instance;
         uIManager = UIManager.Instance;
@@ -199,6 +200,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         //btn for test
         uIManager.btnTest.onClick.AddListener(BtnTest);
         uIManager.btnPause.onClick.AddListener(BtnPause);
+        uIManager.btnQuit.onClick.AddListener(Btn_Quit);
 
         //setOptionWinner += ReturnBlindedToWinner;
         //setOptionWinner += PayMoneyWonToWinner;
@@ -467,7 +469,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             item.isFold = false;
             item.isWaiting = false;           
         }
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("Game");
     }//using
     public void BtnPlayAgain()
     {
@@ -1475,8 +1477,10 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public void InactiveTimeCounterStart() => timeCounterStart.SetActive(false);//using
     public void Btn_Quit()
     {
-        Application.Quit();
+        DestroysObjectsOnDontDestroyOnLoad();
+        //Application.Quit();
         Debug.Log("quit");
+        SceneManager.LoadScene("Login");
     }//using
     public void CheckStartGame()
     {
@@ -1537,7 +1541,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         //{
         //    item.score = 10;
         //}
-        //CheckWinner(arrPlayer);       
+        //CheckWinner(arrPlayer);
+        // SceneManager.LoadScene("Game");
+        LoadScene();
     }
 
     [PunRPC]
@@ -1605,7 +1611,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {
         if(photonViews.IsMine) SyncPlayersDatasJoinLate();
 
-        SceneManager.LoadScene(0);
+       
+        SceneManager.LoadScene("Game");
     }//using
     public bool CheckEqualBlind()//using
     {
@@ -2270,5 +2277,17 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void StopForSeconds(int time = 2000) => Thread.Sleep(time);  
 
-   
+   public void DestroysObjectsOnDontDestroyOnLoad()
+    {
+        PhotonNetwork.Disconnect();
+        var players = FindObjectsOfType<PlayerController>();
+        foreach (var item in players)
+        {
+            Destroy(item.gameObject);
+        }
+        var UI = FindObjectOfType<UIManager>();
+        Destroy(UI.gameObject);       
+        Destroy(manageNetwork.gameObject);
+        
+    }
 }

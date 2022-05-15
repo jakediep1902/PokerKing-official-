@@ -31,6 +31,8 @@ public class PlayFabManager : MonoBehaviour
     public static PlayFabManager Instance;
 
     public InputField inputID, inputPassWord, inputEmail;
+    public Text txtNotification;
+    
 
     public UserData userData =  new UserData();
     private void Awake()
@@ -45,6 +47,10 @@ public class PlayFabManager : MonoBehaviour
     void Start()
     {
       
+    }
+    private void OnValidate()
+    {
+        
     }
     public UserData ReturnClass()
     {
@@ -115,11 +121,13 @@ public class PlayFabManager : MonoBehaviour
     private void OnLoginError(PlayFabError obj)
     {
         Debug.Log($"Wrong Name or Password {obj.ErrorMessage}");
+        ShowNotification("Wrong user name or password !");
     }
 
     private void OnLoginSuccess(LoginResult obj)
     {
         Debug.Log($"Login successful with ID {obj.PlayFabId}");
+        ShowNotification("Please wait...!");
         LoadDataUser();
     }
 
@@ -141,12 +149,19 @@ public class PlayFabManager : MonoBehaviour
     private void RegisterError(PlayFabError obj)
     {
         Debug.Log($"Register Error {obj.ErrorMessage}");
+        ShowNotification("Register failed please try again with another ID !");
     }
     private void RegisterSuccess(RegisterPlayFabUserResult obj)
     {
         Debug.Log($"Register Success with userName: {obj.Username}");
+        ShowNotification("Register successful!");
         userData.userName = obj.Username;
         userData.money = 200000;
         SceneManager.LoadScene("Game");
+    }
+
+    public void ShowNotification(string notification)
+    {
+        txtNotification.text = notification;       
     }
 }

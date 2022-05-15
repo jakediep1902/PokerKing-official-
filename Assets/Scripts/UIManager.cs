@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     public Button btnBoBai;
     public Button btnThemCuoc;
     public Button btnAllIn;
+    public Button btnQuit;
 
     public Button btnPause;
     public Button btnTest;
