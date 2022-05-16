@@ -11,7 +11,8 @@ public class Card : MonoBehaviour
     public int value = 0;
     public int ID = 0;
     private void OnEnable()
-    {
+    {       
+        //GetComponent<AudioSource>().Play();
         //gameObject.AddComponent<PhotonView>();
         PvCard = GetComponent<PhotonView>();
         PvCard.observableSearch = PhotonView.ObservableSearch.AutoFindAll;

@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d0199c11aa6f514784c5c69cd8378d8, type: 3}
   m_Name: PlayFabEditorPrefsSO
   m_EditorClassIdentifier: 
-  DevAccountEmail: jakediep92@gmail.com
-  DevAccountToken: bme3wko4os1oyhjfk6p5hn6xk3b3cfrst5jhfo49w57ms4t9h8357fhu4kps4eh1mj68ydmfatjc1jxwumb4gru3nw6d9hngtdzrr1qeit9a6bidhfiu1ajstnz5c7uiyc4d3b8jb8ocmtxotfxzckwa4hwsws69rqt7bqf9shzxhbcznyhis3ggnot3qof5h8bbahe3
-  SelectedStudio: JakeStudio
-  SdkPath: Assets/PlayFabSDK
+  DevAccountEmail: 
+  DevAccountToken: 
+  SelectedStudio: 
+  SdkPath: 
   EdExPath: 
-  LocalCloudScriptPath: C:/WorkPlace/PokerKing-official-/Assets/PlayFabEditorExtensions/Editor/Resources/.CloudScript.js
+  LocalCloudScriptPath: 
   PanelIsShown: 0
-  curMainMenuIdx: 1
+  curMainMenuIdx: 0
   curSubMenuIdx: 0

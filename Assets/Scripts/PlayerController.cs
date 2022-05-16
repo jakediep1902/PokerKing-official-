@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     public GameController gameController;
     public GameController2 gameController2;
     public PlayFabManager playFabManager;
+    AudioSource audioSource;
+    public List<AudioClip> listAudio = new List<AudioClip>();
     
     public GameObject card1, card2, cardTemplate1, cardTemplate2;
     public GameObject bigBlindIcon;
@@ -74,6 +76,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         gameController = GameController.Instance;
         gameController2 = GameController2.Instance;
         playFabManager = PlayFabManager.Instance;
+        SetupAudioSource();
         DontDestroyOnLoad(this.gameObject);
         uIManager = FindObjectOfType<UIManager>();
         gameObject.name = ID.ToString();
@@ -123,7 +126,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             int random = Random.Range((int)0, (int)9);
             txtDisplayName.text = userData.namesTemplate[random];
         } 
-        else UpdateDataPlayerFromServer();
+        //else UpdateDataPlayerFromServer();
 
     }
     private void Update()
@@ -244,10 +247,14 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void UpdateDataPlayerFromServer()
     {
-        userData = playFabManager.userData;
-        money = userData.money;
-        //int random = Random.Range((int)0, (int)9);
-        txtDisplayName.text = userData.userName;
+        if (playFabManager != null)
+        {
+            userData = playFabManager.userData;
+            money = userData.money;
+            //int random = Random.Range((int)0, (int)9);
+            txtDisplayName.text = userData.userName;
+        }
+      
     }
     public void FoldCard()
     {
@@ -343,11 +350,22 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         cardTemplate1.transform.localScale = new Vector3(1f,1f,1f);
         cardTemplate2.transform.localScale = new Vector3(1f,1f,1f);
     }
-    public void SetIsInvoke() => isInvoke = false;  
+    public void SetIsInvoke() => isInvoke = false;
 
     [PunRPC]
-    public virtual void XemBai() => timeCounter.imageFill.fillAmount = 0f;
-   
+    public virtual void XemBai()
+    {
+        timeCounter.imageFill.fillAmount = 0f;
+        SetClipToPlay("check");
+    }
+    [PunRPC]
+    public virtual void XemBaiSetAudio(string clipName)
+    {
+        timeCounter.imageFill.fillAmount = 0f;
+        SetClipToPlay(clipName);
+    }
+
+
     public virtual void BtnXemBai()
     {
         if (PvPlayer.IsMine && gameController.isStartGame && !isBot) PvPlayer.RPC("XemBai", RpcTarget.All, null);     
@@ -361,6 +379,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     {
         isFold = true;
         timeCounter.imageFill.fillAmount = 0f;
+        SetClipToPlay("fold");
         Color tempColor = Color.white;
         tempColor.a = 0.3f;
         GetComponent<SpriteRenderer>().color = tempColor;
@@ -401,8 +420,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         {
             moneyBlinding = money;//Theo cuoc
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
-           
-            BtnXemBai();
+
+            if (gameController.isStartGame) PvPlayer.RPC("XemBaiSetAudio", RpcTarget.All, "allin");
+            //BtnXemBai();
 
             uIManager.pnlThemCuoc.SetActive(false);
             uIManager.pnlGame.SetActive(false);
@@ -414,7 +434,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         {
             moneyBlinding = money;//Theo cuoc
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
-            BtnXemBaiBot();       
+            if (gameController.isStartGame) PvPlayer.RPC("XemBaiSetAudio", RpcTarget.All,"allin");
+
+            //BtnXemBaiBot();       
         }
     }
     public void HandleBoBai()
@@ -453,7 +475,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             float temp = uIManager.sliderVlue.value;
             moneyBlinding = (long)(temp * money);
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
-            BtnXemBai();
+
+            if (gameController.isStartGame) PvPlayer.RPC("XemBaiSetAudio", RpcTarget.All, "raise");
+            //BtnXemBai();
 
             uIManager.pnlThemCuoc.SetActive(false);
             uIManager.pnlGame.SetActive(false);
@@ -466,7 +490,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             uIManager.pnlGame.SetActive(false);
             moneyBlinding = gameController.bigestBlinded - moneyBlinded;
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
-            BtnXemBai();
+
+            if (gameController.isStartGame) PvPlayer.RPC("XemBaiSetAudio", RpcTarget.All, "call");
+            //BtnXemBai();
         }
     }
     public void BtnTheoCuocBot()
@@ -475,7 +501,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         {            
             moneyBlinding = gameController.bigestBlinded - moneyBlinded;
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
-            BtnXemBaiBot();
+
+            if (gameController.isStartGame) PvPlayer.RPC("XemBaiSetAudio", RpcTarget.All, "call");
+            //BtnXemBaiBot();
         }
     }
     public void SetImageConnecting()=> uIManager.imageConnecting.gameObject.SetActive(false);
@@ -501,5 +529,25 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         userData.userName = txtDisplayName.text;
         playFabManager.userData = userData;
         playFabManager.SaveDatasUser();
+    }
+    public void SetupAudioSource()
+    {
+        gameObject.AddComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
+        var listAudios = FindObjectOfType<AudioListPlayer>();
+        listAudio = listAudios.listAudio;
+    }
+    public void SetClipToPlay(string clipName)
+    {
+        foreach (var item in listAudio)
+        {
+            if(item.name==clipName)
+            {
+                audioSource.clip = item;
+                break;
+            }
+        }
+        //audioSource.clip = listAudio[index];
+        audioSource.Play();
     }
 }

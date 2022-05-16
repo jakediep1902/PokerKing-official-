@@ -10,10 +10,12 @@ public class BackCard : MonoBehaviour
     private Vector3 targetPos;
     public int noTemplate = 0;    
     public bool isArranged = false;
+    AudioSource audioSource;
 
     private void Start()
     {    
-        gameController = GameController.Instance;     
+        gameController = GameController.Instance;
+        audioSource = GetComponent<AudioSource>();
         noTemplate = gameController.NoTemplate;
 
         if(targetPos==null) Destroy(this.gameObject);
@@ -23,6 +25,7 @@ public class BackCard : MonoBehaviour
             try
             {
                 targetPos = gameController.arrPlayer[gameController.NoTemplate].transform.position;
+                audioSource.Play();
             }
             catch
             {

@@ -13,6 +13,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     GameController gameController;
     GameController2 gameController2;
     public static ManageNetwork Instance;
+    AudioSource audioSource;
     PhotonView PvNetWork;
     public bool isJoinedRoom = false;
     public bool isJoinAble = true;
@@ -31,6 +32,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         PvNetWork = GetComponent<PhotonView>();
         gameController = GameController.Instance;
         gameController2 = GameController2.Instance;
+        audioSource = GetComponent<AudioSource>();
         if (!PhotonNetwork.IsConnected)
             PhotonNetwork.ConnectUsingSettings();      
     }
@@ -59,7 +61,10 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         //gameController2 = GameController2.Instance;
         //if (!PhotonNetwork.IsConnected)
         //    PhotonNetwork.ConnectUsingSettings();
-      
+
+        audioSource.PlayDelayed(4f);
+        
+
     }
     private void Update()
     {

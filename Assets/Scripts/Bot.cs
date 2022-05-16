@@ -44,19 +44,19 @@ public class Bot : MonoBehaviourPunCallbacks
         {
             case 0:
                 playerController.BtnBoBaiBot();                           
-                Debug.Log($"player {playerController.ID} Fold");
+                //Debug.Log($"player {playerController.ID} Fold");
                 break;
             case 1:
                 playerController.BtnXemBaiBot();                            
-                Debug.Log($"player {playerController.ID} check");
+                //Debug.Log($"player {playerController.ID} check");
                 break;
             case 2:
                 playerController.BtnTheoCuocBot();                            
-                Debug.Log($"player {playerController.ID} follow");
+                //Debug.Log($"player {playerController.ID} follow");
                 break;
             case 3:
                 playerController.BtnAllInBot();
-                Debug.Log($"player {playerController.ID} All In");
+                //Debug.Log($"player {playerController.ID} All In");
                 break;
         }
         

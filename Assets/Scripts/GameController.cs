@@ -22,6 +22,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     ManageNetwork manageNetwork;
     GameController2 gameController2;
     public PhotonView photonViews;
+    public AudioSource audioSource;
+    public AudioSource audioSource2;
+    public List<AudioClip> listAudio = new List<AudioClip>();
 
     public GameObject backCardPrefab;
     public GameObject commonCard;
@@ -190,6 +193,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         //Debug.Log($"gameController enabled Start");
         //if (isCheckCard) this.gameObject.SetActive(false);
         gameController2 = GameController2.Instance;
+        audioSource = GetComponent<AudioSource>();
         uIManager = UIManager.Instance;
         uIManager.gameController = this;
         photonViews = GetComponent<PhotonView>();
@@ -422,6 +426,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
        // Debug.Log($"NoCommonPos in GameController : {NoCommonPos}");
         if (!isFullFiveCard && NoCommonPos<5)
         {           
+            SetClipToPlay("bm_deal");
             cards[commonIndex].SetActive(true);
             cards[commonIndex].transform.position = startPos.position;
             cards[commonIndex].AddComponent<CommonCard>();           
@@ -1799,6 +1804,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         var temp = Instantiate(congratulation, arrPlayer[0].gameObject.transform.position, Quaternion.identity) as GameObject;
         Destroy(temp, 5);
         Debug.Log($"only player {arrPlayer[0].name} hold card and win total {moneyWon} $");
+        SetClipToPlay2("victory");
         Invoke(nameof(BtnPlayAgain), timeDelayLoadScene);
     }  
     public void BlurAllCard()//using
@@ -1989,6 +1995,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                         winner.money += totalWon;
                         barTotalMoney -= totalWon;
                         Debug.Log($"player {winner.ID} win total {totalWon}");
+                        SetClipToPlayByScore(winner.score);
+                        SetClipToPlay2("victory");
                           
                         if(totalWon>0)
                         {
@@ -2021,6 +2029,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                         barTotalMoney -= totalWon;                        
                         arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = totalWon.ToString();
                         Debug.Log($"player {arrPlayer[i].name} win total {totalWon} $");
+                        SetClipToPlayByScore(arrPlayer[i].score);
+                        SetClipToPlay2("victory");
                         totalWon = 0;
 
                         if (barTotalMoney > 0 && i == (arrPlayer.Length - 1)) //return residual money to Folder
@@ -2289,5 +2299,45 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         Destroy(UI.gameObject);       
         Destroy(manageNetwork.gameObject);
         
+    }
+    public void SetClipToPlay(string clipName,float delay =0f)
+    {
+        foreach (var item in listAudio)
+        {
+            if (item.name == clipName)
+            {
+                audioSource.clip = item;
+                break;
+            }
+        }
+        if (delay == 0) audioSource.Play();
+        else audioSource.PlayDelayed(delay);
+
+    }
+    public void SetClipToPlay2(string clipName, float delay = 0f)
+    {
+        foreach (var item in listAudio)
+        {
+            if (item.name == clipName)
+            {
+                audioSource2.clip = item;
+                break;
+            }
+        }
+        if (delay == 0) audioSource2.Play();
+        else audioSource2.PlayDelayed(delay);
+
+    }
+    public void SetClipToPlayByScore(float score)
+    {
+        if (score >= 1000) SetClipToPlay("straightFlushWin");
+        else if (score >= 900) SetClipToPlay("fourKindWin");
+        else if (score >= 800) SetClipToPlay("fullHouseWin");
+        else if (score >= 700) SetClipToPlay("flushWin");
+        else if (score >= 600) SetClipToPlay("straightWin");
+        else if (score >= 500) SetClipToPlay("threeKindWin");
+        else if (score >= 400) SetClipToPlay("twoPairWin");
+        else if (score >= 300) SetClipToPlay("onePairWin");
+        else SetClipToPlay("highCardWin");
     }
 }

@@ -305,6 +305,7 @@ MonoBehaviour:
   gameController: {fileID: 0}
   gameController2: {fileID: 0}
   playFabManager: {fileID: 0}
+  listAudio: []
   card1: {fileID: 0}
   card2: {fileID: 0}
   cardTemplate1: {fileID: 1215529185394862612}
