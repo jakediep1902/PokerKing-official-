@@ -8,11 +8,12 @@ public class TImeCounterStart : MonoBehaviour
     // Start is called before the first frame update
     public GameObject[] objNumber;
     GameController gameController;
+    AudioSource audioSource;
     //public PhotonView PvTimeCounterStart;
 
     private void Awake()
     {
-        
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void OnEnable()
@@ -53,6 +54,7 @@ public class TImeCounterStart : MonoBehaviour
             for (int i = seconds; i >= 0 && i < objNumber.Length; i--)
             {
                 objNumber[i].SetActive(true);
+                audioSource.Play();
                 yield return new WaitForSeconds(1);
                 objNumber[i].SetActive(false);
             }
@@ -62,6 +64,7 @@ public class TImeCounterStart : MonoBehaviour
             for (int i = seconds; i >= 0 && i < objNumber.Length; i--)
             {
                 objNumber[i].SetActive(true);
+                audioSource.Play();
                 yield return new WaitForSeconds(1);
                 objNumber[i].SetActive(false);
             }

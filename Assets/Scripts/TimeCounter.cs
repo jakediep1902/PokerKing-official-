@@ -40,7 +40,11 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         else //player action
         {
 
-            if (playerController.PvPlayer.IsMine) uIManager.pnlGame.SetActive(true);        
+            if (playerController.PvPlayer.IsMine)
+            {
+                uIManager.pnlGame.SetActive(true);
+                playerController.SetClipToPlayDelay("chipIn",1.5f);
+            }        
 
             if (gameController.bigestBlinded > playerController.moneyBlinded)
             {

@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     public GameController2 gameController2;
     public PlayFabManager playFabManager;
     AudioSource audioSource;
+    AudioSource audioSource2;
     public List<AudioClip> listAudio = new List<AudioClip>();
     
     public GameObject card1, card2, cardTemplate1, cardTemplate2;
@@ -120,13 +121,14 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         uIManager.btnAllIn.onClick.AddListener(() => BtnAllIn());
 
         if (bot.enabled)
-        {
+        {           
             isBot = true;
             money = userData.money;
             int random = Random.Range((int)0, (int)9);
             txtDisplayName.text = userData.namesTemplate[random];
-        } 
-        //else UpdateDataPlayerFromServer();
+        }
+        else if(PvPlayer.IsMine) UpdateDataPlayerFromServer();
+       
 
     }
     private void Update()
@@ -175,6 +177,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         if(obj.Code == (byte)PhotonEventCodes.SyncLateJoin)
         {           
             object[] datas = obj.CustomData as object[];
+            Debug.Log($"datas lenght is {datas.Length}");
             int viewID = (int)datas[0];
             if(PvPlayer.ViewID == viewID)
             {
@@ -209,6 +212,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
                 moneyBlinding = (long)datas[5];
                 bot.enabled   = (bool)datas[6];
                 isBot         = (bool)datas[7];
+                txtDisplayName.text = datas[8].ToString();
             }
         }
     }
@@ -218,8 +222,12 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         {
             card1ID = card1.GetComponent<Card>().ID;
             card2ID = card2.GetComponent<Card>().ID;
+            //string name = txtDisplayName.text;
+            
         }
         else Debug.Log($"player {ID} disconnected !!");
+
+        
 
         object[] datas = new object[]
         {
@@ -231,6 +239,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             moneyBlinding,                //5
             bot.enabled,                  //6
             isBot,                        //7
+            txtDisplayName.text           //8
 
             //card1.GetComponent<SpriteRenderer>().sortingOrder,
             //card2.GetComponent<SpriteRenderer>().sortingOrder
@@ -253,8 +262,14 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             money = userData.money;
             //int random = Random.Range((int)0, (int)9);
             txtDisplayName.text = userData.userName;
-        }
-      
+            //PvPlayer.RPC("SetDataPlayer", RpcTarget.Others, money, txtDisplayName.text);
+        }      
+    }
+    [PunRPC]
+    public void SetDataPlayer(long money,string userName)
+    {      
+        this.money = money;       
+        txtDisplayName.text = userName;
     }
     public void FoldCard()
     {
@@ -359,10 +374,10 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         SetClipToPlay("check");
     }
     [PunRPC]
-    public virtual void XemBaiSetAudio(string clipName)
+    public virtual void XemBaiSetAudio(string clipName="")
     {
         timeCounter.imageFill.fillAmount = 0f;
-        SetClipToPlay(clipName);
+        SetClipToPlay(clipName,"dice_chipin");
     }
 
 
@@ -379,7 +394,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     {
         isFold = true;
         timeCounter.imageFill.fillAmount = 0f;
-        SetClipToPlay("fold");
+        SetClipToPlay("fold","giveup");
         Color tempColor = Color.white;
         tempColor.a = 0.3f;
         GetComponent<SpriteRenderer>().color = tempColor;
@@ -463,7 +478,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         gameController.barTotalMoney += vlue;
         moneyBlinded += vlue;
         gameController.UpdateBlind();
-
+        
     }
     public void BtnOkBlind()
     {
@@ -476,7 +491,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             moneyBlinding = (long)(temp * money);
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
 
-            if (gameController.isStartGame) PvPlayer.RPC("XemBaiSetAudio", RpcTarget.All, "raise");
+            if (gameController.isStartGame) PvPlayer.RPC("XemBaiSetAudio", RpcTarget.All,  "raise");
             //BtnXemBai();
 
             uIManager.pnlThemCuoc.SetActive(false);
@@ -534,20 +549,43 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     {
         gameObject.AddComponent<AudioSource>();
         audioSource = GetComponent<AudioSource>();
+        audioSource2 = gameObject.AddComponent<AudioSource>();
         var listAudios = FindObjectOfType<AudioListPlayer>();
         listAudio = listAudios.listAudio;
     }
-    public void SetClipToPlay(string clipName)
+    
+    public void SetClipToPlay(string clipName="",string clipName2 ="")
     {
         foreach (var item in listAudio)
         {
             if(item.name==clipName)
             {
                 audioSource.clip = item;
+                audioSource.Play();
+                break;
+            }            
+        }
+        foreach (var item2 in listAudio)
+        {
+            if (item2.name == clipName2)
+            {
+                audioSource2.clip = item2;
+                audioSource2.Play();
                 break;
             }
         }
-        //audioSource.clip = listAudio[index];
-        audioSource.Play();
+        //audioSource.clip = listAudio[index];       
+    }
+    public void SetClipToPlayDelay(string clipName = "",float delay=2f)
+    {
+        foreach (var item in listAudio)
+        {
+            if (item.name == clipName)
+            {
+                audioSource.clip = item;
+                audioSource.PlayDelayed(delay);
+                break;
+            }
+        }                 
     }
 }

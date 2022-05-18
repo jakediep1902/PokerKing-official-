@@ -451,6 +451,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         {                     
             item.moneyBlinding = 0;
         }
+        SetClipToPlay("chipwin");
         yield return new WaitForSeconds(2);
         //RPC_SetNewGround(2f * DealTimes * delay);
         for (int i = 0; i < DealTimes; i++)
@@ -1413,7 +1414,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         //UpdatePosDefaul();
         UpdatePlayer();
         UpdatePosDefaulEmpty();    
-        for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length; i++)
+        for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length;)
         {
             if (posDefaul[i].isEmpty)
             {
@@ -1805,6 +1806,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         Destroy(temp, 5);
         Debug.Log($"only player {arrPlayer[0].name} hold card and win total {moneyWon} $");
         SetClipToPlay2("victory");
+        arrPlayer[0].SetClipToPlayDelay("addchip", 1.5f);
         Invoke(nameof(BtnPlayAgain), timeDelayLoadScene);
     }  
     public void BlurAllCard()//using
@@ -1997,6 +1999,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                         Debug.Log($"player {winner.ID} win total {totalWon}");
                         SetClipToPlayByScore(winner.score);
                         SetClipToPlay2("victory");
+                        winner.SetClipToPlayDelay("addchip",1.5f);
                           
                         if(totalWon>0)
                         {
@@ -2031,6 +2034,10 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                         Debug.Log($"player {arrPlayer[i].name} win total {totalWon} $");
                         SetClipToPlayByScore(arrPlayer[i].score);
                         SetClipToPlay2("victory");
+                        arrPlayer[i].SetClipToPlayDelay("addchip", 1.5f);
+
+                        
+
                         totalWon = 0;
 
                         if (barTotalMoney > 0 && i == (arrPlayer.Length - 1)) //return residual money to Folder
@@ -2255,7 +2262,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                 UpdatePosDefaulEmpty();
                 //var posEmpty = posDefaul.Where(p => p.isEmpty).ToArray();
 
-                for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length; i++)
+                for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length;)
                 {
                     if (posDefaul[i].isEmpty)
                     {
@@ -2312,8 +2319,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         }
         if (delay == 0) audioSource.Play();
         else audioSource.PlayDelayed(delay);
-
     }
+   
     public void SetClipToPlay2(string clipName, float delay = 0f)
     {
         foreach (var item in listAudio)

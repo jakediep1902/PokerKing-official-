@@ -136,20 +136,27 @@ public class PlayFabManager : MonoBehaviour
     //Register
     public void Register()
     {
-        RegisterPlayFabUserRequest registerRequest = new RegisterPlayFabUserRequest
+        if(inputID.text.Length<6 || inputPassWord.text.Length<6)
         {
-            Email = inputEmail.text,
-            Username = inputID.text,
-            Password = inputPassWord.text,
-            RequireBothUsernameAndEmail = false,
-            DisplayName = inputID.text,
-        };
-        PlayFabClientAPI.RegisterPlayFabUser(registerRequest, RegisterSuccess, RegisterError);
+            ShowNotification("User Name or Password at least 6 characters.Please try again !!!");
+        }
+        else
+        {
+            RegisterPlayFabUserRequest registerRequest = new RegisterPlayFabUserRequest
+            {
+                Email = inputEmail.text,
+                Username = inputID.text,
+                Password = inputPassWord.text,
+                RequireBothUsernameAndEmail = false,
+                DisplayName = inputID.text,
+            };
+            PlayFabClientAPI.RegisterPlayFabUser(registerRequest, RegisterSuccess, RegisterError);
+        }        
     }
     private void RegisterError(PlayFabError obj)
-    {
+    {      
         Debug.Log($"Register Error {obj.ErrorMessage}");
-        ShowNotification("Register failed please try again with another ID !");
+        ShowNotification("Register failed please try again with another User name or Email!");
     }
     private void RegisterSuccess(RegisterPlayFabUserResult obj)
     {
