@@ -85,6 +85,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     void Start()
     {
+        Debug.Log("hello");
+        
+
         if (gameController.isStartGame)
         {
             if (!PvPlayer.IsMine)
@@ -120,15 +123,19 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         uIManager.btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
         uIManager.btnAllIn.onClick.AddListener(() => BtnAllIn());
 
-        if (bot.enabled)
-        {           
+        if (bot.enabled && !isWaiting)
+        {
             isBot = true;
-            money = userData.money;
-            int random = Random.Range((int)0, (int)9);
+            money =(long)Random.Range(200000, 5000000);
+            int random = Random.Range((int)0, (int)userData.namesTemplate.Length);
             txtDisplayName.text = userData.namesTemplate[random];
         }
-        else if(PvPlayer.IsMine) UpdateDataPlayerFromServer();
-       
+        else if (PvPlayer.IsMine)
+        {
+            UpdateDataPlayerFromServer();
+        }
+        //else if(PvPlayer.IsMine) UpdateDataPlayerFromServer();
+
 
     }
     private void Update()
@@ -260,16 +267,26 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         {
             userData = playFabManager.userData;
             money = userData.money;
-            //int random = Random.Range((int)0, (int)9);
             txtDisplayName.text = userData.userName;
+            string name = userData.userName;
+            long temp = userData.money;
+            PvPlayer.RPC("SetNameDisplayPlayer", RpcTarget.All,name);
+            PvPlayer.RPC("SetMoneyPlayer", RpcTarget.All, temp);
+           
+            //int random = Random.Range((int)0, (int)9);
+           
             //PvPlayer.RPC("SetDataPlayer", RpcTarget.Others, money, txtDisplayName.text);
         }      
     }
     [PunRPC]
-    public void SetDataPlayer(long money,string userName)
-    {      
-        this.money = money;       
+    public void SetNameDisplayPlayer(string userName)
+    {          
         txtDisplayName.text = userName;
+    }
+    [PunRPC]
+    public void SetMoneyPlayer(long money)
+    {
+        this.money = money;      
     }
     public void FoldCard()
     {
@@ -399,6 +416,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         tempColor.a = 0.3f;
         GetComponent<SpriteRenderer>().color = tempColor;
         Invoke("HandleBoBai", 0.4f);
+        card1.GetComponent<SpriteRenderer>().sprite = cardTemplate1.GetComponent<SpriteRenderer>().sprite;
+        card2.GetComponent<SpriteRenderer>().sprite = cardTemplate2.GetComponent<SpriteRenderer>().sprite;
         cardTemplate1.SetActive(false);
         cardTemplate2.SetActive(false);       
         gameController.UpdatePlayerPlayings();
@@ -552,6 +571,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         audioSource2 = gameObject.AddComponent<AudioSource>();
         var listAudios = FindObjectOfType<AudioListPlayer>();
         listAudio = listAudios.listAudio;
+       
     }
     
     public void SetClipToPlay(string clipName="",string clipName2 ="")

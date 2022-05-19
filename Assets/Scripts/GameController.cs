@@ -426,7 +426,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
        // Debug.Log($"NoCommonPos in GameController : {NoCommonPos}");
         if (!isFullFiveCard && NoCommonPos<5)
         {           
-            SetClipToPlay("bm_deal");
+            SetClipToPlay("deal");
             cards[commonIndex].SetActive(true);
             cards[commonIndex].transform.position = startPos.position;
             cards[commonIndex].AddComponent<CommonCard>();           
@@ -1918,6 +1918,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                                 loser.money += moneyReturn;
                                 barTotalMoney -= moneyReturn;
                                 Debug.Log($"player {loser.name} has been returned {moneyReturn} $");
+                                loser.SetClipToPlayDelay("addchip", 1.5f);
                                 loser.rewardTopup.SetActive(true);
                                 loser.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = moneyReturn.ToString();
                             }
@@ -2032,9 +2033,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                         barTotalMoney -= totalWon;                        
                         arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = totalWon.ToString();
                         Debug.Log($"player {arrPlayer[i].name} win total {totalWon} $");
-                        SetClipToPlayByScore(arrPlayer[i].score);
-                        SetClipToPlay2("victory");
-                        arrPlayer[i].SetClipToPlayDelay("addchip", 1.5f);
+                        //SetClipToPlayByScore(arrPlayer[i].score);
+                        //SetClipToPlay2("victory");
+                        //arrPlayer[i].SetClipToPlayDelay("addchip", 1.5f);
 
                         
 
@@ -2052,6 +2053,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                                     folder.money += moneyReturn;
                                     barTotalMoney -= moneyReturn;
                                     Debug.Log($"player {folder.name} has been returned {moneyReturn} $");
+                                    
+                                    arrPlayer[i].SetClipToPlayDelay("addchip", 1.5f);
                                     folder.rewardTopup.SetActive(true);
                                     folder.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = moneyReturn.ToString();
                                 }
@@ -2062,6 +2065,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                     else
                     {
                         Debug.Log($"player {arrPlayer[i].name} win total {totalWon} but received {barTotalMoney}$");
+                        arrPlayer[i].SetClipToPlayDelay("addchip", 1.5f);
                         arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = barTotalMoney.ToString();
                         arrPlayer[i].money += barTotalMoney;
                         arrPlayer[i].moneyBlinded -= barTotalMoney;
@@ -2072,12 +2076,19 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                 }
                 if(i != (arrPlayer.Length - 1))
                 {
+                    SetClipToPlayByScore(arrPlayer[i].score);
+                    SetClipToPlay2("victory");
+                    arrPlayer[i].SetClipToPlayDelay("addchip", 1.5f);
                     BlurAllCard();
                     HighLightCardWin(arrPlayer[i]);
                     ScaleCardWin(arrPlayer[i], 1.15f);
                     var temp = Instantiate(congratulation, arrPlayer[i].gameObject.transform.position, Quaternion.identity) as GameObject;
                     Destroy(temp, 5);
                 }//check show congratulation
+                else
+                {
+                    arrPlayer[i].SetClipToPlayDelay("addchip", 1.5f);
+                }
                
                 if (barTotalMoney == 0)
                 {

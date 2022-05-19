@@ -52,15 +52,15 @@ public class PlayFabManager : MonoBehaviour
     {
         
     }
-    public UserData ReturnClass()
-    {
-        //userData.userName = "JakeDiep";
-        //int random = Random.Range((int)100000, (int)9999999);
-        //userData.userID = random.ToString();
-        //userData.money = Random.Range((int)10000000, (int)100000000);
-        var random = UnityEngine.Random.Range((int)10000000, (int)100000000);
-        return new UserData("jake",random);
-    }
+    //public UserData ReturnClass()
+    //{
+    //    //userData.userName = "JakeDiep";
+    //    //int random = Random.Range((int)100000, (int)9999999);
+    //    //userData.userID = random.ToString();
+    //    //userData.money = Random.Range((int)10000000, (int)100000000);
+    //    var random = UnityEngine.Random.Range((int)10000000, (int)100000000);
+    //    return new UserData("jake",random);
+    //}
     public void ShowInfo(UserData userData)
     {
         Debug.Log($"name is {userData.userName}, money is {userData.money}");
@@ -90,6 +90,10 @@ public class PlayFabManager : MonoBehaviour
         if (obj.Data != null && obj.Data.ContainsKey("Player"))
         {
             userData = JsonConvert.DeserializeObject<UserData>(obj.Data["Player"].Value);
+            if(userData.userName=="PlayerName")
+            {
+                userData.userName = inputID.text;
+            }
             Debug.Log($"userName : {userData.userName} , money : {userData.money}");
             SceneManager.LoadScene("Game");
         }
@@ -110,12 +114,25 @@ public class PlayFabManager : MonoBehaviour
     //login
     public void Login()
     {
-        var request = new LoginWithPlayFabRequest
+        if(inputID.text=="" && inputPassWord.text=="")
         {
-            Username = inputID.text,
-            Password = inputPassWord.text,
-        };
-        PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnLoginError);
+            var request = new LoginWithPlayFabRequest
+            {
+                Username = "GUESTS",
+                Password = "GUESTS",
+            };
+            PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnLoginError);
+        }
+        else
+        {
+            var request = new LoginWithPlayFabRequest
+            {
+                Username = inputID.text,
+                Password = inputPassWord.text,
+            };
+            PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnLoginError);
+        }      
+        
     }
 
     private void OnLoginError(PlayFabError obj)
