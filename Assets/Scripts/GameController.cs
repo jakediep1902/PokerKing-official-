@@ -21,6 +21,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     UIManager uIManager;
     ManageNetwork manageNetwork;
     GameController2 gameController2;
+
+    //public UnityEvent eSyncOnLoadScene;
+
     public PhotonView photonViews;
     public AudioSource audioSource;
     public AudioSource audioSource2;
@@ -200,6 +203,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         manageNetwork = ManageNetwork.Instance;
         startPos = backCardPrefab.transform;
 
+        
+
         //ClearConsole();
         //btn for test
         uIManager.btnTest.onClick.AddListener(BtnTest);
@@ -236,6 +241,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             if (item.isBot) item.bot.enabled = true;
 
             item.gameController = this;
+
+            if (item.PvPlayer.IsMine) item.SyncPlayerJoinLate();
+           //item.gameController.eSyncOnLoadScene.AddListener(() => item.SyncPlayerJoinLate());
 
             item.cardTemplate1.SetActive(false);
             item.cardTemplate2.SetActive(false);
@@ -275,6 +283,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             item.cardTemplate2.GetComponent<SpriteRenderer>().color = tempColor;
 
         }
+
+        //if(photonView.IsMine) eSyncOnLoadScene.Invoke();
     }
     private void Update()
     {

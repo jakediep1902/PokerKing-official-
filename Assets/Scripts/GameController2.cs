@@ -74,4 +74,5 @@ public class GameController2 : MonoBehaviourPunCallbacks, IPunObservable
     //{
     //    Debug.Log($"Changed test {test}");
     //}
+    
 }
