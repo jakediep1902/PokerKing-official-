@@ -105,7 +105,8 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         //{ 
         //gameController.pnlGame.SetActive(false);
         //}      
-        //CheckNextPlayer();
+       
+       
     }
 
     void Start()

@@ -181,7 +181,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public override void OnDisable()
     {
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
-
+        //photonViews.RPC("ExitAccidental", RpcTarget.All, null);
     }
     //public static void ClearConsole()
     //{
@@ -242,7 +242,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
             item.gameController = this;
 
-            if (item.PvPlayer.IsMine) item.SyncPlayerJoinLate();
+            if (item.PvPlayer.IsMine) item.SyncPlayerOnLoadScene();
            //item.gameController.eSyncOnLoadScene.AddListener(() => item.SyncPlayerJoinLate());
 
             item.cardTemplate1.SetActive(false);
@@ -536,6 +536,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             //if (photonViews.IsMine)
             //    Invoke(nameof(BtnPlayAgain), 20f);
         }
+
     }//using
     public void CheckStraightFlush(PlayerController player)
     {
@@ -2053,7 +2054,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
                         if (barTotalMoney > 0 && i == (arrPlayer.Length - 1)) //return residual money to Folder
                         {
-                            Thread.Sleep(3000);
+                            Thread.Sleep(2000);
                             foreach (var folder in groupFold)
                             {
                                 long moneyReturn = folder.moneyBlinded > barTotalMoney ? barTotalMoney : folder.moneyBlinded;
@@ -2063,12 +2064,16 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                                     folder.money += moneyReturn;
                                     barTotalMoney -= moneyReturn;
                                     Debug.Log($"player {folder.name} has been returned {moneyReturn} $");
-                                    
+
                                     arrPlayer[i].SetClipToPlayDelay("addchip", 1.5f);
                                     folder.rewardTopup.SetActive(true);
                                     folder.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = moneyReturn.ToString();
                                 }
-                                else if(i == (arrPlayer.Length - 1)) Debug.LogWarning($"barTotalMoney is {barTotalMoney}");                              
+                                else if (i == (arrPlayer.Length - 1))
+                                {
+                                    Debug.LogWarning($"barTotalMoney is {barTotalMoney}");
+                                    barTotalMoney = 0;
+                                }
                             }
                         }
                     }
@@ -2368,4 +2373,11 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         else if (score >= 300) SetClipToPlay("onePairWin");
         else SetClipToPlay("highCardWin");
     }
+    
+
+    //[PunRPC]
+    //public void ExitAccidental()
+    //{
+    //    Debug.Log($"Player exit game");
+    //}
 }

@@ -90,7 +90,7 @@ public class PlayFabManager : MonoBehaviour
         if (obj.Data != null && obj.Data.ContainsKey("Player"))
         {
             userData = JsonConvert.DeserializeObject<UserData>(obj.Data["Player"].Value);
-            if(userData.userName=="PlayerName")
+            if(userData.userName=="PlayerName" || userData.userName=="")
             {
                 userData.userName = inputID.text;
             }

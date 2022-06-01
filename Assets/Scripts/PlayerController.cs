@@ -70,7 +70,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
 
     public enum PhotonEventCodes
     {
-        SyncLateJoin = 0
+        SyncLateJoin = 0,
+        SyncOnLoadScene
+        
     }
     private void Awake()
     {
@@ -85,7 +87,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     void Start()
     {
-        Debug.Log("hello");
+       // Debug.Log("hello");
         
 
         if (gameController.isStartGame)
@@ -162,7 +164,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
         if(!isBot) RequestSaveData();
         try
-        {
+        {        
+            timeCounter.CheckNextPlayer();
+
             BtnBoBai();
             timeCounter.imageFill.fillAmount = 0;
             gameController.UpdatePlayerPlayings();
@@ -222,6 +226,17 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
                 txtDisplayName.text = datas[8].ToString();
             }
         }
+
+        if(obj.Code==(byte)PhotonEventCodes.SyncOnLoadScene)
+        {
+            object[] datas = obj.CustomData as object[];
+            int viewID = (int)datas[0];
+            if (PvPlayer.ViewID == viewID)
+            {
+                txtDisplayName.text = datas[1].ToString();
+                money = (long)datas[2];
+            }
+        }
     }
     public void SyncPlayerJoinLate()
     {      
@@ -232,9 +247,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             //string name = txtDisplayName.text;
             
         }
-        else Debug.Log($"player {ID} disconnected !!");
-
-        
+        else Debug.Log($"player {ID} disconnected !!");       
 
         object[] datas = new object[]
         {
@@ -259,7 +272,17 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         //Debug.Log($"ID {PvPlayer.ViewID} Invoke RaiseEvent and sent card1");
         Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} Send Datas");
         PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncLateJoin, datas, option,SendOptions.SendUnreliable);
-
+    }
+    public void SyncPlayerOnLoadScene()
+    {
+        object[] datas = new object[]
+        {
+            PvPlayer.ViewID,          //0
+            txtDisplayName.text,      //1
+            money,                    //2
+        };
+        RaiseEventOptions option = new RaiseEventOptions();
+        PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncOnLoadScene, datas, option, SendOptions.SendUnreliable);
     }
     public void UpdateDataPlayerFromServer()
     {
