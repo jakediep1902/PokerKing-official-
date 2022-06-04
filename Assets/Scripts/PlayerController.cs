@@ -116,6 +116,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         {
             uIManager.pnlGame.SetActive(false);
             Invoke(nameof(SetImageConnecting), 2f);
+
+            SyncPlayerOnLoadScene();
         }
 
         uIManager.btnOKBlind.onClick.AddListener(() => BtnOkBlind());

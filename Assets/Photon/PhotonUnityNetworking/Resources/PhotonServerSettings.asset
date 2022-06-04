@@ -114,6 +114,8 @@ MonoBehaviour:
   - SetMoneyPlayer
   - SetNameDisplayPlayer
   - ExitAccidental
+  - SetClipToPlay
+  - RPC_PlayClip
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

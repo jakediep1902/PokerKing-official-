@@ -229,6 +229,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         //Invoke(nameof(UpdatePlayerPlaying), 5f);   
         UpdatePlayerPlayings();
         UpdatePosDefaul();
+        CheckMoneyPlayer();
 
         for (int i = 0; i < arrPlayer.Length; i++)
         {
@@ -285,6 +286,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         //if(photonView.IsMine) eSyncOnLoadScene.Invoke();
+
+       
     }
     private void Update()
     {
@@ -394,6 +397,12 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }//using
     public void BtnDeal()//using
     {       
+        if(isFullFiveCard || NoCommonPos>=5)
+        {
+            BtnCheckCard();
+            return;
+        }
+
         if (photonViews.IsMine && !isCheckCard &&NoCommonPos<5)
         {
             //Debug.Log("BtnDeal");
@@ -408,7 +417,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                 //RPC_SetCommonIndex();
                 //Deal();
                 RPC_Deal(1, 0.5f);
-                if (!isFullFiveCard) RPC_SetNewGround();
+                //if (!isFullFiveCard) RPC_SetNewGround();
             }
         }
     }
@@ -1353,7 +1362,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         {
             photonViews.RPC("SetIsStartGame", RpcTarget.All, true);
             photonViews.RPC("UpdatePlayer", RpcTarget.All, null);
-            photonViews.RPC("CheckMoneyPlayer", RpcTarget.All, null);
+            //photonViews.RPC("CheckMoneyPlayer", RpcTarget.All, null);
             photonViews.RPC("InitBlind", RpcTarget.All, (long)10000);
             StartCoroutine(nameof(RunTimeCounter), 4f);
             //playerInRoom *= 2;
@@ -2221,14 +2230,15 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void CheckMoneyPlayer()
     {
-        //UpdatePlayerPlayings();
         foreach (var item in arrPlayer)
         {
-            if (item.money <= 0)
-            {
-                item.isBroke = true;             
+            if (item.money <= 0 && !item.isBot)
+            {                          
                 item.money = 100000;
-                //item.gameObject.SetActive(false);
+            }
+            else 
+            {
+                if(photonViews.IsMine) PhotonNetwork.Destroy(item.gameObject);
             }
         }
         //alternative method
@@ -2278,7 +2288,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {             
         if (playerInRoom == 1)
         {
-            int random = Random.Range(3,5);
+            int random = Random.Range(1,3);
             Debug.Log($"Spawn {random} bot");
             for (int j = 0; j < random; j++)
             {
@@ -2317,6 +2327,47 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             photonViews.RPC("UpdatePlayerPlayings", RpcTarget.All, null);
         }       
     }//using
+
+    public void SpawBotOnNewGame()
+    {
+        if (playerInRoom <= 3 && photonViews.IsMine)
+        {
+            int random = Random.Range(1, 2);
+            Debug.Log($"Spawn {random} bot");
+            for (int j = 0; j < random; j++)
+            {              
+                UpdatePlayer();
+                UpdatePosDefaulEmpty();             
+                for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length;)
+                {
+                    if (posDefaul[i].isEmpty)
+                    {
+                        GameObject tempObj = PhotonNetwork.Instantiate(posDefaul[i].ID.ToString(),
+                            posDefaul[i].transform.position, Quaternion.identity) as GameObject;
+
+                        photonViews.RPC("InactivePos", RpcTarget.All, posDefaul[i].ID);
+                        tempObj.GetComponent<Bot>().enabled = true;
+
+                        photonViews.RPC("RPC_PlayClip", RpcTarget.All,"joined");
+                        break;
+                    }
+                    else
+                    {                     
+                        Debug.Log("All position is not empty");
+                        break;
+                    }                  
+                }
+            }
+            photonViews.RPC("UpdatePlayerPlayings", RpcTarget.All, null);
+        }
+    }//using
+
+    [PunRPC]
+    public void RPC_PlayClip(string name)
+    {
+        SetClipToPlay(name, 0f);
+        Debug.Log("Played");
+    }
     [PunRPC]
     public void StopForSeconds(int time = 2000) => Thread.Sleep(time);  
 
@@ -2333,6 +2384,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         Destroy(manageNetwork.gameObject);
         
     }
+    [PunRPC]
     public void SetClipToPlay(string clipName,float delay =0f)
     {
         foreach (var item in listAudio)

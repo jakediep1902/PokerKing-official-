@@ -46,7 +46,7 @@ public class TImeCounterStart : MonoBehaviour
             this.gameObject.SetActive(false);         
         }
     }
-    IEnumerator CoStartCount(int seconds = 4)//10
+    IEnumerator CoStartCount(int seconds = 10)//10
     {
         if (seconds >= objNumber.Length)
         {
@@ -55,6 +55,9 @@ public class TImeCounterStart : MonoBehaviour
             {
                 objNumber[i].SetActive(true);
                 audioSource.Play();
+
+                if (i==5) gameController.SpawBotOnNewGame();
+
                 yield return new WaitForSeconds(1);
                 objNumber[i].SetActive(false);
             }

@@ -136,7 +136,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
                     else playerController.BtnBoBai();
                 }
-              
+                            
                 NextPlayer(playerChecking);              
                 this.gameObject.SetActive(false);
             }
@@ -172,7 +172,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                 if (gameController.CheckEqualBlind())
                 {
                     //Debug.Log(2);
-                    if (!gameController.isShowDown)
+                    if (!gameController.isShowDown && gameController.photonViews.IsMine)
                     {
                         BtnDeal();
                         Thread.Sleep(3000);
@@ -205,7 +205,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                     //Thread.Sleep(10000);
                     //Debug.Log("Call deal");
                     //Debug.Log(3);
-                    if (!gameController.isShowDown)
+                    if (!gameController.isShowDown && gameController.photonViews.IsMine)
                     {
                         BtnDeal();
                         Thread.Sleep(3000);
