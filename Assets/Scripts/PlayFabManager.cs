@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 using UnityEngine.UI;
 using System;
 using UnityEngine.SceneManagement;
@@ -74,7 +74,7 @@ public class PlayFabManager : MonoBehaviour
         {
             Data = new Dictionary<string, string>
             {               
-                {"Player", JsonConvert.SerializeObject(userData)}
+                //{"Player", JsonConvert.SerializeObject(userData)}
             }
         };
         PlayFabClientAPI.UpdateUserData(request, OnDatasSend, OnError);
@@ -89,7 +89,7 @@ public class PlayFabManager : MonoBehaviour
         Debug.Log($"Recieved Player data");
         if (obj.Data != null && obj.Data.ContainsKey("Player"))
         {
-            userData = JsonConvert.DeserializeObject<UserData>(obj.Data["Player"].Value);
+            //userData = JsonConvert.DeserializeObject<UserData>(obj.Data["Player"].Value);
             if(userData.userName=="PlayerName" || userData.userName=="")
             {
                 userData.userName = inputID.text;

@@ -134,7 +134,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         }
         else if (PvPlayer.IsMine)
         {
-            UpdateDataPlayerFromServer();
+           // UpdateDataPlayerFromServer();
         }
         //else if(PvPlayer.IsMine) UpdateDataPlayerFromServer();
 
@@ -582,10 +582,10 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     //}
    public void RequestSaveData()
     {
-        userData.money = money;
-        userData.userName = txtDisplayName.text;
-        playFabManager.userData = userData;
-        playFabManager.SaveDatasUser();
+        //userData.money = money;
+        //userData.userName = txtDisplayName.text;
+        //playFabManager.userData = userData;
+        //playFabManager.SaveDatasUser();
     }
     public void SetupAudioSource()
     {
