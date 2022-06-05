@@ -19,7 +19,7 @@ public class TImeCounterStart : MonoBehaviour
     private void OnEnable()
     {
         gameController = GameController.Instance;
-        StartCoroutine(CoStartCount());
+        StartCoroutine(CoStartCount(10));
         //GetComponent<Animator>().Play();
         //RPC_StartCount();
     } 

@@ -83,7 +83,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
-        Debug.Log("Joined Room");
+        //Debug.Log("Joined Room");
               
       //  if (PvNetWork.IsMine) gameController.GetComponent<GameController>().enabled = true;
 

@@ -75,6 +75,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public int[] arrSaveIDCardToSync;
     public int[] arrCardsRemoved;
     int autoID = 0;
+    int waitForDealDone = 4;
 
     public int countIndexSave = -1;
     int isFlush = 5;//edit with value 5 when finish
@@ -1364,7 +1365,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             photonViews.RPC("UpdatePlayer", RpcTarget.All, null);
             //photonViews.RPC("CheckMoneyPlayer", RpcTarget.All, null);
             photonViews.RPC("InitBlind", RpcTarget.All, (long)10000);
-            StartCoroutine(nameof(RunTimeCounter), 4f);
+            StartCoroutine(nameof(RunTimeCounter), waitForDealDone);
             //playerInRoom *= 2;
             amountCardInit = playerPlaying * 2;
             photonViews.RPC("CreateBackCard", RpcTarget.All, amountCardInit);
@@ -1684,7 +1685,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public IEnumerator ResetTimeCounter(float timeDelay)
     {
        // Debug.Log("refresh timeCounter");
-        if (photonViews.IsMine) photonViews.RPC("RPC_OnlyIndexBigBlind", RpcTarget.All, indexBigBlind);
+       // if (photonViews.IsMine) photonViews.RPC("RPC_OnlyIndexBigBlind", RpcTarget.All, indexBigBlind);
         yield return new WaitForSeconds(timeDelay);
         UpdatePlayerPlayings();
         foreach (var item in arrPlayer)
@@ -2232,14 +2233,12 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {
         foreach (var item in arrPlayer)
         {
-            if (item.money <= 0 && !item.isBot)
-            {                          
-                item.money = 100000;
-            }
-            else 
-            {
-                if(photonViews.IsMine) PhotonNetwork.Destroy(item.gameObject);
-            }
+            if (item.money <= 0)
+            {                
+                if (photonViews.IsMine && item.isBot) PhotonNetwork.Destroy(item.gameObject);
+
+                else item.money = 100000;
+            }         
         }
         //alternative method
         //arrPlayer.Where(p => p.money < 0).ToList().ForEach(p => { p.isBroke = true; p.gameObject.SetActive(false); });
@@ -2250,12 +2249,12 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(isStartGame);
-            stream.SendNext(indexBigBlind);
+           // stream.SendNext(indexBigBlind);
         }
         else if (stream.IsReading)
         {
             isStartGame = (bool)stream.ReceiveNext();
-            indexBigBlind = (int)stream.ReceiveNext();
+           // indexBigBlind = (int)stream.ReceiveNext();
         }
     }//using
     public void SyncPlayersDatasJoinLate()

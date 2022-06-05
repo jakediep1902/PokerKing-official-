@@ -86,10 +86,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         bot = GetComponent<Bot>();
     }
     void Start()
-    {
-       // Debug.Log("hello");
-        
-
+    {      
         if (gameController.isStartGame)
         {
             if (!PvPlayer.IsMine)
@@ -115,9 +112,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         if (PvPlayer.IsMine)
         {
             uIManager.pnlGame.SetActive(false);
-            Invoke(nameof(SetImageConnecting), 2f);
-
-            SyncPlayerOnLoadScene();
+            Invoke(nameof(SetImageConnecting), 2f);         
         }
 
         uIManager.btnOKBlind.onClick.AddListener(() => BtnOkBlind());
@@ -140,7 +135,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         }
         //else if(PvPlayer.IsMine) UpdateDataPlayerFromServer();
 
-
+        if(PvPlayer.IsMine) SyncPlayerOnLoadScene();
     }
     private void Update()
     {
@@ -182,6 +177,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         catch
         {
             Debug.Log($"Error in PlayerController ID {PvPlayer.ViewID} when Disabled !!!");
+            gameController.BtnDeal();
         }
 
     }
@@ -347,11 +343,13 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
                     Debug.LogError($"index of Card over 51 and the new value is {indexCard}");
                     indexCard--;
                 }
-                
+
+                gameController.cards[indexCard].transform.position = posCard1;
                 PvPlayer.RPC("RPC_SetCard1", RpcTarget.All, indexCard);
                
                 //Debug.Log(indexCard);
                 indexCard = Random.Range((int)0, (int)gameController.cards.Length);
+                gameController.cards[indexCard].transform.position = posCard2;
                 PvPlayer.RPC("RPC_SetCard2", RpcTarget.All, indexCard);
 
                 //Debug.Log(indexCard);
@@ -372,14 +370,15 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             index--;
             Debug.Log("gameController is null");
         }
-        gameController.cards[index].SetActive(true);
-        gameController.cards[index].transform.position = posCard1;
-        gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 4;
         card1 = gameController.cards[index];
+        card1.SetActive(false);
+        Invoke(nameof(DelayActiveCard1), 1f);
+        gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 4;
         listCard.Add(card1);//add card to list to check
         gameController.listCardsRemoved.Add(card1.GetComponent<Card>().ID);
         gameController.RemoveElement(ref gameController.cards, index);
     }
+   
     [PunRPC]
     public void RPC_SetCard2(int index)
     {   
@@ -388,14 +387,21 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             index--;          
             Debug.Log("gameController2 is null");
         }
-        gameController.cards[index].SetActive(true);
-        gameController.cards[index].transform.position = posCard2;
-        gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 5;
         card2 = gameController.cards[index];
+        card2.SetActive(false);
+        Invoke(nameof(DelayActiveCard2), 1f);
+        gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 5;
         listCard.Add(card2);
-        //gameController.cards[index].transform.SetParent(this.transform);
         gameController.listCardsRemoved.Add(card2.GetComponent<Card>().ID);
         gameController.RemoveElement(ref gameController.cards, index);
+    }
+    public void DelayActiveCard1()
+    {
+        card1.SetActive(true);
+    }
+    public void DelayActiveCard2()
+    {
+        card2.SetActive(true);
     }
     [PunRPC]
     public void CoverCardOtherClient()

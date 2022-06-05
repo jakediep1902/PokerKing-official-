@@ -29,6 +29,7 @@ public class UIManager : MonoBehaviourPunCallbacks
     public Text txtIndex;
     public Text txtBarTotalMoney;
     public Text txtSetBlindVlue;
+    public Text txtDisPlayIndexBigBlind;
 
     public Slider sliderVlue;
 
@@ -56,5 +57,6 @@ public class UIManager : MonoBehaviourPunCallbacks
     {
         txtIndex.text = gameController.commonIndex.ToString();
         txtBarTotalMoney.text = gameController.FormatVlueToString(gameController.barTotalMoney);
+        txtDisPlayIndexBigBlind.text = gameController.indexBigBlind.ToString();
     }   
 }

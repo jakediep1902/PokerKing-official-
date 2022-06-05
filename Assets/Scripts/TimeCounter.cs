@@ -15,6 +15,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     UIManager uIManager;
     [SerializeField] int playerChecking;
     public bool isFirstGround = true;
+    public Text txtCheckingPlayer;
     
     private void Awake()
     {
@@ -27,6 +28,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         gameController = GameController.Instance;
       
         playerController.isTurn = true;
+        
 
         if (playerController.money == 0)
         {
@@ -116,35 +118,41 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     }  
     private void FixedUpdate()
     {
+        txtCheckingPlayer.text = playerChecking.ToString();
         if (playerController.isTurn && (gameController.isCheckCard == false) && (gameController.isShowDown == false))
         {
-            if (imageFill.fillAmount > 0) imageFill.fillAmount -= 0.0009f;
-           
+            if (imageFill.fillAmount > 0)
+            {
+                imageFill.fillAmount -= 0.0009f;
+                //playerChecking = gameController.indexBigBlind;
+            }
             else
-            {         
+            {
                 playerController.isTurn = false;
+                Debug.Log($"0 Current Player above is  {playerChecking}");
                 playerChecking = gameController.indexBigBlind;
                 //Debug.Log(playerChecking);
                 uIManager.pnlGame.SetActive(false);
 
                 //check equal blind
-                if((playerController.moneyBlinded < gameController.bigestBlinded) && playerController.money>0)
+                if ((playerController.moneyBlinded < gameController.bigestBlinded) && playerController.money > 0)
                 {
-                    playerController.GetComponent<Bot>().enabled = false; 
-                    
+                    playerController.GetComponent<Bot>().enabled = false;
+
                     if (playerController.isBot) playerController.BtnBoBaiBot();
 
                     else playerController.BtnBoBai();
                 }
-                            
-                NextPlayer(playerChecking);              
+                Debug.Log($"0 Current Player above is  {playerChecking}");
+                NextPlayer(ref playerChecking);
                 this.gameObject.SetActive(false);
             }
         }
     }
-    public void NextPlayer(int CurrentPlayer)
+    public void NextPlayer(ref int CurrentPlayer)
     {
         CurrentPlayer--;
+        Debug.Log($"0 Current Player above is  {CurrentPlayer}");
         for (int i = 0; i < gameController.arrPlayer.Length; i++)
         {
             if (CurrentPlayer < 0) CurrentPlayer = gameController.arrPlayer.Length - 1;
@@ -153,16 +161,20 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
             else break;           
         }
-        
+
+        Debug.Log($"1 Current Player above is  {CurrentPlayer}");
         if (CurrentPlayer < 0)
         {
-            CurrentPlayer = gameController.arrPlayer.Length - 1;
+            //CurrentPlayer = gameController.arrPlayer.Length - 1;
+            CurrentPlayer = gameController.playerPlaying - 1;
             gameController.indexBigBlind = CurrentPlayer;
             //Debug.Log($"CurrentPlayer is {CurrentPlayer}");
             ////if (gameController.photonViews.IsMine)
             //    gameController.photonViews.RPC("RPC_OnlyIndexBigBlind", RpcTarget.All, CurrentPlayer); 
             if (gameController.arrPlayer[CurrentPlayer]?.timeCounter.GetComponent<Image>().fillAmount > 0)
             {
+                Debug.Log($"2 Current Player above is  {CurrentPlayer}");
+               
                 gameController.arrPlayer[CurrentPlayer]?.timeCounter.gameObject.SetActive(true);
             }
             else if (!gameController.isCheckCard && !gameController.isShowDown)
@@ -196,6 +208,8 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
             if (gameController.arrPlayer[CurrentPlayer]?.timeCounter.GetComponent<Image>().fillAmount > 0)
             {
+                Debug.Log($"Current Player is {CurrentPlayer}");
+              
                 gameController.arrPlayer[CurrentPlayer]?.timeCounter.gameObject.SetActive(true);
             }
             else if (!gameController.isCheckCard && !gameController.isShowDown)
@@ -228,6 +242,6 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     public void CheckNextPlayer()
     {
         playerChecking = gameController.indexBigBlind;       
-        NextPlayer(playerChecking);
+        NextPlayer(ref playerChecking);
     }
 }

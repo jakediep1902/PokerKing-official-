@@ -2134,6 +2134,7 @@ MonoBehaviour:
   txtIndex: {fileID: 1731854394}
   txtBarTotalMoney: {fileID: 1071853251}
   txtSetBlindVlue: {fileID: 2077415756}
+  txtDisPlayIndexBigBlind: {fileID: 1731854394}
   sliderVlue: {fileID: 615137811}
   imageConnecting: {fileID: 1920984389}
   blindVlue: 0
@@ -12921,12 +12922,12 @@ GameObject:
   - component: {fileID: 1731854395}
   - component: {fileID: 1731854394}
   m_Layer: 5
-  m_Name: Common Index Card
+  m_Name: TxtIndexBigBlind
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1731854393
 RectTransform:
   m_ObjectHideFlags: 0
