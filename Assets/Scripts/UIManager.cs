@@ -57,6 +57,6 @@ public class UIManager : MonoBehaviourPunCallbacks
     {
         txtIndex.text = gameController.commonIndex.ToString();
         txtBarTotalMoney.text = gameController.FormatVlueToString(gameController.barTotalMoney);
-        txtDisPlayIndexBigBlind.text = gameController.indexBigBlind.ToString();
+        //txtDisPlayIndexBigBlind.text = gameController.indexBigBlind.ToString();
     }   
 }

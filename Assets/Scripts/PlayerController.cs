@@ -371,8 +371,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             Debug.Log("gameController is null");
         }
         card1 = gameController.cards[index];
-        card1.SetActive(false);
-        Invoke(nameof(DelayActiveCard1), 1f);
+        //card1.SetActive(false);
+        card1.GetComponent<SpriteRenderer>().enabled = false;
+        Invoke(nameof(DelayActiveCard1), 1.3f);
         gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 4;
         listCard.Add(card1);//add card to list to check
         gameController.listCardsRemoved.Add(card1.GetComponent<Card>().ID);
@@ -388,8 +389,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             Debug.Log("gameController2 is null");
         }
         card2 = gameController.cards[index];
-        card2.SetActive(false);
-        Invoke(nameof(DelayActiveCard2), 1f);
+        //card2.SetActive(false);
+        card2.GetComponent<SpriteRenderer>().enabled = false;
+        Invoke(nameof(DelayActiveCard2), 1.3f);
         gameController.cards[index].GetComponent<SpriteRenderer>().sortingOrder = 5;
         listCard.Add(card2);
         gameController.listCardsRemoved.Add(card2.GetComponent<Card>().ID);
@@ -397,11 +399,11 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void DelayActiveCard1()
     {
-        card1.SetActive(true);
+        card1.GetComponent<SpriteRenderer>().enabled = true;
     }
     public void DelayActiveCard2()
     {
-        card2.SetActive(true);
+        card2.GetComponent<SpriteRenderer>().enabled = true;
     }
     [PunRPC]
     public void CoverCardOtherClient()

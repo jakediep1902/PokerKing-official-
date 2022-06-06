@@ -15,7 +15,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     UIManager uIManager;
     [SerializeField] int playerChecking;
     public bool isFirstGround = true;
-    public Text txtCheckingPlayer;
+    //public Text txtCheckingPlayer;
     
     private void Awake()
     {
@@ -118,7 +118,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     }  
     private void FixedUpdate()
     {
-        txtCheckingPlayer.text = playerChecking.ToString();
+        //txtCheckingPlayer.text = playerChecking.ToString();
         if (playerController.isTurn && (gameController.isCheckCard == false) && (gameController.isShowDown == false))
         {
             if (imageFill.fillAmount > 0)

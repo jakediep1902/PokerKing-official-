@@ -4,14 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class RewardTopup : MonoBehaviour
-{
-
+{   
     Vector3 posDefaul;
     public Text txtMoneyWon;
     public RectTransform posTargets;
 
     private void OnEnable()
-    {
+    {              
         posDefaul = new Vector3(0f, 1f, 0f);     
         gameObject.GetComponent<RectTransform>().position = posDefaul;
         Invoke(nameof(Inactive), 3f);

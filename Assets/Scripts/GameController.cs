@@ -546,7 +546,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             //if (photonViews.IsMine)
             //    Invoke(nameof(BtnPlayAgain), 20f);
         }
-
+        StartCoroutine(DelayLoadScene(40f));
     }//using
     public void CheckStraightFlush(PlayerController player)
     {
@@ -1641,6 +1641,11 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
        
         SceneManager.LoadScene("Game");
     }//using
+    IEnumerator DelayLoadScene(float time = 40f)
+    {
+        yield return new WaitForSeconds(time);
+        SceneManager.LoadScene("Game");
+    }
     public bool CheckEqualBlind()//using
     {
         UpdatePlayerPlayings();
@@ -1685,7 +1690,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public IEnumerator ResetTimeCounter(float timeDelay)
     {
        // Debug.Log("refresh timeCounter");
-       // if (photonViews.IsMine) photonViews.RPC("RPC_OnlyIndexBigBlind", RpcTarget.All, indexBigBlind);
+        if (photonViews.IsMine) photonViews.RPC("RPC_OnlyIndexBigBlind", RpcTarget.AllViaServer, indexBigBlind);
         yield return new WaitForSeconds(timeDelay);
         UpdatePlayerPlayings();
         foreach (var item in arrPlayer)
@@ -1815,9 +1820,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         arrPlayer[0].money += moneyWon;
         barTotalMoney -= barTotalMoney;     
         if (arrPlayer[0].rewardTopup != null)
-        {
+        {           
             arrPlayer[0].rewardTopup.SetActive(true);
-            arrPlayer[0].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = moneyWon.ToString();
+            arrPlayer[0].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = FormatVlueToString(moneyWon);
             //barTotalMoney = 0;
         }
         BlurAllCard();
@@ -1939,9 +1944,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                                 loser.money += moneyReturn;
                                 barTotalMoney -= moneyReturn;
                                 Debug.Log($"player {loser.name} has been returned {moneyReturn} $");
-                                loser.SetClipToPlayDelay("addchip", 1.5f);
+                                loser.SetClipToPlayDelay("addchip", 1.5f);                               
                                 loser.rewardTopup.SetActive(true);
-                                loser.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = moneyReturn.ToString();
+                                loser.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = FormatVlueToString(moneyReturn);
                             }
                         }
                         Debug.Log("End");
@@ -2024,9 +2029,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                         winner.SetClipToPlayDelay("addchip",1.5f);
                           
                         if(totalWon>0)
-                        {
+                        {                           
                             winner.rewardTopup.SetActive(true);
-                            winner.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = totalWon.ToString();
+                            winner.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = FormatVlueToString(totalWon);
 
                             HighLightCardWin(winner);
                             ScaleCardWin(winner, 1.15f);
@@ -2051,8 +2056,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                     {
                         arrPlayer[i].money += totalWon;
                         arrPlayer[i].moneyBlinded=0;
-                        barTotalMoney -= totalWon;                        
-                        arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = totalWon.ToString();
+                        barTotalMoney -= totalWon;                      
+                        arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = FormatVlueToString(totalWon);
                         Debug.Log($"player {arrPlayer[i].name} win total {totalWon} $");
                         //SetClipToPlayByScore(arrPlayer[i].score);
                         //SetClipToPlay2("victory");
@@ -2075,9 +2080,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                                     barTotalMoney -= moneyReturn;
                                     Debug.Log($"player {folder.name} has been returned {moneyReturn} $");
 
-                                    arrPlayer[i].SetClipToPlayDelay("addchip", 1.5f);
+                                    arrPlayer[i].SetClipToPlayDelay("addchip", 1.5f);                                   
                                     folder.rewardTopup.SetActive(true);
-                                    folder.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = moneyReturn.ToString();
+                                    folder.rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = FormatVlueToString(moneyReturn);
                                 }
                                 else if (i == (arrPlayer.Length - 1))
                                 {
@@ -2090,8 +2095,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                     else
                     {
                         Debug.Log($"player {arrPlayer[i].name} win total {totalWon} but received {barTotalMoney}$");
-                        arrPlayer[i].SetClipToPlayDelay("addchip", 1.5f);
-                        arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = barTotalMoney.ToString();
+                        arrPlayer[i].SetClipToPlayDelay("addchip", 1.5f);                      
+                        arrPlayer[i].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = FormatVlueToString(barTotalMoney);
                         arrPlayer[i].money += barTotalMoney;
                         arrPlayer[i].moneyBlinded -= barTotalMoney;
                         barTotalMoney -= barTotalMoney;
@@ -2190,10 +2195,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                 } 
                 else if(arrPlayer.Length==1 && barTotalMoney>0)
                 {
-                    arrPlayer[0].money += barTotalMoney;
-
+                    arrPlayer[0].money += barTotalMoney;                   
                     arrPlayer[0].rewardTopup.SetActive(true);
-                    arrPlayer[0].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = barTotalMoney.ToString();
+                    arrPlayer[0].rewardTopup.gameObject.GetComponent<RewardTopup>().txtMoneyWon.text = FormatVlueToString(barTotalMoney);
 
                     barTotalMoney = 0;
 
