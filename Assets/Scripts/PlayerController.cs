@@ -128,12 +128,12 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             money =(long)Random.Range(200000, 5000000);
             int random = Random.Range((int)0, (int)userData.namesTemplate.Length);
             txtDisplayName.text = userData.namesTemplate[random];
+            Debug.Log($"{gameObject.name}");
         }
         else if (PvPlayer.IsMine)
         {
-           // UpdateDataPlayerFromServer();
+            //UpdateDataPlayerFromServer(); use on build
         }
-        //else if(PvPlayer.IsMine) UpdateDataPlayerFromServer();
 
         if(PvPlayer.IsMine) SyncPlayerOnLoadScene();
     }
@@ -241,9 +241,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         if(card1!=null)
         {
             card1ID = card1.GetComponent<Card>().ID;
-            card2ID = card2.GetComponent<Card>().ID;
-            //string name = txtDisplayName.text;
-            
+            card2ID = card2.GetComponent<Card>().ID;         
         }
         else Debug.Log($"player {ID} disconnected !!");       
 
@@ -468,7 +466,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public virtual void BtnBoBaiBot()
     {
-        if (PvPlayer.IsMine && gameController.isStartGame && isBot) PvPlayer.RPC("BoBai", RpcTarget.All, null);       
+        if (PvPlayer.IsMine && gameController.isStartGame && isBot && isTurn) PvPlayer.RPC("BoBai", RpcTarget.All, null);       
     }
     public void BtnThemCuoc()//player only
     {

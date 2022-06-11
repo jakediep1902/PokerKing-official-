@@ -129,7 +129,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
             else
             {
                 playerController.isTurn = false;
-                Debug.Log($"0 Current Player above is  {playerChecking}");
+                //Debug.Log($"0 Current Player above is  {playerChecking}");
                 playerChecking = gameController.indexBigBlind;
                 //Debug.Log(playerChecking);
                 uIManager.pnlGame.SetActive(false);
@@ -143,7 +143,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
                     else playerController.BtnBoBai();
                 }
-                Debug.Log($"0 Current Player above is  {playerChecking}");
+                //Debug.Log($"0 Current Player above is  {playerChecking}");
                 NextPlayer(ref playerChecking);
                 this.gameObject.SetActive(false);
             }
@@ -152,7 +152,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     public void NextPlayer(ref int CurrentPlayer)
     {
         CurrentPlayer--;
-        Debug.Log($"0 Current Player above is  {CurrentPlayer}");
+        //Debug.Log($"0 Current Player above is  {CurrentPlayer}");
         for (int i = 0; i < gameController.arrPlayer.Length; i++)
         {
             if (CurrentPlayer < 0) CurrentPlayer = gameController.arrPlayer.Length - 1;
@@ -162,7 +162,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
             else break;           
         }
 
-        Debug.Log($"1 Current Player above is  {CurrentPlayer}");
+        //Debug.Log($"1 Current Player above is  {CurrentPlayer}");
         if (CurrentPlayer < 0)
         {
             //CurrentPlayer = gameController.arrPlayer.Length - 1;
@@ -173,7 +173,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
             //    gameController.photonViews.RPC("RPC_OnlyIndexBigBlind", RpcTarget.All, CurrentPlayer); 
             if (gameController.arrPlayer[CurrentPlayer]?.timeCounter.GetComponent<Image>().fillAmount > 0)
             {
-                Debug.Log($"2 Current Player above is  {CurrentPlayer}");
+                //Debug.Log($"2 Current Player above is  {CurrentPlayer}");
                
                 gameController.arrPlayer[CurrentPlayer]?.timeCounter.gameObject.SetActive(true);
             }
@@ -208,7 +208,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
 
             if (gameController.arrPlayer[CurrentPlayer]?.timeCounter.GetComponent<Image>().fillAmount > 0)
             {
-                Debug.Log($"Current Player is {CurrentPlayer}");
+                //Debug.Log($"Current Player is {CurrentPlayer}");
               
                 gameController.arrPlayer[CurrentPlayer]?.timeCounter.gameObject.SetActive(true);
             }

@@ -446,7 +446,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
        // Debug.Log($"NoCommonPos in GameController : {NoCommonPos}");
         if (!isFullFiveCard && NoCommonPos<5)
         {           
-            SetClipToPlay("deal");
+            //SetClipToPlay("deal");
+            photonViews.RPC("RPC_PlayClip", RpcTarget.All,"deal");
             cards[commonIndex].SetActive(true);
             cards[commonIndex].transform.position = startPos.position;
             cards[commonIndex].AddComponent<CommonCard>();           
@@ -471,7 +472,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         {                     
             item.moneyBlinding = 0;
         }
-        SetClipToPlay("chipwin");
+        //SetClipToPlay("chipwin");
+        photonViews.RPC("RPC_PlayClip", RpcTarget.All,"chipwin");
         yield return new WaitForSeconds(2);
         //RPC_SetNewGround(2f * DealTimes * delay);
         for (int i = 0; i < DealTimes; i++)
@@ -1690,7 +1692,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public IEnumerator ResetTimeCounter(float timeDelay)
     {
        // Debug.Log("refresh timeCounter");
-        if (photonViews.IsMine) photonViews.RPC("RPC_OnlyIndexBigBlind", RpcTarget.AllViaServer, indexBigBlind);
+        //if (photonViews.IsMine) photonViews.RPC("RPC_OnlyIndexBigBlind", RpcTarget.AllViaServer, indexBigBlind);
         yield return new WaitForSeconds(timeDelay);
         UpdatePlayerPlayings();
         foreach (var item in arrPlayer)

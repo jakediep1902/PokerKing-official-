@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
-//using Newtonsoft.Json;
+using Newtonsoft.Json;
 using UnityEngine.UI;
 using System;
 using UnityEngine.SceneManagement;
@@ -46,7 +46,8 @@ public class PlayFabManager : MonoBehaviour
 
     void Start()
     {
-      
+        inputID.text = PlayerPrefs.GetString("ID");
+        inputPassWord.text = PlayerPrefs.GetString("PassWord");
     }
     private void OnValidate()
     {
@@ -74,7 +75,7 @@ public class PlayFabManager : MonoBehaviour
         {
             Data = new Dictionary<string, string>
             {               
-                //{"Player", JsonConvert.SerializeObject(userData)}
+                {"Player", JsonConvert.SerializeObject(userData)}
             }
         };
         PlayFabClientAPI.UpdateUserData(request, OnDatasSend, OnError);
@@ -89,7 +90,7 @@ public class PlayFabManager : MonoBehaviour
         Debug.Log($"Recieved Player data");
         if (obj.Data != null && obj.Data.ContainsKey("Player"))
         {
-            //userData = JsonConvert.DeserializeObject<UserData>(obj.Data["Player"].Value);
+            userData = JsonConvert.DeserializeObject<UserData>(obj.Data["Player"].Value);
             if(userData.userName=="PlayerName" || userData.userName=="")
             {
                 userData.userName = inputID.text;
@@ -114,14 +115,15 @@ public class PlayFabManager : MonoBehaviour
     //login
     public void Login()
     {
-        if(inputID.text=="" && inputPassWord.text=="")
+        if(inputID.text.Length<6 || inputID.text.Length > 10 || inputPassWord.text.Length<6 || inputPassWord.text.Length > 10)
         {
-            var request = new LoginWithPlayFabRequest
-            {
-                Username = "GUESTS",
-                Password = "GUESTS",
-            };
-            PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnLoginError);
+            //var request = new LoginWithPlayFabRequest
+            //{
+            //    Username = "GUESTS",
+            //    Password = "GUESTS",
+            //};
+            //PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnLoginError);
+            ShowNotification("User name or password must be 6 - 10 character!");
         }
         else
         {
@@ -143,6 +145,8 @@ public class PlayFabManager : MonoBehaviour
 
     private void OnLoginSuccess(LoginResult obj)
     {
+        PlayerPrefs.SetString("ID", inputID.text);
+        PlayerPrefs.SetString("PassWord", inputPassWord.text);
         Debug.Log($"Login successful with ID {obj.PlayFabId}");
         ShowNotification("Please wait...!");
         LoadDataUser();
@@ -153,9 +157,9 @@ public class PlayFabManager : MonoBehaviour
     //Register
     public void Register()
     {
-        if(inputID.text.Length<6 || inputPassWord.text.Length<6)
+        if(inputID.text.Length<6 || inputID.text.Length >10 || inputPassWord.text.Length<6 || inputPassWord.text.Length >10)
         {
-            ShowNotification("User Name or Password at least 6 characters.Please try again !!!");
+            ShowNotification("User Name or Password must be 6-10 character.Please try again !!!");
         }
         else
         {
@@ -177,15 +181,22 @@ public class PlayFabManager : MonoBehaviour
     }
     private void RegisterSuccess(RegisterPlayFabUserResult obj)
     {
+        PlayerPrefs.SetString("ID", inputID.text);
+        PlayerPrefs.SetString("PassWord", inputPassWord.text);
         Debug.Log($"Register Success with userName: {obj.Username}");
         ShowNotification("Register successful!");
         userData.userName = obj.Username;
         userData.money = 200000;
-        SceneManager.LoadScene("Game");
+        SaveDatasUser();
+        Invoke(nameof(LoadScene), 2f);
     }
 
     public void ShowNotification(string notification)
     {
         txtNotification.text = notification;       
+    }
+    public void LoadScene()
+    {
+        SceneManager.LoadScene("Game");
     }
 }
