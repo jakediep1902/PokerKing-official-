@@ -39,7 +39,9 @@ public class Bot : MonoBehaviourPunCallbacks
     [PunRPC]
    public void BotAI(int option)
     {
-        
+        //option = 0;
+       
+
         switch (option)
         {
             case 0:
@@ -70,7 +72,7 @@ public class Bot : MonoBehaviourPunCallbacks
     {
         if(PvBot.IsMine)
         {
-            randomOption = Random.Range(0, 4);
+            randomOption = Random.Range(0, 4);           
             PvBot.RPC("BotAI", RpcTarget.All, randomOption);
         }        
     }

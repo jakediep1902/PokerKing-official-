@@ -26,6 +26,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     public override void OnEnable()
     {
         gameController = GameController.Instance;
+        if (gameController.isCheckCard || gameController.isEndGame) return;
       
         playerController.isTurn = true;
         
@@ -155,7 +156,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         //Debug.Log($"0 Current Player above is  {CurrentPlayer}");
         for (int i = 0; i < gameController.arrPlayer.Length; i++)
         {
-            if (CurrentPlayer < 0) CurrentPlayer = gameController.arrPlayer.Length - 1;
+            if (CurrentPlayer < 0 || CurrentPlayer>=gameController.arrPlayer.Length) CurrentPlayer = gameController.arrPlayer.Length - 1;
            
             if (gameController.arrPlayer[CurrentPlayer] == null || CurrentPlayer==gameController.arrPlayer.Length) CurrentPlayer--;
 

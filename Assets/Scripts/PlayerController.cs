@@ -309,8 +309,10 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void FoldCard()
     {
-        if (card1?.transform.position != Vector3.zero)//Fold card
+        
+        if (card1?.transform.position != Vector3.zero && gameController.photonViews.IsMine && card1.activeSelf)//Fold card
         {
+            //Debug.Log($"Player {this.ID}");
             card1.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
             card2.transform.position = Vector3.Lerp(card1.transform.position, Vector3.zero, 0.02f);
             card1.transform.Rotate(1, 2, 1);
@@ -446,7 +448,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         Color tempColor = Color.white;
         tempColor.a = 0.3f;
         GetComponent<SpriteRenderer>().color = tempColor;
-        Invoke("HandleBoBai", 0.4f);
+        Invoke("HandleBoBai", 0.7f);
         card1.GetComponent<SpriteRenderer>().sprite = cardTemplate1.GetComponent<SpriteRenderer>().sprite;
         card2.GetComponent<SpriteRenderer>().sprite = cardTemplate2.GetComponent<SpriteRenderer>().sprite;
         cardTemplate1.SetActive(false);

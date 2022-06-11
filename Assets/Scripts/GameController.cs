@@ -231,6 +231,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         UpdatePlayerPlayings();
         UpdatePosDefaul();
         CheckMoneyPlayer();
+        uIManager.pnlGame.gameObject.SetActive(false);
 
         for (int i = 0; i < arrPlayer.Length; i++)
         {
@@ -299,6 +300,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                 Debug.Log($"playerPlaying : {playerPlaying} ,playerInRoom : {playerInRoom}");
                 //BtnCheckCard(); //can't use because stackCheck = 0 (there is no Card to check)
                 //Debug.Log($"arrPlayer Count is {arrPlayer.Length}");
+                
                 CheckWinner(arrPlayer);
                 isEndGame = true;
                 isCheckCard = true;
@@ -468,11 +470,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {      
         yield return new WaitForSeconds(2);
 
-        foreach (var item in arrPlayer)
-        {                     
-            item.moneyBlinding = 0;
-        }
-        //SetClipToPlay("chipwin");
+        photonViews.RPC("SetMoneyBlindingToZero", RpcTarget.All, null);
         photonViews.RPC("RPC_PlayClip", RpcTarget.All,"chipwin");
         yield return new WaitForSeconds(2);
         //RPC_SetNewGround(2f * DealTimes * delay);
@@ -486,6 +484,15 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         RPC_SetNewGround(0);
     }//using
    
+    [PunRPC]
+    public void SetMoneyBlindingToZero()
+    {
+        foreach (var item in arrPlayer)
+        {
+            item.moneyBlinding = 0;
+        }
+    }
+
     [PunRPC]
     public void PlayAgain()
     {
@@ -505,6 +512,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }//using
     public void CheckWinner(PlayerController[] arrPlayer)
     {
+        uIManager.pnlGame.gameObject.SetActive(false);
         BackCard[] arrCardHide = FindObjectsOfType<BackCard>();
         Card[] arrCardBlur = FindObjectsOfType<Card>();
 
@@ -1718,6 +1726,12 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             catch
             {
                 Debug.Log($"arrPlayer[indexBigBlind] is null with indexBigBlind {indexBigBlind}");
+                if (photonViews.IsMine)
+                {
+                    indexBigBlind--;
+                    photonViews.RPC("RPC_OnlyIndexBigBlind", RpcTarget.AllViaServer, indexBigBlind);
+                    arrPlayer[indexBigBlind].timeCounter.gameObject.SetActive(true);
+                }
             }
         }
 
