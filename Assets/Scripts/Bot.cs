@@ -18,14 +18,11 @@ public class Bot : MonoBehaviourPunCallbacks
         playerController = GetComponent<PlayerController>();
         timeCounter = playerController.timeCounter;
         PvBot = GetComponent<PhotonView>();
-    }
-   
+    }   
     private void Start()
     {
         timeCounter.eEnable.AddListener(() => DelayGamePlay());
     }
-
-
     private void Update()
     {
         //if(playerController.isTurn && !isTurns)
@@ -46,22 +43,17 @@ public class Bot : MonoBehaviourPunCallbacks
         {
             case 0:
                 playerController.BtnBoBaiBot();                           
-                //Debug.Log($"player {playerController.ID} Fold");
                 break;
             case 1:
                 playerController.BtnXemBaiBot();                            
-                //Debug.Log($"player {playerController.ID} check");
                 break;
             case 2:
                 playerController.BtnTheoCuocBot();                            
-                //Debug.Log($"player {playerController.ID} follow");
                 break;
             case 3:
                 playerController.BtnAllInBot();
-                //Debug.Log($"player {playerController.ID} All In");
                 break;
-        }
-        
+        }       
     }
     public void DelayGamePlay()
     {

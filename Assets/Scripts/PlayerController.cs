@@ -71,8 +71,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     public enum PhotonEventCodes
     {
         SyncLateJoin = 0,
-        SyncOnLoadScene
-        
+        SyncOnLoadScene      
     }
     private void Awake()
     {
@@ -128,11 +127,11 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             money =(long)Random.Range(200000, 5000000);
             int random = Random.Range((int)0, (int)userData.namesTemplate.Length);
             txtDisplayName.text = userData.namesTemplate[random];
-            Debug.Log($"{gameObject.name}");
+            //Debug.Log($"{gameObject.name}");
         }
         else if (PvPlayer.IsMine)
         {
-            //UpdateDataPlayerFromServer(); use on build
+            UpdateDataPlayerFromServer();// use on build
         }
 
         if(PvPlayer.IsMine) SyncPlayerOnLoadScene();
@@ -177,9 +176,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         catch
         {
             Debug.Log($"Error in PlayerController ID {PvPlayer.ViewID} when Disabled !!!");
-            gameController.BtnDeal();
+            if(!PvPlayer.IsMine) gameController.BtnDeal();
         }
-
     }
     private void NetworkingClient_EventReceived(EventData obj)
     {
@@ -308,8 +306,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         this.money = money;      
     }
     public void FoldCard()
-    {
-        
+    {     
         if (card1?.transform.position != Vector3.zero && gameController.photonViews.IsMine && card1.activeSelf)//Fold card
         {
             //Debug.Log($"Player {this.ID}");
@@ -429,15 +426,23 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         timeCounter.imageFill.fillAmount = 0f;
         SetClipToPlay(clipName,"dice_chipin");
     }
-
-
     public virtual void BtnXemBai()
     {
         if (PvPlayer.IsMine && gameController.isStartGame && !isBot) PvPlayer.RPC("XemBai", RpcTarget.All, null);     
     }
     public virtual void BtnXemBaiBot()
     {
-        if (PvPlayer.IsMine && gameController.isStartGame && isBot) PvPlayer.RPC("XemBai", RpcTarget.All, null);      
+        if (PvPlayer.IsMine && gameController.isStartGame && isBot)
+        {
+            if(moneyBlinded<gameController.bigestBlinded)
+            {
+                BtnBoBaiBot();
+            }
+            else
+            {
+                PvPlayer.RPC("XemBai", RpcTarget.All, null);
+            }      
+        }
     }
     [PunRPC]
     public virtual void BoBai()
@@ -487,10 +492,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         {
             moneyBlinding = money;//Theo cuoc
             PvPlayer.RPC("SetValueBlind", RpcTarget.All, moneyBlinding);
-
             if (gameController.isStartGame) PvPlayer.RPC("XemBaiSetAudio", RpcTarget.All, "allin");
             //BtnXemBai();
-
             uIManager.pnlThemCuoc.SetActive(false);
             uIManager.pnlGame.SetActive(false);
         }
@@ -529,8 +532,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         money -= vlue;
         gameController.barTotalMoney += vlue;
         moneyBlinded += vlue;
-        gameController.UpdateBlind();
-        
+        gameController.UpdateBlind();       
     }
     public void BtnOkBlind()
     {
@@ -545,7 +547,6 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
 
             if (gameController.isStartGame) PvPlayer.RPC("XemBaiSetAudio", RpcTarget.All,  "raise");
             //BtnXemBai();
-
             uIManager.pnlThemCuoc.SetActive(false);
             uIManager.pnlGame.SetActive(false);
         }
@@ -575,7 +576,6 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     }
     public void SetImageConnecting()=> uIManager.imageConnecting.gameObject.SetActive(false);
     
-
     //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     //{
     //    // there is a crazy bug in this class "specifyed cast is not valid" because you click on the player owner first !!!
@@ -592,10 +592,10 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     //}
    public void RequestSaveData()
     {
-        //userData.money = money;
-        //userData.userName = txtDisplayName.text;
-        //playFabManager.userData = userData;
-        //playFabManager.SaveDatasUser();
+        userData.money = money;
+        userData.userName = txtDisplayName.text;
+        playFabManager.userData = userData;
+        playFabManager.SaveDatasUser();
     }
     public void SetupAudioSource()
     {
@@ -603,10 +603,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         audioSource = GetComponent<AudioSource>();
         audioSource2 = gameObject.AddComponent<AudioSource>();
         var listAudios = FindObjectOfType<AudioListPlayer>();
-        listAudio = listAudios.listAudio;
-       
-    }
-    
+        listAudio = listAudios.listAudio;     
+    }    
     public void SetClipToPlay(string clipName="",string clipName2 ="")
     {
         foreach (var item in listAudio)
