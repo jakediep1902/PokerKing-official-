@@ -1,0 +1,122 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3758f8f58fdef43803eb9be1df0608, type: 3}
+  m_Name: PhotonServerSettings
+  m_EditorClassIdentifier: 
+  AppSettings:
+    AppIdRealtime: d7c2d759-fe5d-426c-80f6-fd781dd6531d
+    AppIdFusion: 
+    AppIdChat: 
+    AppIdVoice: 
+    AppVersion: 
+    UseNameServer: 1
+    FixedRegion: 
+    Server: 
+    Port: 0
+    ProxyServer: 
+    Protocol: 0
+    EnableProtocolFallback: 1
+    AuthMode: 0
+    EnableLobbyStatistics: 0
+    NetworkLogging: 1
+  DevRegion: asia
+  PunLogging: 0
+  EnableSupportLogger: 0
+  RunInBackground: 1
+  StartInOfflineMode: 0
+  RpcList:
+  - ClickRpc
+  - DestroyRpc
+  - DestroySpaceship
+  - Fire
+  - RespawnSpaceship
+  - RPC_ChangeSprite
+  - SetIndexToRemove
+  - CreateCommonCard
+  - SetCommonIndex
+  - PlayAgain
+  - Deal
+  - SpawPlayer
+  - SetNoPlayer
+  - SetNamePlayer
+  - ChangeName
+  - SetPosPlayer
+  - UpdatePlayer
+  - SyncName
+  - AddPrefab
+  - UpdateDicPos
+  - SetParent
+  - InactivePos
+  - ReactivePos
+  - CreateBackCard
+  - ActiveBackCard
+  - ActiveAllBackCard
+  - RPC_SetCard1
+  - RPC_SetCard2
+  - CoverCardOtherClient
+  - RPC_IndexBigBlind
+  - RPC_InvokeSetBigBlind
+  - SetBigBlind
+  - StartCheckCard
+  - InactiveAllTemplateCard
+  - InactiveTempCard
+  - SetRandomBigBlind
+  - AutoDeal
+  - Test
+  - PlayerCount
+  - UpdatePlayerPlaying
+  - RPC_ActiveTimeCounter
+  - RPC_InactiveTimeCounter
+  - ActiveTimeCounterStart
+  - InactiveTimeCounterStart
+  - RPC_PerformEvent
+  - XemBai
+  - BoBai
+  - UpdatePlayerPlayings
+  - HandleBoBai
+  - SetValueBlind
+  - ShowDown
+  - RPC_ShowDown
+  - SetNewGround
+  - CheckMoneyPlayer
+  - StartCount
+  - SetIsStartGame
+  - RPC_SetIsStartGame
+  - SetIsFirstDeal
+  - RefreshListcard
+  - SetIsFullFiveCard
+  - PushCardToStackCheck
+  - Pause
+  - InitBlind
+  - BuffererCard
+  - SetTest
+  - UpdatePlayerPlayingWithDelay
+  - SetIsShowDown
+  - SetTurnToAllPlayer
+  - StopForSeconds
+  - RPC_OnlyIndexBigBlind
+  - BotAI
+  - SetIsJoinAble
+  - RequestMastersClientCheckJoin
+  - RequestSync
+  - RequestToMasterJoinAble
+  - XemBaiSetAudio
+  - SetDataPlayer
+  - SetMoneyPlayer
+  - SetNameDisplayPlayer
+  - ExitAccidental
+  - SetClipToPlay
+  - RPC_PlayClip
+  - SetMoneyBlindingToZero
+  DisableAutoOpenWizard: 1
+  ShowSettings: 0
+  DevRegionSetOnce: 1
