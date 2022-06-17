@@ -111,7 +111,16 @@ public class PlayFabManager : MonoBehaviour
     }
 
 
+    public void LoginGuest()
+    {
 
+        var request = new LoginWithPlayFabRequest
+        {
+            Username = "GUESTS",
+            Password = "GUESTS",
+        };
+        PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnLoginError);       
+    }
     //login
     public void Login()
     {
@@ -186,7 +195,7 @@ public class PlayFabManager : MonoBehaviour
         Debug.Log($"Register Success with userName: {obj.Username}");
         ShowNotification("Register successful!");
         userData.userName = obj.Username;
-        userData.money = 200000;
+        userData.money = 5000000;
         SaveDatasUser();
         Invoke(nameof(LoadScene), 2f);
     }

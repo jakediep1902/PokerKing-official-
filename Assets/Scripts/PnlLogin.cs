@@ -8,7 +8,7 @@ public class PnlLogin : MonoBehaviour
     PlayFabManager playFabManager;
 
     public InputField inputID, inputPassWord, inputEmail;
-    public Button btnLogin, btnRegister;
+    public Button btnLogin, btnRegister, btnLoginGuest;
     public Text txtNotification;
     private void Start()
     {               
@@ -17,6 +17,7 @@ public class PnlLogin : MonoBehaviour
         playFabManager.inputPassWord = inputPassWord;
         playFabManager.inputEmail = inputEmail;
         btnLogin.onClick.AddListener(() => playFabManager.Login());
+        btnLoginGuest.onClick.AddListener(() => playFabManager.LoginGuest());
         btnRegister.onClick.AddListener(() => playFabManager.Register());
         playFabManager.txtNotification = txtNotification;
     }
