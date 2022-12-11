@@ -174,7 +174,7 @@ TextureImporter:
       213: 1936818770307933689
     second: cards_texture_packed_56
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -195,6 +195,7 @@ TextureImporter:
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -233,6 +234,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -272,6 +274,18 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -1492,6 +1506,64 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      cards_texture_packed_36: 3505653091745993873
+      cards_texture_packed_11: 4396185986715240435
+      cards_texture_packed_13: -1170282185316881791
+      cards_texture_packed_15: 7979240744335621862
+      cards_texture_packed_56: 1936818770307933689
+      cards_texture_packed_48: -182699465922891169
+      cards_texture_packed_42: -1752703093470000090
+      cards_texture_packed_30: 7572531896201904478
+      cards_texture_packed_40: 6306317162661579997
+      cards_texture_packed_16: 1168366136163193287
+      cards_texture_packed_37: -566684811968792853
+      cards_texture_packed_22: -1449005209308625693
+      cards_texture_packed_45: 5089225358149823207
+      cards_texture_packed_8: -8730013354762377698
+      cards_texture_packed_51: 6602668082575459890
+      cards_texture_packed_52: 5256383812187634422
+      cards_texture_packed_38: 1958562037231412857
+      cards_texture_packed_32: 3997833141759074028
+      cards_texture_packed_50: 8519120903092406829
+      cards_texture_packed_20: -6195435018442394795
+      cards_texture_packed_49: 2063476823017508810
+      cards_texture_packed_55: 8034119414249622492
+      cards_texture_packed_27: -8576612713514682143
+      cards_texture_packed_35: -6788837877932195013
+      cards_texture_packed_53: -5584599614876899563
+      cards_texture_packed_14: -6557156777430845193
+      cards_texture_packed_2: 2635119014170364837
+      cards_texture_packed_9: -2242751475196130440
+      cards_texture_packed_1: -3785512530016009588
+      cards_texture_packed_6: 3717038043346597300
+      cards_texture_packed_33: -5340925659069561740
+      cards_texture_packed_12: -603191821277667680
+      cards_texture_packed_39: 6516625004102568779
+      cards_texture_packed_4: -2846007188373831992
+      cards_texture_packed_18: 3456436809919044708
+      cards_texture_packed_24: 5642965925425345811
+      cards_texture_packed_46: 4066316090859415282
+      cards_texture_packed_3: -7710482226980381925
+      cards_texture_packed_10: -2263581357501621958
+      cards_texture_packed_26: -5097071782726880100
+      cards_texture_packed_31: -4825399913500281572
+      cards_texture_packed_19: -6779568365129030362
+      cards_texture_packed_29: 1307069555980197312
+      cards_texture_packed_41: -2844569138375392086
+      cards_texture_packed_44: -523646205791018915
+      cards_texture_packed_28: -2114729016253938133
+      cards_texture_packed_7: 2099900139509552655
+      cards_texture_packed_17: 3132356097275493152
+      cards_texture_packed_0: -6120434404602459002
+      cards_texture_packed_54: 7885246586761047159
+      cards_texture_packed_34: -6335884352965501801
+      cards_texture_packed_43: -4673161848538637502
+      cards_texture_packed_21: -2874276207547343712
+      cards_texture_packed_25: 7899328974760866549
+      cards_texture_packed_23: -3793618470483648386
+      cards_texture_packed_5: -2708425561442780086
+      cards_texture_packed_47: -500261353233857851
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
