@@ -47,7 +47,7 @@ public class PlayFabManager : MonoBehaviour
     void Start()
     {
         inputID.text = PlayerPrefs.GetString("ID");
-        inputPassWord.text = PlayerPrefs.GetString("PassWord");
+        inputPassWord.text = PlayerPrefs.GetString("PassWord");       
     }
     private void OnValidate()
     {
@@ -113,7 +113,7 @@ public class PlayFabManager : MonoBehaviour
 
     public void LoginGuest()
     {
-
+        //string ID = UnityEngine.Random.Range(1, 1000).ToString();
         var request = new LoginWithPlayFabRequest
         {
             Username = "GUESTS",
