@@ -344,10 +344,6 @@ namespace PlayFab.AdminModels
         /// </summary>
         public string IPAddress;
         /// <summary>
-        /// MAC address to be banned. May affect multiple players.
-        /// </summary>
-        public string MACAddress;
-        /// <summary>
         /// Unique PlayFab assigned ID of the user on whom the operation will be performed.
         /// </summary>
         public string PlayFabId;
@@ -567,6 +563,19 @@ namespace PlayFab.AdminModels
         /// The amount of the specified resource remaining.
         /// </summary>
         public int Amount;
+    }
+
+    [Serializable]
+    public class ChurnPredictionSegmentFilter : PlayFabBaseModel
+    {
+        /// <summary>
+        /// Comparison
+        /// </summary>
+        public SegmentFilterComparison? Comparison;
+        /// <summary>
+        /// RiskLevel
+        /// </summary>
+        public ChurnRiskLevel? RiskLevel;
     }
 
     public enum ChurnRiskLevel
@@ -2392,6 +2401,20 @@ namespace PlayFab.AdminModels
         PhotonApplicationIdAlreadyInUse,
         CloudScriptUnableToDeleteProductionRevision,
         CustomIdNotFound,
+        AutomationInvalidInput,
+        AutomationInvalidRuleName,
+        AutomationRuleAlreadyExists,
+        AutomationRuleLimitExceeded,
+        InvalidGooglePlayGamesServerAuthCode,
+        PlayStreamConnectionFailed,
+        InvalidEventContents,
+        InsightsV1Deprecated,
+        AnalysisSubscriptionNotFound,
+        AnalysisSubscriptionFailed,
+        AnalysisSubscriptionFoundAlready,
+        AnalysisSubscriptionManagementInvalidInput,
+        InvalidGameCenterId,
+        InvalidNintendoSwitchAccountId,
         MatchmakingEntityInvalid,
         MatchmakingPlayerAttributesInvalid,
         MatchmakingQueueNotFound,
@@ -2459,6 +2482,7 @@ namespace PlayFab.AdminModels
         ExportCannotParseQuery,
         ExportControlCommandsNotAllowed,
         ExportQueryMissingTableReference,
+        ExportInsightsV1Deprecated,
         ExplorerBasicInvalidQueryName,
         ExplorerBasicInvalidQueryDescription,
         ExplorerBasicInvalidQueryConditions,
@@ -2479,6 +2503,7 @@ namespace PlayFab.AdminModels
         PartyVersionNotFound,
         MultiplayerServerBuildReferencedByMatchmakingQueue,
         MultiplayerServerBuildReferencedByBuildAlias,
+        MultiplayerServerBuildAliasReferencedByMatchmakingQueue,
         ExperimentationExperimentStopped,
         ExperimentationExperimentRunning,
         ExperimentationExperimentNotFound,
@@ -2545,6 +2570,9 @@ namespace PlayFab.AdminModels
         EventSinkNameInvalid,
         EventSinkSasTokenPermissionInvalid,
         EventSinkSecretInvalid,
+        EventSinkTenantNotFound,
+        EventSinkAadNotFound,
+        EventSinkDatabaseNotFound,
         OperationCanceled,
         InvalidDisplayNameRandomSuffixLength,
         AllowNonUniquePlayerDisplayNamesDisableNotAllowed
@@ -2989,7 +3017,14 @@ namespace PlayFab.AdminModels
         /// </summary>
         public Dictionary<string,string> CustomTags;
         /// <summary>
-        /// Maximum number of profiles to load. Default is 1,000. Maximum is 10,000.
+        /// If set to true, the profiles are loaded asynchronously and the response will include a continuation token and
+        /// approximate profile count until the first batch of profiles is loaded. Use this parameter to help avoid network
+        /// timeouts.
+        /// </summary>
+        public bool? GetProfilesAsync;
+        /// <summary>
+        /// Maximum is 10,000. The value 0 will prevent loading any profiles and return only the count of profiles matching this
+        /// segment.
         /// </summary>
         public uint? MaxBatchSize;
         /// <summary>
@@ -3984,7 +4019,8 @@ namespace PlayFab.AdminModels
         FacebookInstantGames,
         OpenIdConnect,
         Apple,
-        NintendoSwitchAccount
+        NintendoSwitchAccount,
+        GooglePlayGames
     }
 
     [Serializable]
@@ -4367,6 +4403,10 @@ namespace PlayFab.AdminModels
         /// Banned until UTC Date. If permanent ban this is set for 20 years after the original ban date.
         /// </summary>
         public DateTime? BannedUntil;
+        /// <summary>
+        /// The prediction of the player to churn within the next seven days.
+        /// </summary>
+        public ChurnRiskLevel? ChurnPrediction;
         /// <summary>
         /// Array of contact email addresses associated with the player
         /// </summary>
@@ -5212,6 +5252,10 @@ namespace PlayFab.AdminModels
         /// </summary>
         public AllPlayersSegmentFilter AllPlayersFilter;
         /// <summary>
+        /// Filter property for player churn risk level.
+        /// </summary>
+        public ChurnPredictionSegmentFilter ChurnPredictionFilter;
+        /// <summary>
         /// Filter property for first login date.
         /// </summary>
         public FirstLoginDateSegmentFilter FirstLoginDateFilter;
@@ -5985,29 +6029,17 @@ namespace PlayFab.AdminModels
     }
 
     /// <summary>
-    /// This API method is designed to store title specific values which can be read by the client. For example, a developer
-    /// could choose to store values which modify the user experience, such as enemy spawn rates, weapon strengths, movement
-    /// speeds, etc. This allows a developer to update the title without the need to create, test, and ship a new build. This
-    /// operation is additive. If a Key does not exist in the current dataset, it will be added with the specified Value. If it
-    /// already exists, the Value for that key will be overwritten with the new Value.
+    /// This operation is additive. If a Key does not exist in the current dataset, it will be added with the specified Value.
+    /// If it already exists, the Value for that key will be overwritten with the new Value.
     /// </summary>
     [Serializable]
     public class SetTitleDataRequest : PlayFabRequestCommon
     {
         /// <summary>
-        /// The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.).
-        /// </summary>
-        public Dictionary<string,string> CustomTags;
-        /// <summary>
         /// key we want to set a value on (note, this is additive - will only replace an existing key's value if they are the same
         /// name.) Keys are trimmed of whitespace. Keys may not begin with the '!' character.
         /// </summary>
         public string Key;
-        /// <summary>
-        /// Unique identifier for the title, found in the Settings > Game Properties section of the PlayFab developer site when a
-        /// title has been selected.
-        /// </summary>
-        public string TitleId;
         /// <summary>
         /// new value to set. Set to null to remove a value
         /// </summary>
@@ -6416,10 +6448,6 @@ namespace PlayFab.AdminModels
         /// </summary>
         public string IPAddress;
         /// <summary>
-        /// The updated MAC address for the ban. Null for no change.
-        /// </summary>
-        public string MACAddress;
-        /// <summary>
         /// Whether to make this ban permanent. Set to true to make this ban permanent. This will not modify Active state.
         /// </summary>
         public bool? Permanent;
@@ -6452,9 +6480,11 @@ namespace PlayFab.AdminModels
     }
 
     /// <summary>
-    /// This operation is not additive. Using it will cause the indicated catalog version to be created from scratch. If there
-    /// is an existing catalog with the version number in question, it will be deleted and replaced with only the items
-    /// specified in this call.
+    /// When used for SetCatalogItems, this operation is not additive. Using it will cause the indicated catalog version to be
+    /// created from scratch. If there is an existing catalog with the version number in question, it will be deleted and
+    /// replaced with only the items specified in this call. When used for UpdateCatalogItems, this operation is additive. Items
+    /// with ItemId values not currently in the catalog will be added, while those with ItemId values matching items currently
+    /// in the catalog will overwrite those items with the given values.
     /// </summary>
     [Serializable]
     public class UpdateCatalogItemsRequest : PlayFabRequestCommon
@@ -6705,16 +6735,19 @@ namespace PlayFab.AdminModels
     }
 
     /// <summary>
-    /// This operation is not additive. Using it will cause the indicated virtual store to be created from scratch. If there is
-    /// an existing store with the same storeId, it will be deleted and replaced with only the items specified in this call. A
-    /// store contains an array of references to items defined inthe catalog, along with the prices for the item, in both real
-    /// world and virtual currencies. These prices act as an override to any prices defined in the catalog. In this way, the
-    /// base definitions of the items may be defined in the catalog, with all associated properties, while the pricing can be
-    /// set for each store, as needed. This allows for subsets of goods to be defined for different purposes (in order to
-    /// simplify showing some, but not all catalog items to users, based upon different characteristics), along with unique
-    /// prices. Note that all prices defined in the catalog and store definitions for the item are considered valid, and that a
-    /// compromised client can be made to send a request for an item based upon any of these definitions. If no price is
-    /// specified in the store for an item, the price set in the catalog should be displayed to the user.
+    /// When used for SetStoreItems, this operation is not additive. Using it will cause the indicated virtual store to be
+    /// created from scratch. If there is an existing store with the same storeId, it will be deleted and replaced with only the
+    /// items specified in this call. When used for UpdateStoreItems, this operation is additive. Items with ItemId values not
+    /// currently in the store will be added, while those with ItemId values matching items currently in the catalog will
+    /// overwrite those items with the given values. In both cases, a store contains an array of references to items defined in
+    /// the catalog, along with the prices for the item, in both real world and virtual currencies. These prices act as an
+    /// override to any prices defined in the catalog. In this way, the base definitions of the items may be defined in the
+    /// catalog, with all associated properties, while the pricing can be set for each store, as needed. This allows for subsets
+    /// of goods to be defined for different purposes (in order to simplify showing some, but not all catalog items to users,
+    /// based upon different characteristics), along with unique prices. Note that all prices defined in the catalog and store
+    /// definitions for the item are considered valid, and that a compromised client can be made to send a request for an item
+    /// based upon any of these definitions. If no price is specified in the store for an item, the price set in the catalog
+    /// should be displayed to the user.
     /// </summary>
     [Serializable]
     public class UpdateStoreItemsRequest : PlayFabRequestCommon
@@ -6926,6 +6959,10 @@ namespace PlayFab.AdminModels
         /// </summary>
         public UserGoogleInfo GoogleInfo;
         /// <summary>
+        /// User Google Play Games account information, if a Google Play Games account has been linked
+        /// </summary>
+        public UserGooglePlayGamesInfo GooglePlayGamesInfo;
+        /// <summary>
         /// User iOS device information, if an iOS device has been linked
         /// </summary>
         public UserIosDeviceInfo IosDeviceInfo;
@@ -6954,7 +6991,7 @@ namespace PlayFab.AdminModels
         /// </summary>
         public UserPrivateAccountInfo PrivateInfo;
         /// <summary>
-        /// User PSN account information, if a PSN account has been linked
+        /// User PlayStation :tm: Network account information, if a PlayStation :tm: Network account has been linked
         /// </summary>
         public UserPsnInfo PsnInfo;
         /// <summary>
@@ -7091,6 +7128,23 @@ namespace PlayFab.AdminModels
     }
 
     [Serializable]
+    public class UserGooglePlayGamesInfo : PlayFabBaseModel
+    {
+        /// <summary>
+        /// Avatar image url of the Google Play Games player
+        /// </summary>
+        public string GooglePlayGamesPlayerAvatarImageUrl;
+        /// <summary>
+        /// Display name of the Google Play Games player
+        /// </summary>
+        public string GooglePlayGamesPlayerDisplayName;
+        /// <summary>
+        /// Google Play Games player ID
+        /// </summary>
+        public string GooglePlayGamesPlayerId;
+    }
+
+    [Serializable]
     public class UserIosDeviceInfo : PlayFabBaseModel
     {
         /// <summary>
@@ -7171,7 +7225,8 @@ namespace PlayFab.AdminModels
         FacebookInstantGamesId,
         OpenIdConnect,
         Apple,
-        NintendoSwitchAccount
+        NintendoSwitchAccount,
+        GooglePlayGames
     }
 
     [Serializable]
@@ -7196,11 +7251,11 @@ namespace PlayFab.AdminModels
     public class UserPsnInfo : PlayFabBaseModel
     {
         /// <summary>
-        /// PSN account ID
+        /// PlayStation :tm: Network account ID
         /// </summary>
         public string PsnAccountId;
         /// <summary>
-        /// PSN online ID
+        /// PlayStation :tm: Network online ID
         /// </summary>
         public string PsnOnlineId;
     }
