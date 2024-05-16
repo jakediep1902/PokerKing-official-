@@ -217,6 +217,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         //uIManager.pnlGame.SetActive(true);
         //Invoke(nameof(UpdatePlayerPlaying), 5f);   
         UpdatePlayerPlayings();
+        CheckAmountPlayerInRoom();
         UpdatePosDefaul();
         CheckMoneyPlayer();
         uIManager.pnlGame.gameObject.SetActive(false);
@@ -1361,6 +1362,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
         playerInRoom = arrPlayer.Length;
+        
         // playerInRoom = (int)PhotonNetwork.CurrentRoom.PlayerCount;
     }
     [PunRPC]
@@ -1383,6 +1385,18 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public void BtnReady()//using 
     {
         if (arrPlayer.Length <= 1) Invoke(nameof(SpawBot), 6f);
+
+        else if (arrPlayer.Length >= 6)
+        {
+            Debug.LogError($"Maximum current players are: {arrPlayer.Length}  please fix this issue!!!!");
+            if (arrPlayer.Length >= 6)
+            {
+                //Debug.LogWarning($"Current players in room are : {playerInRoom}");
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            }
+
+        }
+        
      
         SpawPlayer();
         if (!isStartGame)
@@ -1609,12 +1623,14 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {
         if(photonViews.IsMine) SyncPlayersDatasJoinLate();
    
-        SceneManager.LoadScene("Game");
+        //SceneManager.LoadScene("Game");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }//using
     IEnumerator DelayLoadScene(float time = 40f)
     {
         yield return new WaitForSeconds(time);
-        SceneManager.LoadScene("Game");
+        //SceneManager.LoadScene("Game");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     public bool CheckEqualBlind()//using
     {
@@ -2215,6 +2231,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         if (playerInRoom == 1)
         {
             int random = Random.Range(1,3);
+            random = 5;//To Debug
             //Debug.Log($"Spawn {random} bot");
             for (int j = 0; j < random; j++)
             {              
@@ -2333,4 +2350,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         else if (score >= 300) SetClipToPlay("onePairWin");
         else SetClipToPlay("highCardWin");
     }  
+    public void CheckAmountPlayerInRoom()
+    {
+        Debug.Log($"Amount current players is :{playerInRoom}");
+    }
 }

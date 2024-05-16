@@ -79,7 +79,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedLobby()
     {
-        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 6 }, TypedLobby.Default);
+        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 20 }, TypedLobby.Default);
     }
     public override void OnJoinedRoom()
     {
@@ -94,6 +94,16 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         //BtnReady();
         //gameController.playerInRoom = (int)PhotonNetwork.CurrentRoom.PlayerCount;
         Invoke(nameof(BtnReady), 4f);
+    }
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.Log(message+ 1111111);
+        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 6 }, TypedLobby.Default);
+    }
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        Debug.Log(message);
+        base.OnJoinRandomFailed(returnCode, message);
     }
     public override void OnLeftRoom()
     {

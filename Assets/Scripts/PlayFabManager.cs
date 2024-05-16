@@ -126,12 +126,12 @@ public class PlayFabManager : MonoBehaviour
     {
         if(inputID.text.Length<6 || inputID.text.Length > 10 || inputPassWord.text.Length<6 || inputPassWord.text.Length > 10)
         {
-            //var request = new LoginWithPlayFabRequest
-            //{
-            //    Username = "GUESTS",
-            //    Password = "GUESTS",
-            //};
-            //PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnLoginError);
+            var request = new LoginWithPlayFabRequest
+            {
+                Username = "ADMINS",
+                Password = "ADMINS",
+            };
+            PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnLoginError);
             ShowNotification("User name or password must be 6 - 10 character!");
         }
         else

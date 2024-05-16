@@ -454,8 +454,11 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         tempColor.a = 0.3f;
         GetComponent<SpriteRenderer>().color = tempColor;
         Invoke("HandleBoBai", 0.7f);
-        card1.GetComponent<SpriteRenderer>().sprite = cardTemplate1.GetComponent<SpriteRenderer>().sprite;
-        card2.GetComponent<SpriteRenderer>().sprite = cardTemplate2.GetComponent<SpriteRenderer>().sprite;
+        if(card1 && card2)
+        {
+            card1.GetComponent<SpriteRenderer>().sprite = cardTemplate1.GetComponent<SpriteRenderer>().sprite;
+            card2.GetComponent<SpriteRenderer>().sprite = cardTemplate2.GetComponent<SpriteRenderer>().sprite;
+        }
         cardTemplate1.SetActive(false);
         cardTemplate2.SetActive(false);       
         gameController.UpdatePlayerPlayings();
