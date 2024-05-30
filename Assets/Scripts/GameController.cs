@@ -12,6 +12,8 @@ using ExitGames.Client.Photon;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using PlayFab.EconomyModels;
+using Image = UnityEngine.UI.Image;
 
 
 public class GameController : MonoBehaviourPunCallbacks, IPunObservable
@@ -67,6 +69,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public int indexBigBlind;
     public int amountPlayer;
     public int playerInRoom = 0;
+    private int allPlayers = 0;
     public int playerPlaying = 0;
     public int amountCardInit = 0;
     public int NoTemplate = 0;
@@ -216,8 +219,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
         //uIManager.pnlGame.SetActive(true);
         //Invoke(nameof(UpdatePlayerPlaying), 5f);   
-        UpdatePlayerPlayings();
-        CheckAmountPlayerInRoom();
+        UpdatePlayerPlayings();       
         UpdatePosDefaul();
         CheckMoneyPlayer();
         uIManager.pnlGame.gameObject.SetActive(false);
@@ -1384,19 +1386,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }
     public void BtnReady()//using 
     {
-        if (arrPlayer.Length <= 1) Invoke(nameof(SpawBot), 6f);
-
-        else if (arrPlayer.Length >= 6)
-        {
-            Debug.LogError($"Maximum current players are: {arrPlayer.Length}  please fix this issue!!!!");
-            if (arrPlayer.Length >= 6)
-            {
-                //Debug.LogWarning($"Current players in room are : {playerInRoom}");
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-            }
-
-        }
-        
+        if (arrPlayer.Length <= 1) Invoke(nameof(SpawBot), 6f);           
      
         SpawPlayer();
         if (!isStartGame)
@@ -2230,8 +2220,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {             
         if (playerInRoom == 1)
         {
-            int random = Random.Range(1,3);
-            random = 5;//To Debug
+            int random = Random.Range(1,4);
+            //random = 5;//To Debug
             //Debug.Log($"Spawn {random} bot");
             for (int j = 0; j < random; j++)
             {              
@@ -2350,8 +2340,35 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         else if (score >= 300) SetClipToPlay("onePairWin");
         else SetClipToPlay("highCardWin");
     }  
-    public void CheckAmountPlayerInRoom()
+    public async static Task<int> GetAllPlayer()//can't use
+    { 
+        Task<int> task = new Task<int>(() => {
+        var players = GameObject.FindObjectsOfType<PlayerController>();//Only run on main thread
+        
+            while (players.Length == 0)
+            {                
+                players = GameObject.FindObjectsOfType<PlayerController>();//Only run on main thread
+            }
+            return players.Length;
+        });
+        task.Start();            
+        int vlue = await task;        
+        return vlue;     
+    }
+    public int TryGetAllPlayers()
     {
-        Debug.Log($"Amount current players is :{playerInRoom}");
+        StartCoroutine(nameof(ITryGetAllPlayers));
+        return allPlayers;
+    }
+    public IEnumerator ITryGetAllPlayers(System.Action<int> callback)
+    {      
+        var players = GameObject.FindObjectsOfType<PlayerController>();//Only run on main thread
+        while (players.Length == 0)
+        {
+            players = GameObject.FindObjectsOfType<PlayerController>();//Only run on main thread
+            yield return null;
+        }
+        allPlayers = players.Length;
+        callback(allPlayers);
     }
 }

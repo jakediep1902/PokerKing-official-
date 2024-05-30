@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 using ExitGames.Client.Photon;
 using System.Threading.Tasks;
 using System.Threading;
+using Photon.Pun.Demo.Cockpit;
+
 
 public class ManageNetwork : MonoBehaviourPunCallbacks
 {
@@ -16,7 +18,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     AudioSource audioSource;
     PhotonView PvNetWork;
     public bool isJoinedRoom = false;
-    public bool isJoinAble = true;
+    public bool isJoinAble = true;   
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -61,10 +63,7 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         //gameController2 = GameController2.Instance;
         //if (!PhotonNetwork.IsConnected)
         //    PhotonNetwork.ConnectUsingSettings();
-
-        audioSource.PlayDelayed(4f);
-        
-
+        audioSource.PlayDelayed(4f);      
     }
     private void Update()
     {
@@ -78,32 +77,62 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinLobby();
     }
     public override void OnJoinedLobby()
-    {
-        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 20 }, TypedLobby.Default);
+    {      
+        PhotonNetwork.JoinRandomOrCreateRoom(null, 0, MatchmakingMode.FillRoom, TypedLobby.Default, null, null, new RoomOptions { MaxPlayers = 3 });
+
+        //Debug.Log($"Count of Rooms :  {PhotonNetwork.CountOfRooms}");
+        //var count = PhotonNetwork.CountOfRooms;
+        //if (count > 0)
+        //{
+        //    PhotonNetwork.JoinRandomRoom();
+        //}
+        //else
+        //{
+        //    PhotonNetwork.CreateRoom($"Room{Random.Range(0, 100)}", new RoomOptions { MaxPlayers = 1 }, TypedLobby.Default);
+        //    //PhotonNetwork.JoinRandomOrCreateRoom(null, 0, MatchmakingMode.FillRoom, TypedLobby.Default, null, null, new RoomOptions { MaxPlayers = 6 });
+        //}
+        //PhotonNetwork.JoinOrCreateRoom($"Room{countRoom}", new RoomOptions { MaxPlayers = 6 }, TypedLobby.Default);
     }
     public override void OnJoinedRoom()
     {
         //Debug.Log("Joined Room");
-              
-      //  if (PvNetWork.IsMine) gameController.GetComponent<GameController>().enabled = true;
 
-       // RPC_RequestSyncData();
+        //  if (PvNetWork.IsMine) gameController.GetComponent<GameController>().enabled = true;
+
+        // RPC_RequestSyncData();
 
         //gameController.SyncPlayerDatasJoinLate();
         //Debug.Log($"isStartGame is {gameController.isStartGame}  && isCheckCard is {gameController.isCheckCard}");
         //BtnReady();
         //gameController.playerInRoom = (int)PhotonNetwork.CurrentRoom.PlayerCount;
+
+        //var temp = gameController.TryGetAllPlayers();
+        //Debug.Log($"All Player Are :"+temp);
+
+        //StartCoroutine(gameController.ITryGetAllPlayers((result) => {
+        //    Debug.Log($"All players :" + result);
+        //    if (result >= 6)
+        //    {
+        //        PhotonNetwork.LeaveRoom();
+        //        //PhotonNetwork.JoinRandomOrCreateRoom(null, 0, MatchmakingMode.FillRoom, TypedLobby.Default, null, null, new RoomOptions { MaxPlayers = 6 });
+        //        //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        //        PhotonNetwork.CreateRoom($"Room{Random.Range(0, 100)}", new RoomOptions { MaxPlayers = 6 }, TypedLobby.Default);
+        //        CancelInvoke(nameof(BtnReady));
+        //    }
+        //    else
+        //    {
+        //        //Invoke(nameof(BtnReady), 4f);              
+        //    }
+        //}));
         Invoke(nameof(BtnReady), 4f);
     }
-    public override void OnJoinRoomFailed(short returnCode, string message)
-    {
-        Debug.Log(message+ 1111111);
-        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions { MaxPlayers = 6 }, TypedLobby.Default);
-    }
+    //public override void OnJoinRoomFailed(short returnCode, string message)
+    //{
+    //    PhotonNetwork.CreateRoom($"Room{Random.Range(0, 100)}", new RoomOptions { MaxPlayers = 1 }, TypedLobby.Default);
+    //}
     public override void OnJoinRandomFailed(short returnCode, string message)
-    {
-        Debug.Log(message);
-        base.OnJoinRandomFailed(returnCode, message);
+    {     
+        PhotonNetwork.CreateRoom($"Room{Random.Range(0, 100)}", new RoomOptions { MaxPlayers = 3 }, TypedLobby.Default);
     }
     public override void OnLeftRoom()
     {
@@ -191,4 +220,5 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
     //{
     //    SyncManageNetWork,
     //}
+
 }

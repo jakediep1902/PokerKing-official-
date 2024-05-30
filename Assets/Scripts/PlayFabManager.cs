@@ -95,6 +95,11 @@ public class PlayFabManager : MonoBehaviour
             {
                 userData.userName = inputID.text;
             }
+            //For google check
+            if (userData.userName.Equals("ADMINS"))
+            {
+                userData.money = 9999999;
+            }
             Debug.Log($"userName : {userData.userName} , money : {userData.money}");
             SceneManager.LoadScene("Game");
         }
@@ -123,15 +128,9 @@ public class PlayFabManager : MonoBehaviour
     }
     //login
     public void Login()
-    {
-        if(inputID.text.Length<6 || inputID.text.Length > 10 || inputPassWord.text.Length<6 || inputPassWord.text.Length > 10)
-        {
-            var request = new LoginWithPlayFabRequest
-            {
-                Username = "ADMINS",
-                Password = "ADMINS",
-            };
-            PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnLoginError);
+    {       
+        if (inputID.text.Length<6 || inputID.text.Length > 10 || inputPassWord.text.Length<6 || inputPassWord.text.Length > 10)
+        {          
             ShowNotification("User name or password must be 6 - 10 character!");
         }
         else

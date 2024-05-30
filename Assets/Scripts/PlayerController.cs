@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         SyncOnLoadScene      
     }
     private void Awake()
-    {
+    {     
         gameController = GameController.Instance;
         gameController2 = GameController2.Instance;
         playFabManager = PlayFabManager.Instance;
