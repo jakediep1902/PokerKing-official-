@@ -87,21 +87,21 @@ public class PlayFabManager : MonoBehaviour
 
     private void OnRecievedData(GetUserDataResult obj)
     {
-        Debug.Log($"Recieved Player data");
+        Debug.Log($"Recieved Data from PlayFab ");
         if (obj.Data != null && obj.Data.ContainsKey("Player"))
         {
             userData = JsonConvert.DeserializeObject<UserData>(obj.Data["Player"].Value);
             if(userData.userName=="PlayerName" || userData.userName=="")
             {
+                Debug.Log($"userData.userName is : {userData.userName}");
                 userData.userName = inputID.text;
+                SaveDatasUser();              
             }
-            //For google check
-            if (userData.userName.Equals("ADMINS"))
+            else
             {
-                userData.money = 9999999;
-            }
-            Debug.Log($"userName : {userData.userName} , money : {userData.money}");
-            SceneManager.LoadScene("Game");
+                Debug.Log($"userName : {userData.userName} , money : {userData.money}");              
+                SceneManager.LoadScene("Game");
+            }         
         }
     }
     private void OnError(PlayFabError obj)
@@ -112,7 +112,6 @@ public class PlayFabManager : MonoBehaviour
     private void OnDatasSend(UpdateUserDataResult obj)
     {
         Debug.Log($"Datas send to Server success");
-        
     }
 
 
@@ -196,7 +195,8 @@ public class PlayFabManager : MonoBehaviour
         userData.userName = obj.Username;
         userData.money = 5000000;
         SaveDatasUser();
-        Invoke(nameof(LoadScene), 2f);
+        //Invoke(nameof(LoadScene), 2f);
+        LoadScene();
     }
 
     public void ShowNotification(string notification)
@@ -205,6 +205,7 @@ public class PlayFabManager : MonoBehaviour
     }
     public void LoadScene()
     {
+        //SceneManager.LoadScene("Game");
         SceneManager.LoadScene("Game");
     }
 }

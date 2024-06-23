@@ -7,8 +7,9 @@ using Photon.Realtime;
 using UnityEngine.Events;
 //using System.Globalization;
 using ExitGames.Client.Photon;
+using Photon.Pun.Demo.Cockpit;
 
-public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
+public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
 {
     public GameController gameController;
     public GameController2 gameController2;
@@ -16,11 +17,11 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     AudioSource audioSource;
     AudioSource audioSource2;
     public List<AudioClip> listAudio = new List<AudioClip>();
-    
+
     public GameObject card1, card2, cardTemplate1, cardTemplate2;
     public GameObject bigBlindIcon;
     public GameObject rewardTopup;
-    
+
     public Text txtMoney;
     public Text txtMoneyBlind;
     public Text txtDisplayName;
@@ -44,12 +45,17 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     public int card1ID;
     public int card2ID;
     public int ID = 0;
+    public static int countIndex = 0;
+
+    public string strNameDisplay {
+        get => txtDisplayName.text;
+        set { txtDisplayName.text = value; } }
 
     public float score = 0f;
     public long money = 1000000;
     public long moneyBlinding = 0;
     public long moneyBlinded = 0;
-    
+
     public bool isInvoke = false;
     public bool isStraightFlush = false;
     public bool isQuad = false;
@@ -61,6 +67,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     public bool isOnePair = false;
     public bool isHighCard = false;
     public bool isWinner = false;
+    public bool isFirstPlayer = false;
 
     public bool isTurn = false;
     public bool isFold = false;
@@ -68,13 +75,15 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
     public bool isWaiting = false;
     public bool isBot = false;
 
+
     public enum PhotonEventCodes
     {
         SyncLateJoin = 0,
-        SyncOnLoadScene      
+        SyncOnLoadScene = 1,
+        SyncDataPlayerFromMaster = 2,
     }
     private void Awake()
-    {     
+    {
         gameController = GameController.Instance;
         gameController2 = GameController2.Instance;
         playFabManager = PlayFabManager.Instance;
@@ -85,7 +94,23 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         bot = GetComponent<Bot>();
     }
     void Start()
-    {      
+    {             
+        if (PvPlayer.IsMine)
+        {          
+            strNameDisplay = playFabManager.userData.userName;
+            money = playFabManager.userData.money;            
+            if (playFabManager.userData.userName.Equals("ADMINS") ||
+                playFabManager.userData.userName.Equals("ADMINS1"))
+            {
+                money = 8888888;//Defaul money for admin test
+            }
+            uIManager.pnlGame.SetActive(false);
+            Invoke(nameof(SetImageConnecting), 2f);
+        }
+        //else
+        //{
+        //    RPC_RequestSyncDataFromRemote();// only remote request Sync data
+        //}  
         if (gameController.isStartGame)
         {
             if (!PvPlayer.IsMine)
@@ -95,7 +120,11 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             }
             isWaiting = true;
         }
-        else gameController.UpdatePlayer();
+        else
+        {
+            gameController.UpdatePlayer();
+        }
+
 
         cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 5;
         cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 6;
@@ -105,41 +134,38 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         {
             if (ID == i) transform.position = arrPosDefaul[i].position;
         }
-        //money = 10000000;
+        
         moneyBlinding = 0;
 
-        if (PvPlayer.IsMine)
-        {
-            uIManager.pnlGame.SetActive(false);
-            Invoke(nameof(SetImageConnecting), 2f);         
-        }
-
+        #region add Button
         uIManager.btnOKBlind.onClick.AddListener(() => BtnOkBlind());
         uIManager.btnTheoCuoc.onClick.AddListener(() => BtnTheoCuoc());
         uIManager.btnXemBai.onClick.AddListener(() => BtnXemBai());
         uIManager.btnBoBai.onClick.AddListener(() => BtnBoBai());
         uIManager.btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
         uIManager.btnAllIn.onClick.AddListener(() => BtnAllIn());
+        #endregion
 
-        if (bot.enabled && !isWaiting)
+        if (bot.enabled && !isWaiting && PvPlayer.IsMine)
         {
             isBot = true;
-            money =(long)Random.Range(200000, 5000000);
+            money = (long)Random.Range(200000, 5000000);
             int random = Random.Range((int)0, (int)userData.namesTemplate.Length);
             txtDisplayName.text = userData.namesTemplate[random];
+            //SyncPlayerOnLoadScene();
             //Debug.Log($"{gameObject.name}");
         }
-        else if (PvPlayer.IsMine)
-        {
-            UpdateDataPlayerFromServer();// use on build
-        }
+        //else if (PvPlayer.IsMine)
+        //{
+        //    UpdateDataPlayerFromServer();// use on build
+        //}
 
-        if(PvPlayer.IsMine) SyncPlayerOnLoadScene();
+        if(!PvPlayer.IsMine && !isBot) RPC_RequestSyncDataFromRemote();// only realPlayer remote request Sync data
     }
     private void Update()
     {
         if (isFold && card1 != null) FoldCard();
-               
+
         txtMoney.text = gameController.FormatVlueToString(money);
         txtMoneyBlind.text = gameController.FormatVlueToString(moneyBlinding);
 
@@ -148,25 +174,25 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             float temp = uIManager.sliderVlue.value;
             moneyBlinding = (long)(temp * money);
             uIManager.txtSetBlindVlue.text = gameController.FormatVlueToString(moneyBlinding);
-        }      
+        }
     }
     public override void OnEnable()
-    {
+    {        
         PhotonNetwork.NetworkingClient.EventReceived += NetworkingClient_EventReceived;
     }
     public override void OnDisable()
     {
         // Apply for All Player in this client when OnDisable
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
-        if(!isBot) RequestSaveData();
+        if (!isBot) RequestSaveData();
         try
-        {        
+        {
             timeCounter.CheckNextPlayer();
 
             BtnBoBai();
             timeCounter.imageFill.fillAmount = 0;
             gameController.UpdatePlayerPlayings();
-                    
+
             if (card1 != null)
             {
                 card1?.SetActive(false);
@@ -176,63 +202,86 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         catch
         {
             Debug.Log($"Error in PlayerController ID {PvPlayer.ViewID} when Disabled !!!");
-            if(!PvPlayer.IsMine) gameController.BtnDeal();
+            if (!PvPlayer.IsMine) gameController.BtnDeal();
         }
     }
     private void NetworkingClient_EventReceived(EventData obj)
     {
-        if(obj.Code == (byte)PhotonEventCodes.SyncLateJoin)
-        {           
-            object[] datas = obj.CustomData as object[];
-            Debug.Log($"datas lenght is {datas.Length}");
-            int viewID = (int)datas[0];
-            if(PvPlayer.ViewID == viewID)
-            {
-                if(!PvPlayer.IsMine)
-                {
-                    cardTemplate1.SetActive(true);
-                    cardTemplate2.SetActive(true);
-                    cardTemplate1.transform.localScale = new Vector3(1f,1f,1f);
-                    cardTemplate2.transform.localScale = new Vector3(1f,1f,1f);
-                }              
-
-                foreach (var item in gameController.cards)
-                {
-                    if(item.GetComponent<Card>().ID == (int)datas[1] && card1==null)
-                    {
-                        card1 = item;
-                        //card1.SetActive(true);
-                        card1.GetComponent<SpriteRenderer>().sortingOrder = 2;                   
-                       // Debug.Log($"card1 added");
-                    }
-                    if (item.GetComponent<Card>().ID == (int)datas[2] && card2 == null)
-                    {
-                        card2 = item;
-                        //card2.SetActive(true);
-                        card2.GetComponent<SpriteRenderer>().sortingOrder = 3;
-                        // Debug.Log($"card2 added");
-                        Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} added card1 and card2 to PlayerController ");
-                    }
-                }
-                moneyBlinded  = (long)datas[3];
-                money         = (long)datas[4];
-                moneyBlinding = (long)datas[5];
-                bot.enabled   = (bool)datas[6];
-                isBot         = (bool)datas[7];
-                txtDisplayName.text = datas[8].ToString();
-            }
-        }
-
-        if(obj.Code==(byte)PhotonEventCodes.SyncOnLoadScene)
+        if(PvPlayer.IsMine)
         {
-            object[] datas = obj.CustomData as object[];
-            int viewID = (int)datas[0];
-            if (PvPlayer.ViewID == viewID)
-            {
-                txtDisplayName.text = datas[1].ToString();
-                money = (long)datas[2];
-            }
+            return;
         }
+        else
+        {
+            if (obj.Code == (byte)PhotonEventCodes.SyncLateJoin)
+            {
+                object[] datas = obj.CustomData as object[];
+                //Debug.Log($"datas lenght is {datas.Length} + {countIndex++} + {gameObject.name}");
+                int viewID = (int)datas[0];
+                if (PvPlayer.ViewID == viewID)
+                {
+                    if (!PvPlayer.IsMine)
+                    {                      
+                        cardTemplate1.SetActive(true);
+                        cardTemplate2.SetActive(true);
+                        cardTemplate1.transform.localScale = new Vector3(1f, 1f, 1f);
+                        cardTemplate2.transform.localScale = new Vector3(1f, 1f, 1f);
+                    }
+
+                    foreach (var item in gameController.cards)
+                    {
+                        if (item.GetComponent<Card>().ID == (int)datas[1] && card1 == null)
+                        {
+                            card1 = item;
+                            //card1.SetActive(true);
+                            card1.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                            // Debug.Log($"card1 added");
+                        }
+                        if (item.GetComponent<Card>().ID == (int)datas[2] && card2 == null)
+                        {
+                            card2 = item;
+                            //card2.SetActive(true);
+                            card2.GetComponent<SpriteRenderer>().sortingOrder = 3;
+                            // Debug.Log($"card2 added");
+                            Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} added card1 and card2 to PlayerController ");
+                        }
+                    }
+                    moneyBlinded = (long)datas[3];
+                    money = (long)datas[4];
+                    moneyBlinding = (long)datas[5];
+                    bot.enabled = (bool)datas[6];
+                    isBot = (bool)datas[7];
+                    strNameDisplay = datas[8].ToString();
+                    isTurn = (bool)datas[9];
+                    isWaiting = (bool)datas[10];
+                }
+            }
+
+            if (obj.Code == (byte)PhotonEventCodes.SyncOnLoadScene)
+            {
+                object[] datas = obj.CustomData as object[];
+                int viewID = (int)datas[0];
+                if (PvPlayer.ViewID == viewID)
+                {
+                    txtDisplayName.text = datas[1].ToString();
+                    money = (long)datas[2];
+                }
+            }
+
+            if (obj.Code == (byte)PhotonEventCodes.SyncDataPlayerFromMaster)
+            {
+                object[] datas = obj.CustomData as object[];
+                int viewID = (int)datas[0];
+                if (PvPlayer.ViewID == viewID)
+                {
+                    strNameDisplay = datas[1].ToString();
+                    money = (long)datas[2];
+                }
+            }
+
+        }
+
+       
     }
     public void SyncPlayerJoinLate()
     {      
@@ -253,7 +302,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             moneyBlinding,                //5
             bot.enabled,                  //6
             isBot,                        //7
-            txtDisplayName.text           //8
+            strNameDisplay,               //8
+            isTurn,                       //9
+            isWaiting,                    //10
 
             //card1.GetComponent<SpriteRenderer>().sortingOrder,
             //card2.GetComponent<SpriteRenderer>().sortingOrder
@@ -275,18 +326,78 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             txtDisplayName.text,      //1
             money,                    //2
         };
-        RaiseEventOptions option = new RaiseEventOptions();
+        RaiseEventOptions option = new RaiseEventOptions()
+        {
+            Receivers = ReceiverGroup.All,
+            CachingOption = EventCaching.DoNotCache
+        };
         PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncOnLoadScene, datas, option, SendOptions.SendUnreliable);
+    }
+    public void RequestSyncDataFromMaster()
+    {
+    //    if (card1 != null)
+    //    {
+    //        card1ID = card1.GetComponent<Card>().ID;
+    //        card2ID = card2.GetComponent<Card>().ID;
+    //    }
+        object[] datas = new object[]
+        {
+            PvPlayer.ViewID,              //0
+            strNameDisplay,               //1
+            money,                        //2
+
+            //PvPlayer.ViewID,              //0
+            //card1ID,                      //1
+            //card2ID,                      //2
+            //moneyBlinded,                 //3
+            //money,                        //4
+            //moneyBlinding,                //5
+            //bot.enabled,                  //6
+            //isBot,                        //7
+            //strNameDisplay,               //8
+            //isTurn,                       //9
+            //isWaiting,                    //10
+
+
+        };
+        RaiseEventOptions option = new RaiseEventOptions()
+        {
+            Receivers = ReceiverGroup.Others,
+            CachingOption = EventCaching.DoNotCache,
+        };
+        PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncDataPlayerFromMaster, datas, option, SendOptions.SendReliable);
+    }
+    [PunRPC]
+    public void RequestSyncDataFromRemote()
+    {
+        //Debug.Log($"{PvPlayer.ViewID} Request Sync Data from remote");
+        RequestSyncDataFromMaster();
+    }
+    
+    public void RPC_RequestSyncDataFromRemote()
+    {
+        PvPlayer.RPC(nameof(RequestSyncDataFromRemote), RpcTarget.All, null);
     }
     public void UpdateDataPlayerFromServer()
     {
         if (playFabManager != null)
         {
             userData = playFabManager.userData;
-            money = userData.money;
+            long temp = userData.money;
+
+            if (userData.userName.Equals("ADMINS"))
+            {
+                money = 8888888;
+                temp = money;
+            }
+            else
+            {
+                money = userData.money;
+            }
+           
             txtDisplayName.text = userData.userName;
             string name = userData.userName;
-            long temp = userData.money;
+            Debug.Log("Set user name :" + userData.userName);
             PvPlayer.RPC("SetNameDisplayPlayer", RpcTarget.All,name);
             PvPlayer.RPC("SetMoneyPlayer", RpcTarget.All, temp);
            
@@ -358,7 +469,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
             isInvoke = true;
             Invoke(nameof(SetIsInvoke), 20f);
         }
-    }   
+    }
+    
+
     [PunRPC]
     public void RPC_SetCard1(int index)
     {     
@@ -578,22 +691,22 @@ public class PlayerController : MonoBehaviourPunCallbacks//,IPunObservable
         }
     }
     public void SetImageConnecting()=> uIManager.imageConnecting.gameObject.SetActive(false);
-    
+
     //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     //{
     //    // there is a crazy bug in this class "specifyed cast is not valid" because you click on the player owner first !!!
     //    if (stream.IsWriting)
     //    {
     //        Debug.Log($"Player {PvPlayer.ViewID} sends datas to Sync");
-    //        stream.SendNext(moneyBlinded);            
-    //    }
+    //        stream.SendNext(moneyBlinded);
+    //    }       
     //    else if (stream.IsReading)
     //    {
-    //        Debug.Log($"Player {PvPlayer.ViewID} received datas to Sync");
-    //        moneyBlinded = (long)stream.ReceiveNext();        
+    //        Debug.Log($"Player {PvPlayer.ViewID} received datas to ");
+    //        moneyBlinded = (long)stream.ReceiveNext();
     //    }
     //}
-   public void RequestSaveData()
+    public void RequestSaveData()
     {
         userData.money = money;
         userData.userName = txtDisplayName.text;

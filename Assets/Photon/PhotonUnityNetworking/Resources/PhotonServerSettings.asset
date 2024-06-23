@@ -117,6 +117,7 @@ MonoBehaviour:
   - SetClipToPlay
   - RPC_PlayClip
   - SetMoneyBlindingToZero
+  - RequestSyncDataFromRemote
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

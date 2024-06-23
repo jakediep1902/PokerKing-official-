@@ -79,6 +79,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public int[] arrCardsRemoved;
     int autoID = 0;
     int waitForDealDone = 4;
+    public int _realPlayers = 0;
 
     public int countIndexSave = -1;
     int isFlush = 5;//edit with value 5 when finish
@@ -105,19 +106,26 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public bool isEndGame = false;
     public bool isFirstDeal = true;
     public bool isShowDown = false;
+    public bool isStartCheckUpdate = false;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        
+        manageNetwork = ManageNetwork.Instance;
+
         //Debug.Log($"gameController enabled awake");
         //DontDestroyOnLoad(this.gameObject);
         // cards = GameObject.FindGameObjectsWithTag("Card");//this method not sync when builded (differen index)
         //-> differen object spaw
         //var clone = cards.Clone();
         //cardsClone = clone as GameObject[];
+        if(!manageNetwork.isJoinedRoom)
+        {
+            StartCoroutine(WaittingForConnection());          
+        }
+        
     }
     public override void OnEnable()
     {
@@ -141,6 +149,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
           barTotalMoney,       //6
           isCheckCard,         //7
           indexBigBlind,       //8
+          isStartGame,         //9
         };
         RaiseEventOptions option = new RaiseEventOptions()
         {
@@ -152,6 +161,10 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }//using
     private void NetworkingClient_EventReceived(EventData obj)
     {
+        if(photonView.IsMine)
+        {
+            return;
+        }
         if (obj.Code == (byte)RaiseEventCode.SyncGameController)
         {
             Debug.Log("GameController Received datas");
@@ -179,6 +192,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                 barTotalMoney = (long)datas[6];
                 isCheckCard = (bool)datas[7];
                 indexBigBlind = (int)datas[8];
+                isStartGame = (bool)datas[9];
             }
         }
     }//using
@@ -202,14 +216,16 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         uIManager = UIManager.Instance;
         uIManager.gameController = this;
         photonViews = GetComponent<PhotonView>();
-        manageNetwork = ManageNetwork.Instance;
+
         startPos = backCardPrefab.transform;
 
         //ClearConsole();
         //btn for test
         uIManager.btnTest.onClick.AddListener(BtnTest);
         uIManager.btnPause.onClick.AddListener(BtnPause);
-        uIManager.btnQuit.onClick.AddListener(Btn_Quit);     
+        uIManager.btnQuit.onClick.AddListener(Btn_Quit);
+
+
 
         foreach (var item in cards)
         {
@@ -219,7 +235,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
         //uIManager.pnlGame.SetActive(true);
         //Invoke(nameof(UpdatePlayerPlaying), 5f);   
-        UpdatePlayerPlayings();       
+        
+
+        UpdatePlayerPlayings();
         UpdatePosDefaul();
         CheckMoneyPlayer();
         uIManager.pnlGame.gameObject.SetActive(false);
@@ -232,12 +250,15 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             {
                 //do something;
             }
-            if (item.isBot) item.bot.enabled = true;
+            if (item.isBot)
+            {
+                item.bot.enabled = true;
+            }
 
             item.gameController = this;
 
-            if (item.PvPlayer.IsMine) item.SyncPlayerOnLoadScene();
-           //item.gameController.eSyncOnLoadScene.AddListener(() => item.SyncPlayerJoinLate());
+            //if (item.PvPlayer.IsMine) item.SyncPlayerOnLoadScene();
+            //item.gameController.eSyncOnLoadScene.AddListener(() => item.SyncPlayerJoinLate());
 
             item.cardTemplate1.SetActive(false);
             item.cardTemplate2.SetActive(false);
@@ -269,6 +290,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             item.score = 0;
             item.moneyBlinding = 0;
             item.moneyBlinded = 0;
+            
 
             Color tempColor = Color.white;
             tempColor.a = 1f;
@@ -278,10 +300,21 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
         }
         //if(photonView.IsMine) eSyncOnLoadScene.Invoke();     
+
+        Invoke(nameof(FlipIsStartCheckUpdate), 2f);//Delay for generated players via Photon
+
+
+        //UpdateRealPlayers();
+        //if (GetRealPlayers() < 1)
+        //{
+        //    SpawPlayer();
+        //    UpdateRealPlayers();
+        //    StartCoroutine(nameof(SpawBotRandom));
+        //}
     }
     private void Update()
-    {
-        if (manageNetwork.isJoinedRoom)//waiting for connected
+    {       
+        if (manageNetwork.isJoinedRoom && isStartCheckUpdate)//waiting for connected
         {
             if (isStartGame && (playerPlaying < 2 || playerInRoom < 2) && !isEndGame)
             {
@@ -299,6 +332,29 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     private void OnValidate()
     {
         // Debug.Log("OnValidate");
+    }
+    IEnumerator WaittingForConnection()
+    {
+        isJoinedRoom = false;
+        while (!isJoinedRoom)
+        {         
+            
+            if(manageNetwork.isJoinedRoom)
+            {
+                Debug.Log($"Connected to server Photon Pun 2");
+                yield return new WaitForSeconds(2f);                        
+                if (isStartGame)
+                {                    
+                    SpawPlayer();
+                }
+                else
+                {
+                    BtnReady();
+                }
+                isJoinedRoom = true;               
+            }              
+            yield return null;
+        }
     }
     [PunRPC]
     public void CreateCommonCard(int numberOfCard = 3)
@@ -1367,6 +1423,15 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         
         // playerInRoom = (int)PhotonNetwork.CurrentRoom.PlayerCount;
     }
+    public int GetRealPlayers()
+    {
+        return _realPlayers;
+    }    
+    public void UpdateRealPlayers()
+    {
+        var players = FindObjectsOfType<PlayerController>().Where<PlayerController>((player => player.isBot == false));     
+        _realPlayers = players.Count();      
+    }
     [PunRPC]
     public void UpdatePlayerPlayings()
     {
@@ -1405,7 +1470,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             if (item.ID == ID) item.isEmpty = false;
         }
         //posDefaul[index].isEmpty = false;//using      
-    }              
+    }  
     public void SpawPlayer()
     {       
         //UpdatePosDefaul();
@@ -1419,6 +1484,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                     posDefaul[i].transform.position, Quaternion.identity) as GameObject;
               
                 photonViews.RPC("InactivePos", RpcTarget.All, posDefaul[i].ID);
+                tempObj.GetComponent<PlayerController>().isBot = false;
+                //tempObj.AddComponent<RealPlayer>();
             }
             else
             {
@@ -2182,12 +2249,16 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(isStartGame);
-           // stream.SendNext(indexBigBlind);
+            //stream.SendNext(playerPlaying);
+            //stream.SendNext(amountCardInit);
+            // stream.SendNext(indexBigBlind);
         }
         else if (stream.IsReading)
         {
             isStartGame = (bool)stream.ReceiveNext();
-           // indexBigBlind = (int)stream.ReceiveNext();
+            //playerPlaying = (int)stream.ReceiveNext();
+            //amountCardInit = (int)stream.ReceiveNext();
+            // indexBigBlind = (int)stream.ReceiveNext();
         }
     }//using
     public void SyncPlayersDatasJoinLate()
@@ -2216,6 +2287,38 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
     }
+    public IEnumerator SpawBotRandom()
+    {     
+        int random = Random.Range(1, 4);
+        //random = 5;//To Debug
+        //Debug.Log($"Spawn {random} bot");
+        for (int j = 0; j < random; j++)
+        {
+            UpdatePlayer();
+            UpdatePosDefaulEmpty();
+            for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length;)
+            {
+                yield return new WaitForSeconds(1);
+                if (posDefaul[i].isEmpty)
+                {
+                    GameObject tempObj = PhotonNetwork.Instantiate(posDefaul[i].ID.ToString(),
+                        posDefaul[i].transform.position, Quaternion.identity) as GameObject;
+
+                    photonViews.RPC("InactivePos", RpcTarget.All, posDefaul[i].ID);
+                    tempObj.GetComponent<Bot>().enabled = true;
+                    tempObj.GetComponent<PlayerController>().isBot = true;
+                    break;
+                }
+                else
+                {
+                    Debug.Log("All position is not empty");
+                    break;
+                }
+                
+            }
+        }
+        photonViews.RPC("UpdatePlayerPlayings", RpcTarget.All, null);
+    }
     public void SpawBot()
     {             
         if (playerInRoom == 1)
@@ -2236,6 +2339,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
                         photonViews.RPC("InactivePos", RpcTarget.All, posDefaul[i].ID);
                         tempObj.GetComponent<Bot>().enabled = true;
+                        tempObj.GetComponent<PlayerController>().isBot = true;
                         break;
                     }
                     else
@@ -2371,4 +2475,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         allPlayers = players.Length;
         callback(allPlayers);
     }
+    public void FlipIsStartCheckUpdate()
+    {
+        isStartCheckUpdate = !isStartCheckUpdate;
+    }
+   
 }

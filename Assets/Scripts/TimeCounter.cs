@@ -186,7 +186,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
         else
         {
             gameController.indexBigBlind = CurrentPlayer;                   
-            if (gameController.arrPlayer[CurrentPlayer]?.timeCounter.GetComponent<Image>().fillAmount > 0)
+            if (gameController.arrPlayer[CurrentPlayer] && gameController.arrPlayer[CurrentPlayer]?.timeCounter.GetComponent<Image>().fillAmount > 0)
             {      
                 gameController.arrPlayer[CurrentPlayer]?.timeCounter.gameObject.SetActive(true);
             }
