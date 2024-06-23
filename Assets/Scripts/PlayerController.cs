@@ -161,6 +161,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
         //}
 
         if(!PvPlayer.IsMine && !isBot) RPC_RequestSyncDataFromRemote();// only realPlayer remote request Sync data
+        SetImageConnecting();
     }
     private void Update()
     {
