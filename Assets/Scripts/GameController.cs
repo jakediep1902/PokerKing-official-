@@ -25,6 +25,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     GameController2 gameController2;
 
     //public UnityEvent eSyncOnLoadScene;
+    public static UnityEvent eventSpawPlayer = new UnityEvent();
+    public static UnityEvent eventSyncDataGameController = new UnityEvent();
 
     public PhotonView photonViews;
     public AudioSource audioSource;
@@ -102,7 +104,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     public bool isCheckCard = false;
-    public bool isJoinedRoom = false;
+    public bool isSyncDataInit = false;
     public bool isEndGame = false;
     public bool isFirstDeal = true;
     public bool isShowDown = false;
@@ -114,33 +116,35 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         else Destroy(gameObject);
 
         manageNetwork = ManageNetwork.Instance;
-
-        //Debug.Log($"gameController enabled awake");
+        
         //DontDestroyOnLoad(this.gameObject);
         // cards = GameObject.FindGameObjectsWithTag("Card");//this method not sync when builded (differen index)
         //-> differen object spaw
         //var clone = cards.Clone();
         //cardsClone = clone as GameObject[];
+
         if(!manageNetwork.isJoinedRoom)
         {
-            StartCoroutine(WaittingForConnection());          
+            StartCoroutine(WaittingForConnection());  //check for conneting to photon        
         }
-        
+        else
+        {
+            isSyncDataInit = manageNetwork.isJoinedRoom;//set for on load scene
+        }
     }
     public override void OnEnable()
     {
-        PhotonNetwork.NetworkingClient.EventReceived += NetworkingClient_EventReceived;
-        //Debug.Log($"gameController enabled OnEnabled");
+        PhotonNetwork.NetworkingClient.EventReceived += NetworkingClient_EventReceived;       
     }
-
-    public enum RaiseEventCode { SyncGameController = 1 }
+    
+    public enum RaiseEventCode { SyncGameController = 1, }
     public void SyncGameControllerJoinLate()
     {
         arrCardsRemoved = listCardsRemoved.ToArray();//transfer to array to sync because Pun do not supported List
         arrSaveIDCardToSync = listSaveIDCardToSync.ToArray();
         object[] datas = new object[]
         {
-            photonViews.ViewID,//0
+          photonViews.ViewID,  //0
           arrSaveIDCardToSync, //1
           commonIndex,         //2
           countIndexSave,      //3
@@ -150,24 +154,21 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
           isCheckCard,         //7
           indexBigBlind,       //8
           isStartGame,         //9
+          isSyncDataInit,      //10
         };
         RaiseEventOptions option = new RaiseEventOptions()
         {
             CachingOption = EventCaching.DoNotCache,
-            Receivers = ReceiverGroup.All
+            Receivers = ReceiverGroup.All,//set to All because master need to receive event SyncDataGameController
         };
 
-        PhotonNetwork.RaiseEvent((byte)RaiseEventCode.SyncGameController, datas, option, SendOptions.SendUnreliable);
+        PhotonNetwork.RaiseEvent((byte)RaiseEventCode.SyncGameController, datas, option, SendOptions.SendReliable);
     }//using
     private void NetworkingClient_EventReceived(EventData obj)
-    {
-        if(photonView.IsMine)
-        {
-            return;
-        }
+    {       
         if (obj.Code == (byte)RaiseEventCode.SyncGameController)
         {
-            Debug.Log("GameController Received datas");
+            Debug.Log($"GameController {photonView.ViewID} Received datas from master");
             object[] datas = obj.CustomData as object[];
             if ((int)datas[0] == photonViews.ViewID)
             {
@@ -193,13 +194,15 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
                 isCheckCard = (bool)datas[7];
                 indexBigBlind = (int)datas[8];
                 isStartGame = (bool)datas[9];
+                isSyncDataInit = (bool)datas[10];
             }
+            eventSyncDataGameController?.Invoke();
         }
     }//using
     public override void OnDisable()
     {
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
-        //photonViews.RPC("ExitAccidental", RpcTarget.All, null);
+        //photonViews.RPC("ExitAccidental", RpcTarget.All, null);      
     }
     //public static void ClearConsole()
     //{
@@ -225,7 +228,20 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         uIManager.btnPause.onClick.AddListener(BtnPause);
         uIManager.btnQuit.onClick.AddListener(Btn_Quit);
 
+        eventSpawPlayer.AddListener(() => SetPlayersInRoom());
+        eventSyncDataGameController.AddListener(() =>
+        {
+            uIManager.imageConnecting.gameObject.SetActive(false);
+            UpdatePlayerPlayings();
+            SetTrueIsStartCheckUpdate();
+            isSyncDataInit = true;
+        });              
 
+        if(manageNetwork.isJoinedRoom)//use for load scene new game
+        {
+            Debug.Log($"Request sync data GameController on load scene");
+            RequestSyncDataGameController();//All will call but only master implement
+        }
 
         foreach (var item in cards)
         {
@@ -236,8 +252,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         //uIManager.pnlGame.SetActive(true);
         //Invoke(nameof(UpdatePlayerPlaying), 5f);   
         
-
-        UpdatePlayerPlayings();
+        UpdatePlayerPlayings();//need for load scene new game
         UpdatePosDefaul();
         CheckMoneyPlayer();
         uIManager.pnlGame.gameObject.SetActive(false);
@@ -257,7 +272,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
             item.gameController = this;
 
-            //if (item.PvPlayer.IsMine) item.SyncPlayerOnLoadScene();
+            if (item.PvPlayer.IsMine) item.SyncPlayerOnLoadScene();//To make sure player's data sync on new game (can be ignore)
             //item.gameController.eSyncOnLoadScene.AddListener(() => item.SyncPlayerJoinLate());
 
             item.cardTemplate1.SetActive(false);
@@ -269,8 +284,10 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             item.listCard.Clear();
             //item.listCard.RemoveAll(GameObject => GameObject == null);
             item.listCardWin.Clear();
-            item.card1 = new GameObject();
-            item.card2 = new GameObject();
+            //item.card1 = new GameObject();
+            //item.card2 = new GameObject();
+            item.card1 = null;
+            item.card2 = null;
             System.Array.Clear(item.arrCardWin, 0, item.arrCardWin.Length);
 
             item.isStraightFlush = false;
@@ -299,34 +316,30 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             item.cardTemplate2.GetComponent<SpriteRenderer>().color = tempColor;
 
         }
-        //if(photonView.IsMine) eSyncOnLoadScene.Invoke();     
-
-        Invoke(nameof(FlipIsStartCheckUpdate), 2f);//Delay for generated players via Photon
-
-
-        //UpdateRealPlayers();
-        //if (GetRealPlayers() < 1)
-        //{
-        //    SpawPlayer();
-        //    UpdateRealPlayers();
-        //    StartCoroutine(nameof(SpawBotRandom));
-        //}
+        //if(photonView.IsMine) eSyncOnLoadScene.Invoke();           
     }
     private void Update()
     {       
-        if (manageNetwork.isJoinedRoom && isStartCheckUpdate)//waiting for connected
+        if (manageNetwork.isJoinedRoom && isSyncDataInit)
         {
-            if (isStartGame && (playerPlaying < 2 || playerInRoom < 2) && !isEndGame)
+            if (isStartGame)
             {
-                Debug.Log($"playerPlaying : {playerPlaying} ,playerInRoom : {playerInRoom}");
-                //BtnCheckCard(); //can't use because stackCheck = 0 (there is no Card to check)
-                //Debug.Log($"arrPlayer Count is {arrPlayer.Length}");
-                
-                CheckWinner(arrPlayer);
-                isEndGame = true;
-                isCheckCard = true;
+                if ((playerPlaying < 2 || playerInRoom < 2) && !isEndGame)
+                {
+                    Debug.Log($"playerPlaying : {playerPlaying} ,playerInRoom : {playerInRoom}");
+                    //BtnCheckCard(); //can't use because stackCheck = 0 (there is no Card to check)
+                    //Debug.Log($"arrPlayer Count is {arrPlayer.Length}");
+
+                    CheckWinner(arrPlayer);
+                    isEndGame = true;
+                    isCheckCard = true;
+                }              
             }
-            CheckStartGame();
+            else
+            {
+                CheckStartGame();
+            }
+            
         }
     }
     private void OnValidate()
@@ -334,24 +347,26 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         // Debug.Log("OnValidate");
     }
     IEnumerator WaittingForConnection()
-    {
-        isJoinedRoom = false;
-        while (!isJoinedRoom)
-        {         
-            
-            if(manageNetwork.isJoinedRoom)
+    {       
+        isSyncDataInit = manageNetwork.isJoinedRoom;      
+        while (!isSyncDataInit)
+        {
+
+            if (manageNetwork.isJoinedRoom)
             {
                 Debug.Log($"Connected to server Photon Pun 2");
-                yield return new WaitForSeconds(2f);                        
+                RPC_RequestSyncDataGameController();
+                yield return new WaitUntil(() => isSyncDataInit == true);            
+
                 if (isStartGame)
-                {                    
+                {
+                    //Debug.Log($"photonViewID spaw is : {photonView.ViewID}");
                     SpawPlayer();
                 }
                 else
                 {
                     BtnReady();
-                }
-                isJoinedRoom = true;               
+                }             
             }              
             yield return null;
         }
@@ -365,7 +380,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public void CreateBackCard(int numberOfCard = 1)  => StartCoroutine(DelayCreateCard(numberOfCard, backCardPrefab));//using   
     IEnumerator DelayCreateCard(int numberOfCard, GameObject cardInput)//using
     {
-        GameObject tempCard = new GameObject();
+        //GameObject tempCard = new GameObject();
+        GameObject tempCard =null;
         for (int i = 0; i < numberOfCard; i++)
         {           
             if (NoCommonPos<5) tempCard = Instantiate(cardInput, startPos.position, Quaternion.identity) as GameObject;   
@@ -1451,7 +1467,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     }
     public void BtnReady()//using 
     {
-        if (arrPlayer.Length <= 1) Invoke(nameof(SpawBot), 6f);           
+        if (arrPlayer.Length <= 1 && photonView.IsMine) Invoke(nameof(SpawBot), 6f);           
      
         SpawPlayer();
         if (!isStartGame)
@@ -2251,14 +2267,14 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(isStartGame);
             //stream.SendNext(playerPlaying);
             //stream.SendNext(amountCardInit);
-            // stream.SendNext(indexBigBlind);
+             stream.SendNext(indexBigBlind);
         }
         else if (stream.IsReading)
         {
             isStartGame = (bool)stream.ReceiveNext();
             //playerPlaying = (int)stream.ReceiveNext();
             //amountCardInit = (int)stream.ReceiveNext();
-            // indexBigBlind = (int)stream.ReceiveNext();
+             indexBigBlind = (int)stream.ReceiveNext();
         }
     }//using
     public void SyncPlayersDatasJoinLate()
@@ -2267,9 +2283,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         {
             foreach (var item in arrPlayer)
             {
-                item.SyncPlayerJoinLate();
+                if(item) item.SyncPlayerJoinLate();
             }
-            SyncGameControllerJoinLate();
+            //SyncGameControllerJoinLate();
         }
     }//using
     #endregion
@@ -2475,9 +2491,24 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         allPlayers = players.Length;
         callback(allPlayers);
     }
-    public void FlipIsStartCheckUpdate()
+    public void SetTrueIsStartCheckUpdate()
     {
-        isStartCheckUpdate = !isStartCheckUpdate;
+        isStartCheckUpdate = true;
     }
-   
+    public void SetPlayersInRoom()
+    {
+        playerInRoom++;
+    }
+    public void RPC_RequestSyncDataGameController()
+    {
+        photonView.RPC(nameof(RequestSyncDataGameController), RpcTarget.All, null);
+    }
+    [PunRPC]
+    public void RequestSyncDataGameController()
+    {
+        if (photonView.IsMine)//Only Master send data for remotes
+        {
+            SyncGameControllerJoinLate();
+        }     
+    }
 }

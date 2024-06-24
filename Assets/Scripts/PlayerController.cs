@@ -94,7 +94,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
         bot = GetComponent<Bot>();
     }
     void Start()
-    {             
+    {
+        GameController.eventSpawPlayer.Invoke();
+
         if (PvPlayer.IsMine)
         {          
             strNameDisplay = playFabManager.userData.userName;
@@ -113,16 +115,16 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
         //}  
         if (gameController.isStartGame)
         {
-            if (!PvPlayer.IsMine)
-            {
-                Debug.Log($"Player {this.ID} waiting!!");
-                gameController.SyncPlayersDatasJoinLate();
-            }
+            //if (!PvPlayer.IsMine)
+            //{
+            //    Debug.Log($"Player {this.ID} waiting!!");
+            //    gameController.SyncPlayersDatasJoinLate();
+            //}
             isWaiting = true;
         }
         else
         {
-            gameController.UpdatePlayer();
+            //gameController.UpdatePlayer();
         }
 
 
@@ -160,8 +162,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
         //    UpdateDataPlayerFromServer();// use on build
         //}
 
-        if(!PvPlayer.IsMine && !isBot) RPC_RequestSyncDataFromRemote();// only realPlayer remote request Sync data
-        SetImageConnecting();
+        if(!PvPlayer.IsMine) RPC_RequestSyncDataFromRemote();// only realPlayer remote request Sync data
+        
     }
     private void Update()
     {
@@ -207,56 +209,49 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
         }
     }
     private void NetworkingClient_EventReceived(EventData obj)
-    {
-        if(PvPlayer.IsMine)
-        {
-            return;
-        }
-        else
-        {
+    {            
             if (obj.Code == (byte)PhotonEventCodes.SyncLateJoin)
             {
                 object[] datas = obj.CustomData as object[];
                 //Debug.Log($"datas lenght is {datas.Length} + {countIndex++} + {gameObject.name}");
                 int viewID = (int)datas[0];
-                if (PvPlayer.ViewID == viewID)
-                {
-                    if (!PvPlayer.IsMine)
-                    {                      
-                        cardTemplate1.SetActive(true);
-                        cardTemplate2.SetActive(true);
-                        cardTemplate1.transform.localScale = new Vector3(1f, 1f, 1f);
-                        cardTemplate2.transform.localScale = new Vector3(1f, 1f, 1f);
-                    }
+            if (PvPlayer.ViewID == viewID)
+            {
+                cardTemplate1.SetActive(true);
+                cardTemplate2.SetActive(true);
+                cardTemplate1.transform.localScale = new Vector3(1f, 1f, 1f);
+                cardTemplate2.transform.localScale = new Vector3(1f, 1f, 1f);
 
-                    foreach (var item in gameController.cards)
+
+                foreach (var item in gameController.cards)
+                {
+                    if (item.GetComponent<Card>().ID == (int)datas[1] && card1 == null)
                     {
-                        if (item.GetComponent<Card>().ID == (int)datas[1] && card1 == null)
-                        {
-                            card1 = item;
-                            //card1.SetActive(true);
-                            card1.GetComponent<SpriteRenderer>().sortingOrder = 2;
-                            // Debug.Log($"card1 added");
-                        }
-                        if (item.GetComponent<Card>().ID == (int)datas[2] && card2 == null)
-                        {
-                            card2 = item;
-                            //card2.SetActive(true);
-                            card2.GetComponent<SpriteRenderer>().sortingOrder = 3;
-                            // Debug.Log($"card2 added");
-                            Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} added card1 and card2 to PlayerController ");
-                        }
+                        card1 = item;
+                        //card1.SetActive(true);
+                        card1.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                        // Debug.Log($"card1 added");
                     }
-                    moneyBlinded = (long)datas[3];
-                    money = (long)datas[4];
-                    moneyBlinding = (long)datas[5];
-                    bot.enabled = (bool)datas[6];
-                    isBot = (bool)datas[7];
-                    strNameDisplay = datas[8].ToString();
-                    isTurn = (bool)datas[9];
-                    isWaiting = (bool)datas[10];
+                    if (item.GetComponent<Card>().ID == (int)datas[2] && card2 == null)
+                    {
+                        card2 = item;
+                        //card2.SetActive(true);
+                        card2.GetComponent<SpriteRenderer>().sortingOrder = 3;
+                        // Debug.Log($"card2 added");
+                        Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} added card1 and card2 to PlayerController ");
+                    }
                 }
+                moneyBlinded = (long)datas[3];
+                money = (long)datas[4];
+                moneyBlinding = (long)datas[5];
+                bot.enabled = (bool)datas[6];
+                isBot = (bool)datas[7];
+                strNameDisplay = datas[8].ToString();
+                isTurn = (bool)datas[9];
+                isWaiting = (bool)datas[10];
+
             }
+        }
 
             if (obj.Code == (byte)PhotonEventCodes.SyncOnLoadScene)
             {
@@ -278,23 +273,17 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
                     strNameDisplay = datas[1].ToString();
                     money = (long)datas[2];
                 }
-            }
-
-        }
-
-       
+            }        
     }
     public void SyncPlayerJoinLate()
-    {      
-        if(card1!=null)
+    {
+        if (card1 && card2)
         {
             card1ID = card1.GetComponent<Card>().ID;
-            card2ID = card2.GetComponent<Card>().ID;         
-        }
-        else Debug.Log($"player {ID} disconnected !!");       
+            card2ID = card2.GetComponent<Card>().ID;
 
-        object[] datas = new object[]
-        {
+            object[] datas = new object[]
+            {
             PvPlayer.ViewID,              //0
             card1ID,                      //1
             card2ID,                      //2
@@ -307,32 +296,43 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
             isTurn,                       //9
             isWaiting,                    //10
 
-            //card1.GetComponent<SpriteRenderer>().sortingOrder,
-            //card2.GetComponent<SpriteRenderer>().sortingOrder
-        };
-        RaiseEventOptions option = new RaiseEventOptions()
+           //card1.GetComponent<SpriteRenderer>().sortingOrder,
+           //card2.GetComponent<SpriteRenderer>().sortingOrder
+            };
+            RaiseEventOptions option = new RaiseEventOptions()
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.DoNotCache
+            };
+            //Debug.Log($"ID {PvPlayer.ViewID} Invoke RaiseEvent and sent card1");
+            Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} Send Datas");
+            PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncLateJoin, datas, option, SendOptions.SendUnreliable);
+        }
+        else
         {
-            Receivers = ReceiverGroup.All,
-            CachingOption = EventCaching.DoNotCache
-        };
-        //Debug.Log($"ID {PvPlayer.ViewID} Invoke RaiseEvent and sent card1");
-        Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} Send Datas");
-        PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncLateJoin, datas, option,SendOptions.SendUnreliable);
+            Debug.Log($"player {ID} disconnected !!");
+            RequestSyncDataFromMaster();
+        };  
+
+       
     }
     public void SyncPlayerOnLoadScene()
     {
-        object[] datas = new object[]
+        if(PvPlayer.IsMine)
         {
+            object[] datas = new object[]
+            {
             PvPlayer.ViewID,          //0
             txtDisplayName.text,      //1
             money,                    //2
-        };
-        RaiseEventOptions option = new RaiseEventOptions()
-        {
-            Receivers = ReceiverGroup.All,
-            CachingOption = EventCaching.DoNotCache
-        };
-        PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncOnLoadScene, datas, option, SendOptions.SendUnreliable);
+            };
+            RaiseEventOptions option = new RaiseEventOptions()
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.DoNotCache
+            };
+            PhotonNetwork.RaiseEvent((byte)PhotonEventCodes.SyncOnLoadScene, datas, option, SendOptions.SendUnreliable);
+        }
     }
     public void RequestSyncDataFromMaster()
     {
@@ -372,7 +372,11 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
     public void RequestSyncDataFromRemote()
     {
         //Debug.Log($"{PvPlayer.ViewID} Request Sync Data from remote");
-        RequestSyncDataFromMaster();
+        //RequestSyncDataFromMaster();
+        if(PvPlayer.IsMine)
+        {
+            SyncPlayerJoinLate();
+        }
     }
     
     public void RPC_RequestSyncDataFromRemote()
