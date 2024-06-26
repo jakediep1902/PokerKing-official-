@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class PnlLogin : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class PnlLogin : MonoBehaviour
     public Text txtNotification;
     public GameObject loadingVFX;
     public GameObject uIContainer;
+
+    public static UnityEvent<bool> eventSetPnlOnLogin = new UnityEvent<bool>();
     private void Start()
     {               
         playFabManager = PlayFabManager.Instance;
@@ -21,18 +24,25 @@ public class PnlLogin : MonoBehaviour
         playFabManager.inputEmail = inputEmail;
         btnLogin.onClick.AddListener(() => {
             playFabManager.Login();
-            uIContainer.SetActive(false);
-            loadingVFX.SetActive(true);
+            SetStatusBarsOnProcessing(false);
             txtNotification.text = "...LOG IN...";
         });
         btnLoginGuest.onClick.AddListener(() => playFabManager.LoginGuest());
         btnRegister.onClick.AddListener(() => {
             playFabManager.Register();
-            uIContainer.SetActive(false);
-            loadingVFX.SetActive(true);
+            SetStatusBarsOnProcessing(false);
             txtNotification.text = "...Processing...";
         });
-        
+
+        eventSetPnlOnLogin.AddListener((status) => {
+            SetStatusBarsOnProcessing(status);
+        });
+
         playFabManager.txtNotification = txtNotification;
+    }
+    public void SetStatusBarsOnProcessing(bool status)
+    {       
+        uIContainer.SetActive(status);
+        loadingVFX.SetActive(!status);
     }
 }

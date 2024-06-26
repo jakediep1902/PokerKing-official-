@@ -95,7 +95,8 @@ public class PlayFabManager : MonoBehaviour
             {
                 Debug.Log($"userData.userName is : {userData.userName}");
                 userData.userName = inputID.text;
-                SaveDatasUser();              
+                SaveDatasUser();
+                Login();
             }
             else
             {
@@ -147,7 +148,9 @@ public class PlayFabManager : MonoBehaviour
     private void OnLoginError(PlayFabError obj)
     {
         Debug.Log($"Wrong Name or Password {obj.ErrorMessage}");
-        ShowNotification("Wrong user name or password !");
+        //ShowNotification("Wrong user name or password !"); 
+        ShowNotification(obj.ErrorMessage);
+        PnlLogin.eventSetPnlOnLogin?.Invoke(true);
     }
 
     private void OnLoginSuccess(LoginResult obj)

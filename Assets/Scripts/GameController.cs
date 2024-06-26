@@ -27,6 +27,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     //public UnityEvent eSyncOnLoadScene;
     public static UnityEvent eventSpawPlayer = new UnityEvent();
     public static UnityEvent eventSyncDataGameController = new UnityEvent();
+    public static UnityEvent eventSyncIndexBigBlind = new UnityEvent();
 
     public PhotonView photonViews;
     public AudioSource audioSource;
@@ -137,7 +138,11 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         PhotonNetwork.NetworkingClient.EventReceived += NetworkingClient_EventReceived;       
     }
     
-    public enum RaiseEventCode { SyncGameController = 1, }
+    public enum RaiseEventCode 
+    {
+        SyncGameController = 1,
+        SyncIndexBigBlind = 2,
+    }
     public void SyncGameControllerJoinLate()
     {
         arrCardsRemoved = listCardsRemoved.ToArray();//transfer to array to sync because Pun do not supported List
@@ -163,6 +168,20 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         };
 
         PhotonNetwork.RaiseEvent((byte)RaiseEventCode.SyncGameController, datas, option, SendOptions.SendReliable);
+    }//using
+    public void SyncIndexBigBlind()
+    {
+        if(photonView.IsMine)
+        {
+            object[] datas = new object[]{ indexBigBlind,};
+
+            RaiseEventOptions option = new RaiseEventOptions()
+            {
+                CachingOption = EventCaching.DoNotCache,
+                Receivers = ReceiverGroup.Others,//set to All because master need to receive event SyncDataGameController
+            };
+            PhotonNetwork.RaiseEvent((byte)RaiseEventCode.SyncIndexBigBlind, datas, option, SendOptions.SendReliable);
+        }
     }//using
     private void NetworkingClient_EventReceived(EventData obj)
     {       
@@ -198,7 +217,14 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             }
             eventSyncDataGameController?.Invoke();
         }
+        if(obj.Code == (byte)RaiseEventCode.SyncIndexBigBlind)
+        {
+            object[] datas = obj.CustomData as object[];
+            indexBigBlind = (int)datas[0];
+            eventSyncIndexBigBlind?.Invoke();
+        }
     }//using
+
     public override void OnDisable()
     {
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
@@ -235,7 +261,8 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             UpdatePlayerPlayings();
             SetTrueIsStartCheckUpdate();
             isSyncDataInit = true;
-        });              
+        });
+       
 
         if(manageNetwork.isJoinedRoom)//use for load scene new game
         {
@@ -272,9 +299,6 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
             item.gameController = this;
 
-            if (item.PvPlayer.IsMine) item.SyncPlayerOnLoadScene();//To make sure player's data sync on new game (can be ignore)
-            //item.gameController.eSyncOnLoadScene.AddListener(() => item.SyncPlayerJoinLate());
-
             item.cardTemplate1.SetActive(false);
             item.cardTemplate2.SetActive(false);
             item.timeCounter.imageFill.fillAmount = 1;
@@ -308,12 +332,15 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             item.moneyBlinding = 0;
             item.moneyBlinded = 0;
             
-
             Color tempColor = Color.white;
             tempColor.a = 1f;
             item.GetComponent<SpriteRenderer>().color = tempColor;
             item.cardTemplate1.GetComponent<SpriteRenderer>().color = tempColor;
             item.cardTemplate2.GetComponent<SpriteRenderer>().color = tempColor;
+
+
+            item.SyncPlayerOnLoadScene();//To make sure player's data sync on new game (can be ignore)
+            //item.gameController.eSyncOnLoadScene.AddListener(() => item.SyncPlayerJoinLate());
 
         }
         //if(photonView.IsMine) eSyncOnLoadScene.Invoke();           
@@ -2418,6 +2445,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             Destroy(item.gameObject);
         }
         var UI = FindObjectOfType<UIManager>();
+        //GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
+        //camera.transform.SetParent(null);
+        //SceneManager.sceneLoaded += (scene, bmode) => { Destroy(camera);};
         Destroy(UI.gameObject);       
         Destroy(manageNetwork.gameObject);      
     }

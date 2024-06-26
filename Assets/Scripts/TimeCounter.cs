@@ -26,6 +26,9 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     public override void OnEnable()
     {
         gameController = GameController.Instance;
+
+        //gameController.SyncIndexBigBlind();
+
         if (gameController.isCheckCard || gameController.isEndGame) return;
       
         playerController.isTurn = true;
@@ -110,7 +113,11 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     }
     void Start()
     {      
-        imageFill.fillAmount = 1; 
+        imageFill.fillAmount = 1;
+        GameController.eventSyncIndexBigBlind.AddListener(() =>
+        {
+            playerChecking = gameController.indexBigBlind;
+        });
     }  
     private void FixedUpdate()
     {
@@ -122,11 +129,10 @@ public class TimeCounter : MonoBehaviourPunCallbacks
             }
             else
             {
-                playerController.isTurn = false;
+                playerController.isTurn = false;              
                 playerChecking = gameController.indexBigBlind;
                 //Debug.Log(playerChecking);
                 uIManager.pnlGame.SetActive(false);
-
                 //check equal blind
                 if ((playerController.moneyBlinded < gameController.bigestBlinded) && playerController.money > 0)
                 {
@@ -138,6 +144,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
                 }
                 NextPlayer(ref playerChecking);
                 this.gameObject.SetActive(false);
+                //Debug.Log($"called by {photonView.ViewID}");                           
             }
         }
     }

@@ -310,7 +310,8 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
         }
         else
         {
-            Debug.Log($"player {ID} disconnected !!");
+            //Debug.Log($"player {ID} disconnected !!");
+            Debug.Log($"player {ID} is Card1 or Card2 null");
             RequestSyncDataFromMaster();
         };  
 
@@ -318,7 +319,7 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
     }
     public void SyncPlayerOnLoadScene()
     {
-        if(PvPlayer.IsMine)
+        if(PvPlayer.IsMine)//Only master send data to remote
         {
             object[] datas = new object[]
             {
