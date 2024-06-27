@@ -21,7 +21,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     public static GameController Instance;
 
     UIManager uIManager;
-    ManageNetwork manageNetwork;
+    public ManageNetwork manageNetwork;
     GameController2 gameController2;
 
     //public UnityEvent eSyncOnLoadScene;
@@ -113,18 +113,21 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
     private void Awake()
     {
+        
+        //Debug.Log($"{gameObject.name} : {Time.time}");
+
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
         manageNetwork = ManageNetwork.Instance;
-        
+
         //DontDestroyOnLoad(this.gameObject);
-        // cards = GameObject.FindGameObjectsWithTag("Card");//this method not sync when builded (differen index)
+        //cards = GameObject.FindGameObjectsWithTag("Card");//this method not sync when builded (differen index)
         //-> differen object spaw
         //var clone = cards.Clone();
         //cardsClone = clone as GameObject[];
 
-        if(!manageNetwork.isJoinedRoom)
+        if (!manageNetwork.isJoinedRoom)
         {
             StartCoroutine(WaittingForConnection());  //check for conneting to photon        
         }
@@ -262,9 +265,10 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             SetTrueIsStartCheckUpdate();
             isSyncDataInit = true;
         });
-       
 
-        if(manageNetwork.isJoinedRoom)//use for load scene new game
+        uIManager.imageConnecting.gameObject.SetActive(false);
+
+        if (manageNetwork.isJoinedRoom)//use for load scene new game
         {
             Debug.Log($"Request sync data GameController on load scene");
             RequestSyncDataGameController();//All will call but only master implement
@@ -2294,14 +2298,14 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(isStartGame);
             //stream.SendNext(playerPlaying);
             //stream.SendNext(amountCardInit);
-             stream.SendNext(indexBigBlind);
+            stream.SendNext(indexBigBlind);
         }
         else if (stream.IsReading)
         {
             isStartGame = (bool)stream.ReceiveNext();
             //playerPlaying = (int)stream.ReceiveNext();
             //amountCardInit = (int)stream.ReceiveNext();
-             indexBigBlind = (int)stream.ReceiveNext();
+            indexBigBlind = (int)stream.ReceiveNext();
         }
     }//using
     public void SyncPlayersDatasJoinLate()
@@ -2330,38 +2334,38 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
     }
-    public IEnumerator SpawBotRandom()
-    {     
-        int random = Random.Range(1, 4);
-        //random = 5;//To Debug
-        //Debug.Log($"Spawn {random} bot");
-        for (int j = 0; j < random; j++)
-        {
-            UpdatePlayer();
-            UpdatePosDefaulEmpty();
-            for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length;)
-            {
-                yield return new WaitForSeconds(1);
-                if (posDefaul[i].isEmpty)
-                {
-                    GameObject tempObj = PhotonNetwork.Instantiate(posDefaul[i].ID.ToString(),
-                        posDefaul[i].transform.position, Quaternion.identity) as GameObject;
+    //public IEnumerator SpawBotRandom()
+    //{     
+    //    int random = Random.Range(1, 4);
+    //    //random = 5;//To Debug
+    //    //Debug.Log($"Spawn {random} bot");
+    //    for (int j = 0; j < random; j++)
+    //    {
+    //        UpdatePlayer();
+    //        UpdatePosDefaulEmpty();
+    //        for (int i = Random.Range((int)0, (int)posDefaul.Length); i < posDefaul.Length;)
+    //        {
+    //            yield return new WaitForSeconds(1);
+    //            if (posDefaul[i].isEmpty)
+    //            {
+    //                GameObject tempObj = PhotonNetwork.Instantiate(posDefaul[i].ID.ToString(),
+    //                    posDefaul[i].transform.position, Quaternion.identity) as GameObject;
 
-                    photonViews.RPC("InactivePos", RpcTarget.All, posDefaul[i].ID);
-                    tempObj.GetComponent<Bot>().enabled = true;
-                    tempObj.GetComponent<PlayerController>().isBot = true;
-                    break;
-                }
-                else
-                {
-                    Debug.Log("All position is not empty");
-                    break;
-                }
+    //                photonViews.RPC("InactivePos", RpcTarget.All, posDefaul[i].ID);
+    //                tempObj.GetComponent<Bot>().enabled = true;
+    //                tempObj.GetComponent<PlayerController>().isBot = true;
+    //                break;
+    //            }
+    //            else
+    //            {
+    //                Debug.Log("All position is not empty");
+    //                break;
+    //            }
                 
-            }
-        }
-        photonViews.RPC("UpdatePlayerPlayings", RpcTarget.All, null);
-    }
+    //        }
+    //    }
+    //    photonViews.RPC("UpdatePlayerPlayings", RpcTarget.All, null);
+    //}
     public void SpawBot()
     {             
         if (playerInRoom == 1)

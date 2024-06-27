@@ -8,6 +8,10 @@ using Photon.Pun;
 using Photon.Realtime;
 public class Test : MonoBehaviourPunCallbacks
 {
+    private void Awake()
+    {
+        gameObject.SetActive(true);
+    }
     private void Start()
     {
         
