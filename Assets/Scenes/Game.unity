@@ -2341,7 +2341,7 @@ AudioSource:
   m_Volume: 0.4
   m_Pitch: 1
   Loop: 1
-  Mute: 0
+  Mute: 1
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 100
@@ -10989,7 +10989,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1400505074
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11191,7 +11191,6 @@ MonoBehaviour:
   listSaveIDCardToSync: 
   barTotalMoney: 0
   commonIndex: 0
-  indexBigBlind: 0
   amountPlayer: 0
   playerInRoom: 0
   playerPlaying: 0

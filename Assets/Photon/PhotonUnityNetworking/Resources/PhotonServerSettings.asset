@@ -119,6 +119,7 @@ MonoBehaviour:
   - SetMoneyBlindingToZero
   - RequestSyncDataFromRemote
   - RequestSyncDataGameController
+  - SyncAllDataFromMaster
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

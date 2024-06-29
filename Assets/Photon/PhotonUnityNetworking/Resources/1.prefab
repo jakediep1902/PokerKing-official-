@@ -437,8 +437,6 @@ MonoBehaviour:
   listCard: []
   listCardWin: []
   arrCardWin: 0000000000000000000000000000000000000000
-  card1ID: 0
-  card2ID: 0
   ID: 1
   score: 0
   money: 2000000

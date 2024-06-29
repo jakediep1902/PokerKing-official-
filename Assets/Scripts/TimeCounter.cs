@@ -13,7 +13,7 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     //public PhotonView PvTimeCounter;
     GameController gameController;
     UIManager uIManager;
-    [SerializeField] int playerChecking;
+    [SerializeField] static int playerChecking;
     public bool isFirstGround = true;
     //public Text txtCheckingPlayer;
     
@@ -114,10 +114,10 @@ public class TimeCounter : MonoBehaviourPunCallbacks
     void Start()
     {      
         imageFill.fillAmount = 1;
-        GameController.eventSyncIndexBigBlind.AddListener(() =>
-        {
-            playerChecking = gameController.indexBigBlind;
-        });
+        //GameController.eventSyncIndexBigBlind.AddListener(() =>
+        //{
+        //    playerChecking = gameController.indexBigBlind;
+        //});
     }  
     private void FixedUpdate()
     {
