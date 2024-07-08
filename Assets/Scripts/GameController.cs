@@ -158,7 +158,9 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
     {
         SyncGameControllerJoinLate = 1,
     }
-    public void SyncGameControllerJoinLate()//using
+    public void SyncGameControllerJoinLate
+        
+        ()//using
     {
         arrCardsRemoved = listCardsRemoved.ToArray();//transfer to array to sync because Pun do not supported List
         arrSaveIDCardToSync = listSaveIDCardToSync.ToArray();

@@ -95,15 +95,53 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
         uIManager = FindObjectOfType<UIManager>();
         gameObject.name = ID.ToString();
         bot = GetComponent<Bot>();
-
-        cardTemplate1.SetActive(true);
-        cardTemplate2.SetActive(true);
+        PvPlayer = GetComponent<PhotonView>();
+        cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 5;
+        cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 6;
     }
     void Start()
     {
-        GameController.eventSpawPlayer.Invoke();
+        #region config
 
-        if (PvPlayer.IsMine)
+        GameController.eventSpawPlayer.Invoke();
+       
+
+        uIManager.btnOKBlind.onClick.AddListener(() => BtnOkBlind());
+        uIManager.btnTheoCuoc.onClick.AddListener(() => BtnTheoCuoc());
+        uIManager.btnXemBai.onClick.AddListener(() => BtnXemBai());
+        uIManager.btnBoBai.onClick.AddListener(() => BtnBoBai());
+        uIManager.btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
+        uIManager.btnAllIn.onClick.AddListener(() => BtnAllIn());
+
+        GameController.eventLoadedScene.AddListener(() => RequestSyncDataFromRemote());
+        eAddBackCard.AddListener(() => ArrangeCard());
+        #endregion config
+
+        #region common
+        
+        for (int i = 0; i < arrPosDefaul.Length; i++)
+        {
+            if (ID == i) transform.position = arrPosDefaul[i].position;
+        }
+        moneyBlinding = 0;
+
+        if (gameController.isStartGame)
+        {
+            //if (!PvPlayer.IsMine)
+            //{
+            //    Debug.Log($"Player {this.ID} waiting!!");
+            //    gameController.SyncPlayersDatasJoinLate();
+            //}
+            isWaiting = true;
+        }
+        else
+        {
+            //gameController.UpdatePlayer();
+            isWaiting = false;
+        }
+        #endregion Common
+
+        if (PvPlayer.IsMine)//set up for master all master players
         {          
             strNameDisplay = playFabManager.userData.userName;
             money = playFabManager.userData.money;            
@@ -114,64 +152,24 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
             }
             uIManager.pnlGame.SetActive(false);
             Invoke(nameof(SetImageConnecting), 2f);
+
+            if (bot.enabled)//config for bot
+            {
+                isBot = true;
+                money = (long)Random.Range(200000, 5000000);
+                int random = Random.Range((int)0, (int)userData.namesTemplate.Length);
+                txtDisplayName.text = userData.namesTemplate[random];
+                //SyncPlayerOnLoadScene();
+                //Debug.Log($"{gameObject.name}");               
+            }
+            
         }
-        //else
-        //{
-        //    RPC_RequestSyncDataFromRemote();// only remote request Sync data
-        //}  
-        if (gameController.isStartGame)
-        {
-            //if (!PvPlayer.IsMine)
-            //{
-            //    Debug.Log($"Player {this.ID} waiting!!");
-            //    gameController.SyncPlayersDatasJoinLate();
-            //}
-            isWaiting = true;
-            cardTemplate1.SetActive(false);
-            cardTemplate2.SetActive(false);
-        }
-        else
-        {
-            //gameController.UpdatePlayer();
+        else // set up for all remote player
+        {                          
         }
 
-
-        cardTemplate1.GetComponent<SpriteRenderer>().sortingOrder = 5;
-        cardTemplate2.GetComponent<SpriteRenderer>().sortingOrder = 6;
-        PvPlayer = GetComponent<PhotonView>();
-        eAddBackCard.AddListener(() => ArrangeCard());
-        for (int i = 0; i < arrPosDefaul.Length; i++)
-        {
-            if (ID == i) transform.position = arrPosDefaul[i].position;
-        }
-        
-        moneyBlinding = 0;
-
-        #region add Button
-        uIManager.btnOKBlind.onClick.AddListener(() => BtnOkBlind());
-        uIManager.btnTheoCuoc.onClick.AddListener(() => BtnTheoCuoc());
-        uIManager.btnXemBai.onClick.AddListener(() => BtnXemBai());
-        uIManager.btnBoBai.onClick.AddListener(() => BtnBoBai());
-        uIManager.btnThemCuoc.onClick.AddListener(() => BtnThemCuoc());
-        uIManager.btnAllIn.onClick.AddListener(() => BtnAllIn());
-        #endregion
-
-        if (bot.enabled && !isWaiting && PvPlayer.IsMine)
-        {
-            isBot = true;
-            money = (long)Random.Range(200000, 5000000);
-            int random = Random.Range((int)0, (int)userData.namesTemplate.Length);
-            txtDisplayName.text = userData.namesTemplate[random];
-            //SyncPlayerOnLoadScene();
-            //Debug.Log($"{gameObject.name}");
-        }
-        //else if (PvPlayer.IsMine)
-        //{
-        //    UpdateDataPlayerFromServer();// use on build
-        //}
-
-        RequestSyncDataFromRemote();//request  by remote  
-        GameController.eventLoadedScene.AddListener(() => RequestSyncDataFromRemote());
+       
+        RequestSyncDataFromRemote();//request by remote  
     }
     private void Update()
     {
@@ -206,30 +204,30 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
         //    int viewID = (int)datas[0];
         //    if (PvPlayer.ViewID == viewID)
         //    {
-        //        cardTemplate1.SetActive(true);
-        //        cardTemplate2.SetActive(true);
-        //        cardTemplate1.transform.localScale = new Vector3(1f, 1f, 1f);
-        //        cardTemplate2.transform.localScale = new Vector3(1f, 1f, 1f);
+        //cardTemplate1.SetActive(true);
+        //cardTemplate2.SetActive(true);
+        //cardTemplate1.transform.localScale = new Vector3(1f, 1f, 1f);
+        //cardTemplate2.transform.localScale = new Vector3(1f, 1f, 1f);
 
 
-        //        foreach (var item in gameController.cards)
-        //        {
-        //            if (item.GetComponent<Card>().ID == (int)datas[1] && card1 == null)
-        //            {
-        //                card1 = item;
-        //                //card1.SetActive(true);
-        //                card1.GetComponent<SpriteRenderer>().sortingOrder = 2;
-        //                // Debug.Log($"card1 added");
-        //            }
-        //            if (item.GetComponent<Card>().ID == (int)datas[2] && card2 == null)
-        //            {
-        //                card2 = item;
-        //                //card2.SetActive(true);
-        //                card2.GetComponent<SpriteRenderer>().sortingOrder = 3;
-        //                // Debug.Log($"card2 added");
-        //                Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} added card1 and card2 to PlayerController ");
-        //            }
-        //        }
+        //foreach (var item in gameController.cards)
+        //{
+        //    if (item.GetComponent<Card>().ID == (int)datas[1] && card1 == null)
+        //    {
+        //        card1 = item;
+        //        //card1.SetActive(true);
+        //        card1.GetComponent<SpriteRenderer>().sortingOrder = 2;
+        //        // Debug.Log($"card1 added");
+        //    }
+        //    if (item.GetComponent<Card>().ID == (int)datas[2] && card2 == null)
+        //    {
+        //        card2 = item;
+        //        //card2.SetActive(true);
+        //        card2.GetComponent<SpriteRenderer>().sortingOrder = 3;
+        //        // Debug.Log($"card2 added");
+        //        Debug.Log($"Player {this.ID} with ID {PvPlayer.ViewID} added card1 and card2 to PlayerController ");
+        //    }
+        //}
         //        moneyBlinded = (long)datas[3];
         //        money = (long)datas[4];
         //        moneyBlinding = (long)datas[5];
@@ -285,7 +283,9 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
                 isBot = (bool)datas[7];
                 strNameDisplay = datas[8].ToString();
                 isTurn = (bool)datas[9];
-                isWaiting = (bool)datas[10];
+                isWaiting = (bool)datas[10];               
+                cardTemplate1.SetActive((bool)datas[11]);
+                cardTemplate2.SetActive((bool)datas[12]);
                 Debug.Log($"Player {gameObject.name} Master is {photonView.IsMine} with ID {PvPlayer.ViewID} Received datas from {viewID}");
             }
         }
@@ -355,10 +355,14 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
     {
         if(PvPlayer.IsMine)//only execute by master
         {
+            var temp = false;
+            var temp2 = false;
             if (card1 && card2)
             {
                 card1ID = card1.GetComponent<Card>().ID;
                 card2ID = card2.GetComponent<Card>().ID;
+                temp = card1.activeSelf;
+                temp2 = card2.activeSelf;
             }
             else
             {
@@ -377,8 +381,11 @@ public class PlayerController : MonoBehaviourPunCallbacks//, IPunObservable
             isBot,                        //7
             strNameDisplay,               //8
             isTurn,                       //9
-            isWaiting,                    //10          
-            };
+            isWaiting,                    //10           
+            temp,                         //11
+            temp2,                        //12
+
+        };
             RaiseEventOptions option = new RaiseEventOptions()
             {
                 Receivers = ReceiverGroup.Others,

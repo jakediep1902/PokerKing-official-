@@ -27,8 +27,8 @@ public class ManageNetwork : MonoBehaviourPunCallbacks
 
     [SerializeField]
     private byte maxPlayersPerRoom = 3;
-    [SerializeField]
-    private float delayJoinRoom = 2;
+    //[SerializeField]
+    private float delayJoinRoom = 1;
 
     private void Awake()
     {      
