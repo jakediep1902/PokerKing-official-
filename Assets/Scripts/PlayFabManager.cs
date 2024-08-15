@@ -42,6 +42,7 @@ public class PlayFabManager : MonoBehaviour
         else  Destroy(this.gameObject);
 
         DontDestroyOnLoad(this.gameObject);
+        LoginToPlayFab();
     }
 
     void Start()
@@ -160,6 +161,8 @@ public class PlayFabManager : MonoBehaviour
         Debug.Log($"Login successful with ID {obj.PlayFabId}");
         ShowNotification("Please wait...!");
         LoadDataUser();
+        //ClientGetTitleData();
+        
     }
 
 
@@ -210,5 +213,31 @@ public class PlayFabManager : MonoBehaviour
     {
         //SceneManager.LoadScene("Game");
         SceneManager.LoadScene("Game");
+        
     }
+    public void ClientGetTitleData()
+    {
+        PlayFabClientAPI.GetTitleData(new GetTitleDataRequest(),
+            result => {
+                if (result.Data == null || !result.Data.ContainsKey("MonsterName")) Debug.Log("No MonsterName");
+                else Debug.Log("MonsterName: " + result.Data["MonsterName"]);
+            },
+            error => {
+                Debug.Log("Got error getting titleData:");
+                Debug.Log(error.GenerateErrorReport());
+            }
+        );
+    }
+    void LoginToPlayFab()
+    {
+        var request = new LoginWithCustomIDRequest
+        {
+            CustomId = SystemInfo.deviceUniqueIdentifier,
+            CreateAccount = true
+        };
+
+        PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginError);
+    }
+
+
 }

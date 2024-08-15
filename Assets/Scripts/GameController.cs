@@ -237,13 +237,13 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
         PhotonNetwork.NetworkingClient.EventReceived -= NetworkingClient_EventReceived;
         //photonViews.RPC("ExitAccidental", RpcTarget.All, null);      
     }
-    public static void ClearConsole()
-    {
-        var assembly = Assembly.GetAssembly(typeof(SceneView));
-        var type = assembly.GetType("UnityEditor.LogEntries");
-        var method = type.GetMethod("Clear");
-        method.Invoke(new object(), null);
-    }//using
+    //public static void ClearConsole()
+    //{
+    //    var assembly = Assembly.GetAssembly(typeof(SceneView));
+    //    var type = assembly.GetType("UnityEditor.LogEntries");
+    //    var method = type.GetMethod("Clear");
+    //    method.Invoke(new object(), null);
+    //}//using
     public void Start()
     {      
         //if (isCheckCard) this.gameObject.SetActive(false);
@@ -255,7 +255,7 @@ public class GameController : MonoBehaviourPunCallbacks, IPunObservable
 
         startPos = backCardPrefab.transform;
 
-        ClearConsole();
+        //ClearConsole();
         //btn for test
         uIManager.btnTest.onClick.AddListener(BtnTest);
         uIManager.btnPause.onClick.AddListener(BtnPause);
